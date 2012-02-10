@@ -1,0 +1,19 @@
+require "lib/osaka/version"
+
+Gem::Specification.new do |gem|
+  gem.name    = 'osaka'
+  gem.version = Osaka::VERSION
+  gem.date    = Date.today.to_s
+
+  gem.summary = "Osaka is an Mac GUI automation library"
+  gem.description = "Osaka wraps osascript (Applescript) and provides a ruby interface for automating tasks through the GUI on Mac"
+
+  gem.authors  = ['Bas Vodde']
+  gem.email    = 'basv@odd-e.com'
+  gem.homepage = 'https://github.com/basvodde/osaka'
+
+  gem.add_dependency('rake')
+  gem.add_development_dependency('rspec', [">= 2.0.0"])
+
+  gem.files = Dir['Rakefile', '{bin,lib,man,test,spec}/**/*', 'README*', 'LICENSE*'] & `git ls-files -z`.split("\0")
+end

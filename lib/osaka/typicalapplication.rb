@@ -40,7 +40,7 @@ module Osaka
     end
   
     def create_save_dialog(location, app)
-      GenericSaveDialog.new(location, app)
+      TypicalSaveDialog.new(location, app)
     end
 
     def save_as_pdf(filename)

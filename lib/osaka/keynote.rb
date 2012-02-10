@@ -12,7 +12,7 @@ module Osaka
     end
 
     def create_print_dialog(location)
-      KeynotePrintDialog.new(location, app)
+      KeynotePrintDialog.new(location, @wrapper)
     end
   end
 end

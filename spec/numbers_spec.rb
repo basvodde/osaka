@@ -10,7 +10,7 @@ describe "Osaka::Numbers" do
   end
   
   it "Should be able to fill in data in cells" do
-    subject.wrapper.should_receive(:tell).with('tell document 1; tell sheet 1; tell table 1; set value of cell 2 of row 1 to "30"; end tell; end tell; end tell')
+    subject.wrapper.should_receive(:tell).with('tell document 1; tell sheet 1; tell table 1; set value of cell 1 of row 2 to "30"; end tell; end tell; end tell')
     subject.fill_cell(1, 2, "30")
   end
   

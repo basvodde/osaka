@@ -1,0 +1,85 @@
+
+Osaka - apple OSA script Kontrolling the Application (OSAKA :P)
+This is a Ruby 1.9 library for automating work via GUI on Mac (using OSA/Applescript)
+
+= How to install
+
+  $ sudo gem install osaka
+
+= How to use
+
+Examples:
+  
+  #### Example: Controlling Keynote
+
+  require 'osaka'
+
+  # Create a new application-specific wrapper
+  app = Osaka::Keynote.new
+
+  # Open a keynote file
+  app.open "presentation.key"
+
+  # Show a print dialog
+  dialog = app.print_dialog
+
+  # Save as PDF  
+  dialog.save_as_pdf("presentation.pdf")
+
+  # Quit
+  app.quit
+
+  #### Example: Controlling Numbers
+
+  require 'osaka'
+
+  # Create a new application-specific wrapper
+  app = Osaka::Numbers.new
+
+  # Open a file
+  app.open "Numbers.numbers"
+
+  # Change a field
+  app.fill_cell(1, 4, "Hello World!")
+
+  # Save and quit
+  app.save
+  app.quit
+
+  #### Example: Using the Application Wrapper (lower-level)
+
+  require 'osaka'
+
+  # Create an application wrapper
+  calculator = Osaka::ApplicationWrapper.new("Calculator")
+
+  # Start the application
+  calculator.activate
+
+  # Control the calculator
+  calculator.click('button "1"  of group 2 of window "Calculator"')
+  calculator.click('button "+"  of group 2 of window "Calculator"')
+  calculator.click('button "4"  of group 2 of window "Calculator"')
+  calculator.click('button "="  of group 2 of window "Calculator"')
+
+  calculator.quit
+
+API document: To be done.
+
+= Source code
+
+https://github.com/basvodde/osaka
+
+The license of this source is "BSD Licence"
+
+= Note on current version (0.1.1)
+
+Currently the functionality is fairly limited. It can be easily expanded by writing more application wrappers with convenient interfaces for controlling specific application. If you write some for common application or extend the ones, please submit a merge request :)
+
+= Supported environments
+
+1.9.x. 
+
+= Author
+
+Bas Vodde - basv AT odd-e.com

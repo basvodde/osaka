@@ -23,7 +23,7 @@ module Osaka
     end
   
     def mail_merge
-      @wrapper.systemEvent("tell menu bar 1; tell menu \"Edit\"; click menu item 20; end tell; end tell")
+      @wrapper.system_event("tell menu bar 1; tell menu \"Edit\"; click menu item 20; end tell; end tell")
       @wrapper.wait_until_exists('button "Merge" of sheet 1 of window 1')
       PagesMailMergeDialog.new(@wrapper)
     end

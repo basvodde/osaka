@@ -1,12 +1,66 @@
 
 module Osaka
+
+  class ConditionAndActionProxy
+    
+    def initialize(wrapper)
+      @wrapper = wrapper
+    end
+    
+    def create_condition_class_based_on_name(sym)
+      classname = "#{sym.to_s[0].upcase}#{sym.to_s[1..-1]}Condition"
+      eval(classname).new
+    end
+
+    def method_missing(sym, *args, &block)
+      condition = create_condition_class_based_on_name(sym)
+      @wrapper.enter_nested_action
+      yield unless block.nil?
+      @wrapper.exit_nested_action
+      @wrapper.system_event!("repeat until #{condition.as_script(*args)}; #{@wrapper.nested_action} end repeat")
+    end
+  end
   
+  class ExistsCondition
+    def as_script(element_to_wait_for)
+      "exists #{element_to_wait_for}"
+    end
+  end
+  
+  class Not_existsCondition
+    def as_script(element_to_wait_for)
+      "not exists #{element_to_wait_for}"
+    end
+  end
+    
   class ApplicationWrapper
   
     def initialize(name)
       @name = name
+      @nested = false
     end
-  
+    
+    def enter_nested_action
+      @nested = true
+      @nested_action = ""
+    end
+    
+    def nested_action
+      @nested_action
+    end
+    
+    def exit_nested_action
+      @nested = false
+    end
+    
+    def execute_script(script)
+      if @nested
+        @nested_action += "#{script};"
+      else 
+        ScriptRunner::execute(script) unless @nested
+      end
+    end
+    
     def activate
       tell("activate")
     end
@@ -16,36 +70,31 @@ module Osaka
     end
   
     def tell(command)
-      ScriptRunner::execute("tell application \"#{@name}\"; #{command}; end tell")
+      execute_script("tell application \"#{@name}\"; #{command}; end tell")
     end
   
     def system_event!(event)
-      ScriptRunner::execute("tell application \"System Events\"; tell process \"#{@name}\"; #{event}; end tell; end tell")
+      execute_script("tell application \"System Events\"; tell process \"#{@name}\"; #{event}; end tell; end tell")
     end
 
     def system_event(event)
       activate
       system_event!(event)
     end
-    
-    def wait_until_exists!(element_to_wait_for)
-      system_event!("repeat until exists #{element_to_wait_for}; end repeat")
-    end
 
-    def wait_until_exists(element_to_wait_for)
+    def wait_until
       activate
-      wait_until_exists!(element_to_wait_for)
+      wait_until!
     end
     
-    def wait_until_not_exists!(element_to_wait_for)
-      system_event!("repeat until not exists #{element_to_wait_for}; end repeat")
-    end
-
-    def wait_until_not_exists(element_to_wait_for)
-      activate
-      wait_until_not_exists!(element_to_wait_for)
+    def wait_until!
+      ConditionAndActionProxy.new(self)
     end
     
+    def until!
+      ConditionAndActionProxy.new(self)
+    end
+        
     def construct_modifier_statement(modifier_keys)
       modified_key_string = [ modifier_keys ].flatten.collect! { |mod_key| mod_key.to_s + " down"}.join(", ")
       modifier_command = " using {#{modified_key_string}}" unless modifier_keys.empty?
@@ -54,6 +103,7 @@ module Osaka
     
     def keystroke!(key, modifier_keys = [])
       system_event!("keystroke \"#{key}\"#{construct_modifier_statement(modifier_keys)}")
+      self
     end
     
     def keystroke(key, modifier_keys = [])
@@ -61,45 +111,16 @@ module Osaka
       keystroke!(key, modifier_keys)
     end
         
-    def keystroke_and_wait_until_exists!(key, modifier_keys, element)
-      keystroke!(key, modifier_keys)
-      wait_until_exists!(element)
-    end
-
-    def keystroke_and_wait_until_exists(key, modifier_keys, element)
-      activate
-      keystroke_and_wait_until_exists!(key, modifier_keys, element)
-    end
-  
     def click!(element)
       system_event!("click #{element}")
+      self
     end
 
     def click(element)
       activate
       click!(element)
     end
-  
-    def click_and_wait_until_exists!(element, wait_condition)
-      click!(element)
-      wait_until_exists!(wait_condition)
-    end
-
-    def click_and_wait_until_exists(element, wait_condition)
-      activate
-      click_and_wait_until_exists!(element, wait_condition)
-    end
-  
-    def click_and_wait_until_not_exists!(element, wait_condition)
-      click!(element)
-      wait_until_not_exists!(wait_condition)
-    end
-
-    def click_and_wait_until_not_exists(element, wait_condition)
-      activate
-      click_and_wait_until_not_exists!(element, wait_condition)
-    end
-      
+        
     def set!(element, value)
       system_event!("set #{element} to \"#{value}\"")
     end

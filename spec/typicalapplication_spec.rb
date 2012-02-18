@@ -3,37 +3,40 @@ require 'osaka'
 
 describe "Osaka::TypicalApplication" do
 
+  include(*Osaka::ApplicationWrapperExpectations)
+  
   subject { Osaka::TypicalApplication.new("ApplicationName") }
   
   before (:each) do
-    subject.wrapper = double("Osaka::ApplicationWrapper").as_null_object
+    @wrapper = subject.wrapper = double("Osaka::ApplicationWrapper")
   end
   
   it "Should pass the right open string to the Keynote application osascript" do
     filename = "filename.key"
-    subject.wrapper.should_receive(:tell).with("open \"#{File.absolute_path(filename)}\"")
+    expect_tell("open \"#{File.absolute_path(filename)}\"")
     subject.open(filename)    
   end
   
   it "Should be able to quit" do
-    subject.wrapper.should_receive(:quit)
+    @wrapper.should_receive(:quit)
     subject.quit
   end
   
   it "Should be able to save" do
-    subject.wrapper.should_receive(:keystroke).with("s", :command)
+    expect_keystroke("s", :command)
     subject.save
   end
   
   it "Should be able to activate keynote" do
-    subject.wrapper.should_receive(:activate)
+    @wrapper.should_receive(:activate)
     subject.activate
   end
   
   it "Should be able to retrieve a print dialog" do
-    subject.wrapper.should_receive(:keystroke_and_wait_until_exists).with("p", :command, "sheet 1 of window 1")
+    expect_keystroke("p", :command)
+    should_wait_until(:exists, "sheet 1 of window 1")
     subject.print_dialog
-  end
+  end  
   
   describe "Generic Print Dialog" do
     
@@ -42,11 +45,20 @@ describe "Osaka::TypicalApplication" do
 
     it "Should be able to save the PDF in a print dialog" do
       save_dialog_mock = double(:GenericSaveDialog)
-      subject.wrapper.should_receive(:click_and_wait_until_exists!).with('menu button "PDF" of window 1', 'menu 1 of menu button "PDF" of window 1')
-      subject.wrapper.should_receive(:click_and_wait_until_exists!).with('menu item 2 of menu 1 of menu button "PDF" of window 1', 'window "Save"')
+      
+      expect_click!('menu button "PDF" of window 1') 
+      should_wait_until!(:exists, 'menu 1 of menu button "PDF" of window 1')
+      
+      expect_click!('menu item 2 of menu 1 of menu button "PDF" of window 1')
+      should_wait_until!(:exists, 'window "Save"')
+
       subject.should_receive(:create_save_dialog).with("window \"Save\"", subject.wrapper).and_return(save_dialog_mock)
       save_dialog_mock.should_receive(:save).with("filename")
-      subject.wrapper.should_receive(:wait_until_not_exists).with('window 1')
+      
+      should_do_until!(:not_exists, 'window 1') {
+        expect_click!('checkbox 1 of window "Print"')
+      }
+      
       subject.save_as_pdf("filename")
     end
   end
@@ -70,13 +82,15 @@ describe "Osaka::TypicalApplication" do
     end
     
     it "Should set the path when a full path is given" do
+      subject.wrapper.as_null_object
       subject.should_receive(:set_filename)
       subject.should_receive(:set_folder).with("/path/second")
       subject.save("/path/second/name")
     end
     
     it "Should be able to click save" do
-      subject.wrapper.should_receive(:click_and_wait_until_not_exists).with('button "Save"  of window 1', 'window 1')
+      expect_click('button "Save" of window 1')
+      should_wait_until(:not_exists, 'window 1')
       subject.click_save
     end
     
@@ -86,9 +100,11 @@ describe "Osaka::TypicalApplication" do
     end
     
     it "Should be able to set the path" do
-      subject.wrapper.should_receive(:keystroke_and_wait_until_exists).with("g", [ :command, :shift ], "sheet 1 of window 1")
+      expect_keystroke("g", [ :command, :shift ])
+      should_wait_until(:exists,  "sheet 1 of window 1")
       subject.wrapper.should_receive(:set).with("value of text field 1 of sheet 1 of window 1", "path")
-      subject.wrapper.should_receive(:click_and_wait_until_not_exists).with('button "Go" of sheet 1 of window 1', "sheet 1 of window 1")
+      expect_click('button "Go" of sheet 1 of window 1')
+      should_wait_until(:not_exists, "sheet 1 of window 1")
       subject.set_folder("path")
     end
   end

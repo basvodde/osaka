@@ -14,7 +14,7 @@ module Osaka
     end
   
     def set_folder(pathname)
-      @wrapper.keystroke("g", [ :command, :shift ]).wait_until.exists ("sheet 1 of #{@location}")
+      @wrapper.keystroke("g", [ :command, :shift ]).wait_until.exists("sheet 1 of #{@location}")
       @wrapper.set("value of text field 1 of sheet 1 of #{@location}", pathname)
       @wrapper.click("button \"Go\" of sheet 1 of #{@location}").wait_until.not_exists("sheet 1 of #{@location}")
     end
@@ -44,7 +44,7 @@ module Osaka
     end
 
     def save_as_pdf(filename)
-      @wrapper.click!("menu button \"PDF\" of #{@location}").wait_until!.exists ("menu 1 of menu button \"PDF\" of #{@location}")
+      @wrapper.click!("menu button \"PDF\" of #{@location}").wait_until!.exists("menu 1 of menu button \"PDF\" of #{@location}")
       @wrapper.click!("menu item 2 of menu 1 of menu button \"PDF\" of #{@location}").wait_until!.exists('window "Save"')
       save_dialog = create_save_dialog("window \"Save\"", @wrapper)
       save_dialog.save(filename)

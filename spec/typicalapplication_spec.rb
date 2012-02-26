@@ -95,14 +95,14 @@ describe "Osaka::TypicalApplication" do
     end
     
     it "Should be able to set the filename" do
-      subject.wrapper.should_receive(:set).with('value of text field 1 of window 1', "filename")
+      subject.wrapper.should_receive(:set).with('value', 'text field 1 of window 1', "filename")
       subject.set_filename("filename")
     end
     
     it "Should be able to set the path" do
       expect_keystroke("g", [ :command, :shift ])
       should_wait_until(:exists,  "sheet 1 of window 1")
-      subject.wrapper.should_receive(:set).with("value of text field 1 of sheet 1 of window 1", "path")
+      subject.wrapper.should_receive(:set).with("value", "text field 1 of sheet 1 of window 1", "path")
       expect_click('button "Go" of sheet 1 of window 1')
       should_wait_until(:not_exists, "sheet 1 of window 1")
       subject.set_folder("path")

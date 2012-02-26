@@ -1,10 +1,11 @@
 
 module Osaka
 
-  class ConditionAndActionProxy
+  class ConditionProxy
     
-    def initialize(wrapper)
+    def initialize(wrapper, action)
       @wrapper = wrapper
+      @action = action
     end
     
     def create_condition_class_based_on_name(sym)
@@ -14,12 +15,23 @@ module Osaka
 
     def method_missing(sym, *args, &block)
       condition = create_condition_class_based_on_name(sym)
-      @wrapper.enter_nested_action
-      yield unless block.nil?
-      @wrapper.exit_nested_action
-      @wrapper.system_event!("repeat until #{condition.as_script(*args)}; #{@wrapper.nested_action} end repeat")
+      @action.execute(@wrapper, condition, *args, &block)      
     end
   end
+  
+  class RepeatAction
+    def execute(wrapper, condition, *args, &block)
+      while (!CheckAction.new.execute(wrapper, condition, *args, &block))
+        yield unless block.nil?
+      end
+    end
+  end
+  
+  class CheckAction
+      def execute(wrapper, condition, *args, &block)
+        wrapper.system_event!("#{condition.as_script(*args)};").strip == "true"
+      end
+    end
   
   class ExistsCondition
     def as_script(element_to_wait_for)
@@ -37,44 +49,33 @@ module Osaka
   
     def initialize(name)
       @name = name
-      @nested = false
     end
     
-    def enter_nested_action
-      @nested = true
-      @nested_action = ""
+    def print_warning(action, message)
+      puts "Osaka WARNING while doing #{action}: #{message}"
     end
     
-    def nested_action
-      @nested_action
-    end
-    
-    def exit_nested_action
-      @nested = false
-    end
-    
-    def execute_script(script)
-      if @nested
-        @nested_action += "#{script};"
-      else 
-        ScriptRunner::execute(script) unless @nested
+    def check_output(output, action)
+      if (!output.empty?)
+        print_warning(action, output)
       end
+      output
     end
     
     def activate
-      tell("activate")
+      check_output( tell("activate"), "activate" )
     end
   
     def quit
-      tell("quit")
+      check_output( tell("quit"), "quit" )
     end
   
     def tell(command)
-      execute_script("tell application \"#{@name}\"; #{command}; end tell")
+      ScriptRunner::execute("tell application \"#{@name}\"; #{command}; end tell")
     end
   
     def system_event!(event)
-      execute_script("tell application \"System Events\"; tell process \"#{@name}\"; #{event}; end tell; end tell")
+      ScriptRunner::execute("tell application \"System Events\"; tell process \"#{@name}\"; #{event}; end tell; end tell")
     end
 
     def system_event(event)
@@ -87,12 +88,16 @@ module Osaka
       wait_until!
     end
     
+    def check
+      ConditionProxy.new(self, CheckAction.new)
+    end
+    
     def wait_until!
-      ConditionAndActionProxy.new(self)
+      ConditionProxy.new(self, RepeatAction.new)
     end
     
     def until!
-      ConditionAndActionProxy.new(self)
+      ConditionProxy.new(self, RepeatAction.new)
     end
         
     def construct_modifier_statement(modifier_keys)
@@ -102,7 +107,7 @@ module Osaka
     end
     
     def keystroke!(key, modifier_keys = [])
-      system_event!("keystroke \"#{key}\"#{construct_modifier_statement(modifier_keys)}")
+      check_output( system_event!("keystroke \"#{key}\"#{construct_modifier_statement(modifier_keys)}"), "keystroke")
       self
     end
     
@@ -112,6 +117,7 @@ module Osaka
     end
         
     def click!(element)
+      # Click seems to often output stuff, but it doesn't have much meaning so we ignore it.
       system_event!("click #{element}")
       self
     end
@@ -121,13 +127,17 @@ module Osaka
       click!(element)
     end
         
-    def set!(element, value)
-      system_event!("set #{element} to \"#{value}\"")
+    def set!(element, location, value)
+      check_output( system_event!("set #{element} of #{location} to \"#{value}\""), "set")
+    end
+    
+    def get!(element, location)
+      system_event!("get #{element} of #{location}")
     end
 
-    def set(element, value)
+    def set(element, location, value)
       activate
-      set!(element, value)
+      set!(element, location, value)
     end
   end
 end

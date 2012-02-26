@@ -10,12 +10,12 @@ module Osaka
     end
   
     def set_filename(filename)
-      @wrapper.set("value of text field 1 of #{@location}", filename)
+      @wrapper.set("value", "text field 1 of #{@location}", filename)
     end
   
     def set_folder(pathname)
       @wrapper.keystroke("g", [ :command, :shift ]).wait_until.exists("sheet 1 of #{@location}")
-      @wrapper.set("value of text field 1 of sheet 1 of #{@location}", pathname)
+      @wrapper.set("value", "text field 1 of sheet 1 of #{@location}", pathname)
       @wrapper.click("button \"Go\" of sheet 1 of #{@location}").wait_until.not_exists("sheet 1 of #{@location}")
     end
   

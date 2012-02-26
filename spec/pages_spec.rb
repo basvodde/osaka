@@ -18,6 +18,7 @@ describe "Osaka::Pages" do
     
     subject.should_receive(:mail_merge).and_return(mail_merge_dialog)
     mail_merge_dialog.should_receive(:merge).and_return(print_dialog)
+    mail_merge_dialog.should_receive(:set_merge_to_printer)
     print_dialog.should_receive(:save_as_pdf).with("filename")
     
     subject.mail_merge_to_pdf("filename")

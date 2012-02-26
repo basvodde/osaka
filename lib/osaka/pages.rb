@@ -45,6 +45,7 @@ module Osaka
     
     def mail_merge_to_pdf(filename)
       mail_merge_dialog = mail_merge
+      mail_merge_dialog.set_merge_to_printer
       print_dialog = mail_merge_dialog.merge
       print_dialog.save_as_pdf(filename)
     end

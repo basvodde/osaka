@@ -157,7 +157,7 @@ describe "Osaka::ApplicationWrapper" do
   end
   
   it "Should be able to get a value from an element" do
-    subject.should_receive(:system_event!).with(/get value of window/).and_return("1")
+    subject.should_receive(:system_event!).with(/get value of window/).and_return("1\n")
     subject.get!("value", "window").should == "1"
   end
   

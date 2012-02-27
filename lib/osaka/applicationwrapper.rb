@@ -132,7 +132,7 @@ module Osaka
     end
     
     def get!(element, location)
-      system_event!("get #{element} of #{location}")
+      system_event!("get #{element} of #{location}").strip
     end
 
     def set(element, location, value)

@@ -25,6 +25,10 @@ module Osaka
       @wrapper.should_receive(:keystroke).with(key, modifier).and_return(@wrapper)
     end
 
+    def expect_keystroke!(key)
+      @wrapper.should_receive(:keystroke!).with(key).and_return(@wrapper)
+    end
+
     def expect_click!(location)
       @wrapper.should_receive(:click!).with(location).and_return(@wrapper)
     end

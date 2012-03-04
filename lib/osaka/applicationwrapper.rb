@@ -67,7 +67,7 @@ module Osaka
     end
   
     def quit
-      check_output( tell("quit"), "quit" )
+      keystroke("q", :command)
     end
   
     def tell(command)
@@ -91,6 +91,8 @@ module Osaka
     def check
       ConditionProxy.new(self, CheckAction.new)
     end
+    
+    alias check! check
     
     def wait_until!
       ConditionProxy.new(self, RepeatAction.new)
@@ -128,7 +130,12 @@ module Osaka
     end
         
     def set!(element, location, value)
-      check_output( system_event!("set #{element} of #{location} to \"#{value}\""), "set")
+      encoded_value = (value.class == String) ? "\"#{value}\"" : value.to_s
+      check_output( system_event!("set #{element} of #{location} to #{encoded_value}"), "set")
+    end
+    
+    def focus(element)
+      set!("focused", element, true)
     end
     
     def get!(element, location)

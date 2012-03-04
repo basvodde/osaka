@@ -56,13 +56,29 @@ module Osaka
       }
     end
   end
+  
+  class ApplicationInfo
+
+    attr_reader :name
+
+    def initialize(script_info)
+      @name = script_info.match(/name:(.+?), creation date/)[1]
+    end
+    
+  end
 
   class TypicalApplication
   
     attr_accessor :wrapper
   
     def initialize(name)
+      @name = name
       @wrapper = ApplicationWrapper.new(name)
+    end
+    
+    def get_info
+      script_info = @wrapper.tell("get info for (path to application \"#{@name}\")")
+      ApplicationInfo.new(script_info)
     end
   
     def open (filename)
@@ -70,8 +86,16 @@ module Osaka
       @wrapper.tell("open \"#{abolutePathFileName}\"")
     end
   
-    def quit
+    def quit(option = :user_chose)
       @wrapper.quit
+
+      if (option != :user_chose)
+        @wrapper.until!.not_exists("window 1") {
+          if (@wrapper.check!.exists("sheet 1 of window 1"))
+            @wrapper.click!('button 2 of sheet 1 of window 1')
+          end
+        }
+      end
     end
 
     def save

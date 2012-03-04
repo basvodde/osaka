@@ -13,6 +13,11 @@ describe "Integration test using the Calculator" do
     subject.quit
   end
   
+  it "Should be able to get info from the calculator" do
+    app_info = subject.get_info
+    
+  end
+  
   it "Should be able to do calculations with mouse" do
     subject.click("1")
     subject.click("+")

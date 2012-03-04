@@ -1,6 +1,6 @@
 
 module Osaka
-  class Calculator
+  class Calculator < TypicalApplication
     attr_accessor :wrapper
     
     def initialize
@@ -13,20 +13,12 @@ module Osaka
     end
     
     def key(k)
-      @wrapper.keystroke!(k)
+      @wrapper.keystroke(k)
     end
     
     def result
       @wrapper.get!('value', "static text 1 of group 1 of window \"#{@name}\"")
     end
     
-    def activate
-      @wrapper.activate
-    end
-    
-    def quit
-      @wrapper.quit
-    end
-        
   end
 end

@@ -22,6 +22,15 @@ describe "Osaka::TypicalApplication" do
     subject.quit
   end
   
+  it "Should be able to quit without saving" do
+    @wrapper.should_receive(:quit)
+    should_do_until!(:not_exists, "window 1") {
+      should_check!(:exists, "sheet 1 of window 1", true)
+      expect_click!('button 2 of sheet 1 of window 1')
+    }
+    subject.quit(:dont_save)  
+  end
+  
   it "Should be able to save" do
     expect_keystroke("s", :command)
     subject.save
@@ -36,7 +45,15 @@ describe "Osaka::TypicalApplication" do
     expect_keystroke("p", :command)
     should_wait_until(:exists, "sheet 1 of window 1")
     subject.print_dialog
-  end  
+  end
+  
+  describe "Application info" do
+    it "Should be able to retrieve an application info object and parse it" do
+      @wrapper.should_receive(:tell).with('get info for (path to application "ApplicationName")').and_return('name:ApplicationName.app, creation date:date "Sunday, December 21, 2008 PM 06:14:11"}')
+      app_info = subject.get_info
+      app_info.name.should == "ApplicationName.app"
+    end
+  end
   
   describe "Generic Print Dialog" do
     

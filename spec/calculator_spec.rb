@@ -17,7 +17,7 @@ describe "Mac GUI Calculator" do
   end
   
   it "Should be able to use keystroke on the calculator" do
-    expect_keystroke!("1")
+    expect_keystroke("1")
     subject.key("1")
   end
   

@@ -7,3 +7,5 @@ require 'osaka/pages'
 require 'osaka/numbers'
 require 'osaka/keynote'
 require 'osaka/calculator'
+require 'osaka/textedit'
+

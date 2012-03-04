@@ -38,15 +38,10 @@ describe "Osaka::ApplicationWrapper" do
   end
   
   it "Has a short-cut method for quitting" do
-    Osaka::ScriptRunner.should_receive(:execute).with(/quit/).and_return("")
+    subject.should_receive(:keystroke).with("q", :command)
     subject.quit
   end
   
-  it "Prints a warning message when quit results in some output" do
-    check_for_warning("quit")
-    subject.quit    
-  end
-    
   it "Should be able to generate events via the Systems Events" do
     Osaka::ScriptRunner.should_receive(:execute).with(/tell application "System Events"; tell process #{quoted_name}; quit; end tell; end tell/)
     subject.system_event!("quit")
@@ -147,13 +142,18 @@ describe "Osaka::ApplicationWrapper" do
   end
     
   it "Should be able to set a value to an element" do
-    check_for_warning("set")
+    subject.should_receive(:system_event!).with(/set value of window to "newvalue"/).and_return("")
     subject.set!("value", "window", "newvalue")
   end
 
   it "Prints a warning when setting and element and output is received" do
-    subject.should_receive(:system_event!).with(/set value of window to "newvalue"/).and_return("")
+    check_for_warning("set")
     subject.set!("value", "window", "newvalue")
+  end
+  
+  it "Should be able to set to boolean values" do
+    subject.should_receive(:system_event!).with(/set value of window to true/).and_return("")
+    subject.set!("value", "window", true)    
   end
   
   it "Should be able to get a value from an element" do
@@ -165,6 +165,11 @@ describe "Osaka::ApplicationWrapper" do
     subject.should_receive(:activate)
     subject.should_receive(:set!).with("value", "window", "newvalue")
     subject.set("value", "window", "newvalue")
+  end
+    
+  it "Should be able to focus a specific element" do
+    subject.should_receive(:set!).with("focused", "window", true)
+    subject.focus("window")
   end
   
   it "Should be able to loop over some script until something happens" do

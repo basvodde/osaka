@@ -27,12 +27,14 @@ describe "Osaka::ApplicationWrapper" do
     subject.print_warning("action", "Message")
   end
 
-  it "Has a short-cut method for activation" do
+  it "Has a short-cut method for activation that also focuses the window" do
     Osaka::ScriptRunner.should_receive(:execute).with(/activate/).and_return("")
+    subject.should_receive(:focus_window)
     subject.activate
   end
   
   it "Should print an Warning message with the ScriptRunner returns text when doing activate" do
+    subject.should_receive(:focus_window)
     check_for_warning("activate")
     subject.activate
   end
@@ -161,6 +163,11 @@ describe "Osaka::ApplicationWrapper" do
     subject.get!("value", "window").should == "1"
   end
   
+  it "Should be able to get values from the application itself" do
+    subject.should_receive(:system_event!).with("get value").and_return("1\n")
+    subject.get!("value").should == "1"
+  end
+  
   it "Should be able to set a value and activate" do
     subject.should_receive(:activate)
     subject.should_receive(:set!).with("value", "window", "newvalue")
@@ -186,6 +193,21 @@ describe "Osaka::ApplicationWrapper" do
     subject.until!.exists("window") {
       subject.activate
     }
+  end
+  
+  it "Should be able to get an empty array when requesting for the window list and there are none" do
+    subject.should_receive(:get!).with("windows").and_return("\n")
+    subject.window_list.should == []
+  end
+  
+  it "Should be able get an array with one window name when there is exactly one window" do
+    subject.should_receive(:get!).with("windows").and_return("window one of application process process\n")
+    subject.window_list.should == ["window one"]    
+  end
+  
+  it "Should be able to get an array of multiple window names" do
+    subject.should_receive(:get!).with("windows").and_return("window one of application process process, window two of application process process\n")
+    subject.window_list.should == ["window one", "window two"]    
   end
   
 end

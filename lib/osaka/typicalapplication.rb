@@ -98,6 +98,10 @@ module Osaka
       end
     end
 
+    def new_document
+      @wrapper.keystroke("n", :command)
+    end
+    
     def save
       @wrapper.keystroke("s", :command)
     end

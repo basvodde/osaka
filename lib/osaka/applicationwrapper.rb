@@ -47,6 +47,8 @@ module Osaka
     
   class ApplicationWrapper
   
+    attr_reader :window
+    
     def initialize(name)
       @name = name
     end
@@ -64,6 +66,7 @@ module Osaka
     
     def activate
       check_output( tell("activate"), "activate" )
+      focus_window
     end
   
     def quit
@@ -138,13 +141,23 @@ module Osaka
       set!("focused", element, true)
     end
     
-    def get!(element, location)
-      system_event!("get #{element} of #{location}").strip
+    def get!(element, location = "")
+      command = "get #{element}"
+      command +=  " of #{location}" unless location.empty?
+      system_event!(command).strip
     end
 
     def set(element, location, value)
       activate
       set!(element, location, value)
     end
+    
+    def window_list
+      windows = get!("windows").strip.split(',')
+      windows.collect { |window|
+        window[0...window =~ / of application process/].strip
+      }
+      
+    end    
   end
 end

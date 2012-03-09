@@ -9,7 +9,7 @@ module Osaka
     end
     
     def type(text)
-      @wrapper.keystroke!(text)
+      @wrapper.keystroke(text)
     end
     
     def text

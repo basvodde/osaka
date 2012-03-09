@@ -12,7 +12,7 @@ describe "TextEdit" do
   end
   
   it "Should be able to type some text" do
-    expect_keystroke!('Hello World')
+    expect_keystroke('Hello World')
     subject.type("Hello World")
   end
   

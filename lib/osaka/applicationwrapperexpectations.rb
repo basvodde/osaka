@@ -24,8 +24,9 @@ module Osaka
       @wrapper.should_receive(:keystroke).with(key).and_return(@wrapper) if modifier.empty?
     end
     
-    def expect_keystroke!(key)
-      @wrapper.should_receive(:keystroke!).with(key).and_return(@wrapper)
+    def expect_keystroke!(key, modifier = [])
+      @wrapper.should_receive(:keystroke!).with(key, modifier).and_return(@wrapper) unless modifier.empty?
+      @wrapper.should_receive(:keystroke!).with(key).and_return(@wrapper) if modifier.empty?
     end
     
     def expect_click!(location)

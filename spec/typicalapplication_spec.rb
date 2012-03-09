@@ -31,6 +31,11 @@ describe "Osaka::TypicalApplication" do
     subject.quit(:dont_save)  
   end
   
+  it "Should be able to create a new document" do
+    expect_keystroke("n", :command)
+    subject.new_document
+    
+  end
   it "Should be able to save" do
     expect_keystroke("s", :command)
     subject.save

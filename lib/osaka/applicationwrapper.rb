@@ -115,6 +115,7 @@ module Osaka
     end
     
     def keystroke(key, modifier_keys = [])
+      activate
       focus
       keystroke!(key, modifier_keys)
     end

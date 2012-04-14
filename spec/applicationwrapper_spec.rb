@@ -84,6 +84,7 @@ describe "Osaka::ApplicationWrapper" do
   end
   
   it "Should be able to keystroke and activate" do
+    subject.should_receive(:activate)
     subject.should_receive(:focus)
     subject.should_receive(:keystroke!).with("a", [])
     subject.keystroke("a", [])        
@@ -106,6 +107,7 @@ describe "Osaka::ApplicationWrapper" do
   end
   
   it "Should be able to keystroke_and_wait_until_exists and activate" do
+    subject.should_receive(:activate)
     subject.should_receive(:focus)
     Osaka::ScriptRunner.should_receive(:execute).with(/keystroke "p"/).and_return("")
     Osaka::ScriptRunner.should_receive(:execute).with(/exists window 1/).and_return("true")

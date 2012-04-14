@@ -14,6 +14,7 @@ describe "Osaka::TypicalApplication" do
   it "Should pass the right open string to the Keynote application osascript" do
     filename = "filename.key"
     expect_tell("open \"#{File.absolute_path(filename)}\"")
+    @wrapper.should_receive(:window=).with(filename)
     subject.open(filename)    
   end
   

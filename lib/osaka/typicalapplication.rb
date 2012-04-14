@@ -84,6 +84,7 @@ module Osaka
     def open (filename)
       abolutePathFileName = File.absolute_path(filename)
       @wrapper.tell("open \"#{abolutePathFileName}\"")
+      @wrapper.window = filename
     end
 
     def wait_for_window_and_dialogs_to_close(option)

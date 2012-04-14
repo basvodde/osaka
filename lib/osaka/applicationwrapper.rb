@@ -1,6 +1,9 @@
 
 module Osaka
 
+  class InvalidLocation < RuntimeError
+  end
+  
   class ConditionProxy
     
     def initialize(wrapper, action)
@@ -28,51 +31,31 @@ module Osaka
   end
   
   class CheckAction
-      def execute(wrapper, condition, *args, &block)
-        wrapper.system_event!("#{condition.as_script(*args)};").strip == "true"
-      end
+    def execute(wrapper, condition, *args, &block)
+      wrapper.system_event!("#{condition.as_script(*args)};").strip == "true"
     end
+  end
   
   class ExistsCondition
-    def as_script(element_to_wait_for)
-      "exists #{element_to_wait_for}"
+    def as_script(element_to_check)
+      "exists #{element_to_check}"
     end
   end
   
   class Not_existsCondition
-    def as_script(element_to_wait_for)
-      "not exists #{element_to_wait_for}"
+    def as_script(element_to_check)
+      "not exists #{element_to_check}"
     end
   end
     
   class ApplicationWrapper
   
-    attr_reader :window
+    attr_accessor :window
     
     def initialize(name)
       @name = name
     end
     
-    def print_warning(action, message)
-      puts "Osaka WARNING while doing #{action}: #{message}"
-    end
-    
-    def check_output(output, action)
-      if (!output.empty?)
-        print_warning(action, output)
-      end
-      output
-    end
-    
-    def activate
-      check_output( tell("activate"), "activate" )
-      focus_window
-    end
-  
-    def quit
-      keystroke("q", :command)
-    end
-  
     def tell(command)
       ScriptRunner::execute("tell application \"#{@name}\"; #{command}; end tell")
     end
@@ -80,6 +63,23 @@ module Osaka
     def system_event!(event)
       ScriptRunner::execute("tell application \"System Events\"; tell process \"#{@name}\"; #{event}; end tell; end tell")
     end
+
+    def print_warning(action, message)
+      puts "Osaka WARNING while doing #{action}: #{message}"
+    end
+    
+    def check_output(output, action)
+      print_warning(action, output) unless output.empty?
+      output
+    end
+    
+    def activate
+      check_output( tell("activate"), "activate" )
+    end
+  
+    def quit
+      keystroke("q", :command)
+    end  
 
     def system_event(event)
       activate
@@ -97,13 +97,11 @@ module Osaka
     
     alias check! check
     
-    def wait_until!
-      ConditionProxy.new(self, RepeatAction.new)
-    end
-    
     def until!
       ConditionProxy.new(self, RepeatAction.new)
     end
+    
+    alias wait_until! until!
         
     def construct_modifier_statement(modifier_keys)
       modified_key_string = [ modifier_keys ].flatten.collect! { |mod_key| mod_key.to_s + " down"}.join(", ")
@@ -117,7 +115,7 @@ module Osaka
     end
     
     def keystroke(key, modifier_keys = [])
-      activate
+      focus
       keystroke!(key, modifier_keys)
     end
         
@@ -137,14 +135,28 @@ module Osaka
       check_output( system_event!("set #{element} of #{location} to #{encoded_value}"), "set")
     end
     
-    def focus(element)
-      set!("focused", element, true)
+    def focus
+      current_windows = window_list
+      @window = current_windows[0] if @window.nil? || current_windows.index(@window).nil?
+      set!("value", "attribute \"AXMain\" of window \"#{window}\"", true) if current_windows[0] != @window
+    end
+    
+    def construct_window_info(location)
+      location_string = ""
+      location_string += " of #{location}" unless location.empty?
+      location_string += " of window \"#{window}\"" unless window.nil?
+      
+      raise(Osaka::InvalidLocation, "Invalid location for command:#{location_string}") if location_string.scan("of window").length > 1
+      
+      location_string
     end
     
     def get!(element, location = "")
-      command = "get #{element}"
-      command +=  " of #{location}" unless location.empty?
-      system_event!(command).strip
+      system_event!("get #{element}#{construct_window_info(location)}").strip
+    end
+
+    def get_app!(element)
+      system_event!("get #{element}").strip
     end
 
     def set(element, location, value)
@@ -153,11 +165,10 @@ module Osaka
     end
     
     def window_list
-      windows = get!("windows").strip.split(',')
+      windows = get_app!("windows").strip.split(',')
       windows.collect { |window|
-        window[0...window =~ / of application process/].strip
+        window[7...window =~ / of application process/].strip
       }
-      
-    end    
+    end 
   end
 end

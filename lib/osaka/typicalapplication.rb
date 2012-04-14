@@ -85,25 +85,44 @@ module Osaka
       abolutePathFileName = File.absolute_path(filename)
       @wrapper.tell("open \"#{abolutePathFileName}\"")
     end
-  
-    def quit(option = :user_chose)
-      @wrapper.quit
 
+    def wait_for_window_and_dialogs_to_close(option)
       if (option != :user_chose)
-        @wrapper.until!.not_exists("window 1") {
-          if (@wrapper.check!.exists("sheet 1 of window 1"))
-            @wrapper.click!('button 2 of sheet 1 of window 1')
+        @wrapper.until!.not_exists("window \"#{wrapper.window}\"") {
+          if (@wrapper.check!.exists("sheet 1 of window \"#{wrapper.window}\""))
+            @wrapper.click!("button 2 of sheet 1 of window \"#{wrapper.window}\"")
           end
         }
       end
     end
+      
+    def quit(option = :user_chose)
+      @wrapper.quit
+      wait_for_window_and_dialogs_to_close(option)
+    end
 
+    def wait_for_new_window(original_window_list)
+      latest_window_list = original_window_list
+      while (original_window_list == latest_window_list)
+        latest_window_list = @wrapper.window_list
+      end
+      (latest_window_list - original_window_list)[0]
+    end
+    
     def new_document
+      window_list = @wrapper.window_list
       @wrapper.keystroke("n", :command)
+      @wrapper.window = wait_for_new_window(window_list)
+      @wrapper.focus
     end
     
     def save
       @wrapper.keystroke("s", :command)
+    end
+    
+    def close(option = :user_chose)
+      @wrapper.keystroke("w", :command)
+      wait_for_window_and_dialogs_to_close(option)
     end
   
     def activate
@@ -115,7 +134,7 @@ module Osaka
     end
   
     def print_dialog
-      location = "sheet 1 of window 1"
+      location = "sheet 1#{@wrapper.construct_window_info}"
       @wrapper.keystroke("p", :command).wait_until.exists(location)
       create_print_dialog(location)
     end

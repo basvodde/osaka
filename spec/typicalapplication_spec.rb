@@ -23,24 +23,55 @@ describe "Osaka::TypicalApplication" do
   end
   
   it "Should be able to quit without saving" do
+    @wrapper.should_receive(:window).any_number_of_times.and_return("Untitled")
     @wrapper.should_receive(:quit)
-    should_do_until!(:not_exists, "window 1") {
-      should_check!(:exists, "sheet 1 of window 1", true)
-      expect_click!('button 2 of sheet 1 of window 1')
+    should_do_until!(:not_exists, "window \"Untitled\"") {
+      should_check!(:exists, "sheet 1 of window \"Untitled\"", true)
+      expect_click!('button 2 of sheet 1 of window "Untitled"')
     }
     subject.quit(:dont_save)  
   end
   
-  it "Should be able to create a new document" do
-    expect_keystroke("n", :command)
-    subject.new_document
-    
+  it "Should be able to wait until a new window exists" do
+    subject.wrapper.should_receive(:window_list).and_return(["new window"])
+    subject.wait_for_new_window([])    
   end
+  
+  it "Should be able to wait until a new window exists and it takes 4 calls" do
+    counter = 0
+    subject.wrapper.should_receive(:window_list).exactly(4).times.and_return(["new window"]) {
+        counter = counter + 1
+        counter.should <= 5 # Added here so that the test won't end up in an endless loop.
+        counter >= 4 ? [ "new window" ] : []
+      }
+      subject.wait_for_new_window([])    
+  end
+  
+  it "Should be able to create a new document" do    
+    subject.wrapper.should_receive(:window_list)
+    expect_keystroke("n", :command)
+    subject.should_receive(:wait_for_new_window).and_return("new_window")
+    subject.wrapper.should_receive(:window=).with("new_window")
+    subject.wrapper.should_receive(:focus)
+    subject.new_document
+  end
+  
   it "Should be able to save" do
     expect_keystroke("s", :command)
     subject.save
   end
   
+  it "Should be able to close" do
+    expect_keystroke("w", :command)
+    subject.close
+  end
+  
+  it "Should be able to close and don't save" do
+    expect_keystroke("w", :command)
+    subject.should_receive(:wait_for_window_and_dialogs_to_close).with(:dont_save)
+    subject.close(:dont_save)
+  end
+    
   it "Should be able to activate keynote" do
     @wrapper.should_receive(:activate)
     subject.activate
@@ -48,6 +79,7 @@ describe "Osaka::TypicalApplication" do
   
   it "Should be able to retrieve a print dialog" do
     expect_keystroke("p", :command)
+    @wrapper.should_receive(:construct_window_info).and_return(" of window 1")
     should_wait_until(:exists, "sheet 1 of window 1")
     subject.print_dialog
   end

@@ -25,14 +25,14 @@ describe "Integration test using TextEdit" do
     editor1.activate
     editor2.new_document
     
-    # 
-    # editor1.type("Typing in window 1")
-    # editor2.type("Typing in window 2")
-    # 
-    # editor1.text.should == "Typing in window 1"
-    # editor2.text.should == "Typing in window 2"
+    editor1.type("Typing in window 1")
+    editor2.type("Typing in window 2")
     
-    editor2.quit(:dont_save)        
+    editor1.text.should == "Typing in window 1"
+    editor2.text.should == "Typing in window 2"
+    
+    editor1.close(:dont_save)
+    editor2.close(:dont_save)
   end
 
 end

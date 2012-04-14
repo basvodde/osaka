@@ -27,14 +27,7 @@ describe "Osaka::ApplicationWrapper" do
     subject.print_warning("action", "Message")
   end
 
-  it "Has a short-cut method for activation that also focuses the window" do
-    Osaka::ScriptRunner.should_receive(:execute).with(/activate/).and_return("")
-    subject.should_receive(:focus_window)
-    subject.activate
-  end
-  
   it "Should print an Warning message with the ScriptRunner returns text when doing activate" do
-    subject.should_receive(:focus_window)
     check_for_warning("activate")
     subject.activate
   end
@@ -91,7 +84,7 @@ describe "Osaka::ApplicationWrapper" do
   end
   
   it "Should be able to keystroke and activate" do
-    subject.should_receive(:activate)
+    subject.should_receive(:focus)
     subject.should_receive(:keystroke!).with("a", [])
     subject.keystroke("a", [])        
   end
@@ -113,7 +106,7 @@ describe "Osaka::ApplicationWrapper" do
   end
   
   it "Should be able to keystroke_and_wait_until_exists and activate" do
-    subject.should_receive(:activate)
+    subject.should_receive(:focus)
     Osaka::ScriptRunner.should_receive(:execute).with(/keystroke "p"/).and_return("")
     Osaka::ScriptRunner.should_receive(:execute).with(/exists window 1/).and_return("true")
     subject.keystroke("p", []).wait_until!.exists("window 1")    
@@ -157,28 +150,40 @@ describe "Osaka::ApplicationWrapper" do
     subject.should_receive(:system_event!).with(/set value of window to true/).and_return("")
     subject.set!("value", "window", true)    
   end
-  
+    
   it "Should be able to get a value from an element" do
     subject.should_receive(:system_event!).with(/get value of window/).and_return("1\n")
     subject.get!("value", "window").should == "1"
   end
   
-  it "Should be able to get values from the application itself" do
-    subject.should_receive(:system_event!).with("get value").and_return("1\n")
+  it "Should use the locally stored window when that one is set." do
+    subject.window = "1"
+    subject.should_receive(:system_event!).with(/get value of window \"1\"/).and_return("1\n")
     subject.get!("value").should == "1"
   end
   
+  it "Should throw an exception when window is set multiple times." do
+    subject.window = "Untitled"
+    lambda {subject.get!("value", "window 1")}.should raise_error(Osaka::InvalidLocation, "Invalid location for command: of window 1 of window \"Untitled\"")
+  end
+  
+  it "Should combine the location and the window" do
+    subject.window = "1"
+    subject.should_receive(:system_event!).with(/get value of dialog 2 of window "1"/).and_return("1\n")
+    subject.get!("value", "dialog 2").should == "1"    
+  end
+  
+  it "Should be able to get values from the application itself" do
+    subject.should_receive(:system_event!).with("get value").and_return("1\n")
+    subject.get_app!("value").should == "1"
+  end
+    
   it "Should be able to set a value and activate" do
     subject.should_receive(:activate)
     subject.should_receive(:set!).with("value", "window", "newvalue")
     subject.set("value", "window", "newvalue")
   end
     
-  it "Should be able to focus a specific element" do
-    subject.should_receive(:set!).with("focused", "window", true)
-    subject.focus("window")
-  end
-  
   it "Should be able to loop over some script until something happens" do
     counter = 0
     Osaka::ScriptRunner.should_receive(:execute).exactly(3).times.with(/exists window/).and_return {
@@ -196,18 +201,52 @@ describe "Osaka::ApplicationWrapper" do
   end
   
   it "Should be able to get an empty array when requesting for the window list and there are none" do
-    subject.should_receive(:get!).with("windows").and_return("\n")
+    subject.should_receive(:get_app!).with("windows").and_return("\n")
     subject.window_list.should == []
   end
   
   it "Should be able get an array with one window name when there is exactly one window" do
-    subject.should_receive(:get!).with("windows").and_return("window one of application process process\n")
-    subject.window_list.should == ["window one"]    
+    subject.should_receive(:get_app!).with("windows").and_return("window one of application process process\n")
+    subject.window_list.should == ["one"]    
   end
   
   it "Should be able to get an array of multiple window names" do
-    subject.should_receive(:get!).with("windows").and_return("window one of application process process, window two of application process process\n")
-    subject.window_list.should == ["window one", "window two"]    
+    subject.should_receive(:get_app!).with("windows").and_return("window one of application process process, window two of application process process\n")
+    subject.window_list.should == ["one", "two"]    
   end
+  
+  it "Should initialize the current window when it is not focused yet" do
+    subject.should_receive(:window_list).and_return(["1"])
+    subject.focus
+    subject.window.should == "1"
+  end
+  
+  it "Shouldn't initialize current window when it is already set" do
+    subject.should_receive(:window_list).and_return(["1"])
+    subject.focus
+
+    subject.should_receive(:window_list).and_return(["2", "1"])
+    subject.should_receive(:set!)
+    subject.focus
+    subject.window.should == "1"
+  end
+  
+  it "Should re-initialize the current window when it doesn't exist anymore" do
+    subject.should_receive(:window_list).and_return(["1"])
+    subject.focus
+
+    subject.should_receive(:window_list).and_return(["2"])
+    subject.focus
+    subject.window.should == "2"    
+  end
+  
+  it "Should focus the current window when it doesn't have focus" do
+    subject.should_receive(:window_list).and_return(["1"])
+    subject.focus
+
+    subject.should_receive(:window_list).and_return(["2", "1"])
+    subject.should_receive(:set!).with("value", "attribute \"AXMain\" of window \"1\"", true )
+    subject.focus
+  end  
   
 end

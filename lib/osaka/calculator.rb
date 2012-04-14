@@ -8,6 +8,14 @@ module Osaka
       @wrapper = ApplicationWrapper.new("Calculator")
     end
     
+    def activate
+      super
+      if (@wrapper.window.nil?)
+        wait_for_new_window([])
+        @wrapper.window = @wrapper.window_list[0]
+      end
+    end
+    
     def click(key)
       @wrapper.click!("button \"#{key}\" of group 2 of window \"#{@name}\"")
     end
@@ -17,7 +25,7 @@ module Osaka
     end
     
     def result
-      @wrapper.get!('value', "static text 1 of group 1 of window \"#{@name}\"")
+      @wrapper.get!('value', "static text 1 of group 1")
     end
     
   end

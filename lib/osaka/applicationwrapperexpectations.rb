@@ -44,7 +44,7 @@ module Osaka
     def expect_system_event(event)
       @wrapper.should_receive(:system_event).with(event)
     end
-
+    
 private
     def should_do_with_condition(command, condition, element)
       condition_proxy = double(:ConditionAndActionProxy)

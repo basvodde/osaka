@@ -8,4 +8,5 @@ require 'osaka/numbers'
 require 'osaka/keynote'
 require 'osaka/calculator'
 require 'osaka/textedit'
+require 'osaka/mailmergeflow'
 

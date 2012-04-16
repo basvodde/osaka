@@ -51,6 +51,7 @@ module Osaka
   class ApplicationWrapper
   
     attr_accessor :window
+    attr_reader :name
     
     def initialize(name)
       @name = name

@@ -18,6 +18,13 @@ describe "Osaka::TypicalApplication" do
     subject.open(filename)    
   end
   
+  it "Should only get the basename of the filename when it sets the window title." do
+    filename = "/root/dirname/filename.key"
+    expect_tell("open \"#{File.absolute_path(filename)}\"")
+    @wrapper.should_receive(:window=).with("filename.key")
+    subject.open(filename)        
+  end
+  
   it "Should be able to quit" do
     @wrapper.should_receive(:quit)
     subject.quit
@@ -80,8 +87,8 @@ describe "Osaka::TypicalApplication" do
   
   it "Should be able to retrieve a print dialog" do
     expect_keystroke("p", :command)
-    @wrapper.should_receive(:construct_window_info).and_return(" of window 1")
-    should_wait_until(:exists, "sheet 1 of window 1")
+    @wrapper.should_receive(:construct_window_info).and_return(" of window \"Untitled\"")
+    should_wait_until(:exists, "sheet 1 of window \"Untitled\"")
     subject.print_dialog
   end
   
@@ -121,6 +128,14 @@ describe "Osaka::TypicalApplication" do
   describe "Generic Save Dialog" do
     
     subject { Osaka::TypicalSaveDialog.new("window 1", double("Osaka::ApplicationWrapper").as_null_object)}
+    
+    it "Should clone the wrapper and change the window name to Save" do
+      app_wrapper = double("Osaka::ApplicationWrapper")
+      app_cloned_wrapper = double("Osaka::ApplicationWrapper")
+      app_wrapper.should_receive(:clone).and_return(app_cloned_wrapper)
+      app_cloned_wrapper.should_receive(:window=).with("Save")
+      Osaka::TypicalSaveDialog.new("bah", app_wrapper)
+    end
     
     it "Should set the filename in the test field" do
       subject.should_receive(:set_filename).with("filename")

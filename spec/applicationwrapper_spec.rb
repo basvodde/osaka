@@ -7,6 +7,13 @@ describe "Osaka::ApplicationWrapper" do
   quoted_name = "\"#{name}\""
   subject { Osaka::ApplicationWrapper.new(name) }
 
+  it "Should be able to clone wrappers" do
+    subject.window = "Window"
+    new_wrapper = subject.clone
+    new_wrapper.name.should == name
+    new_wrapper.window.should == "Window"
+  end
+  
   def check_for_warning(action)
     Osaka::ScriptRunner.should_receive(:execute).and_return("Blah")
     subject.should_receive(:print_warning).with(action, "Blah")

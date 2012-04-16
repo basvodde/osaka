@@ -6,7 +6,8 @@ module Osaka
 
     def initialize(location, wrapper)
       @location = location
-      @wrapper = wrapper
+      @wrapper = wrapper.clone
+      @wrapper.window = "Save"
     end
   
     def set_filename(filename)
@@ -84,7 +85,7 @@ module Osaka
     def open (filename)
       abolutePathFileName = File.absolute_path(filename)
       @wrapper.tell("open \"#{abolutePathFileName}\"")
-      @wrapper.window = filename
+      @wrapper.window = File.basename(filename)
     end
 
     def wait_for_window_and_dialogs_to_close(option)

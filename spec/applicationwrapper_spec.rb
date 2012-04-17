@@ -10,8 +10,23 @@ describe "Osaka::ApplicationWrapper" do
   it "Should be able to clone wrappers" do
     subject.window = "Window"
     new_wrapper = subject.clone
-    new_wrapper.name.should == name
-    new_wrapper.window.should == "Window"
+    new_wrapper.should == subject
+    new_wrapper.should_not.equal?(subject)
+  end
+  
+  it "Should be able to compare objects using names" do
+    subject.should == Osaka::ApplicationWrapper.new(name)
+    subject.should_not == Osaka::ApplicationWrapper.new("otherName")
+  end
+  
+  it "Should be able to compare objects using window" do
+    equal_object = Osaka::ApplicationWrapper.new(name)
+    unequal_object = Osaka::ApplicationWrapper.new(name)
+    equal_object.window = subject.window = "Window"
+    unequal_object.window = "Another Window"
+    
+    subject.should == equal_object
+    subject.should_not == unequal_object
   end
   
   def check_for_warning(action)

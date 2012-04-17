@@ -57,6 +57,10 @@ module Osaka
       @name = name
     end
     
+    def ==(obj)
+      @name == obj.name && window == obj.window
+    end
+    
     def tell(command)
       ScriptRunner::execute("tell application \"#{@name}\"; #{command}; end tell")
     end

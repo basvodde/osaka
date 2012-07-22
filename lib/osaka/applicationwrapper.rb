@@ -47,18 +47,18 @@ module Osaka
       "not exists #{element_to_check}"
     end
   end
-    
+  
   class ApplicationWrapper
   
-    attr_accessor :window
     attr_reader :name
     
     def initialize(name)
       @name = name
+      @window = Location.new("")
     end
     
     def ==(obj)
-      @name == obj.name && window == obj.window
+      @name == obj.name && current_window_name == obj.current_window_name
     end
     
     def tell(command)
@@ -69,6 +69,10 @@ module Osaka
       ScriptRunner::execute("tell application \"System Events\"; tell process \"#{@name}\"; #{event}; end tell; end tell")
     end
 
+    def running?
+      ScriptRunner::execute("tell application \"System Events\"; (name of processes) contains \"#{@name}\"; end tell").strip == "true"
+    end
+    
     def print_warning(action, message)
       puts "Osaka WARNING while doing #{action}: #{message}"
     end
@@ -77,6 +81,7 @@ module Osaka
       print_warning(action, output) unless output.empty?
       output
     end
+    
     
     def activate
       check_output( tell("activate"), "activate" )
@@ -138,27 +143,29 @@ module Osaka
         
     def set!(element, location, value)
       encoded_value = (value.class == String) ? "\"#{value}\"" : value.to_s
-      check_output( system_event!("set #{element} of #{location} to #{encoded_value}"), "set")
+      check_output( system_event!("set #{element}#{construct_location(location)} to #{encoded_value}"), "set")
     end
     
     def focus
       current_windows = window_list
-      @window = current_windows[0] if @window.nil? || current_windows.index(@window).nil?
-      set!("value", "attribute \"AXMain\" of window \"#{window}\"", true) if current_windows[0] != @window
+      currently_active_window = current_windows[0]
+      currently_active_window ||= ""
+      
+      if current_window_invalid?(current_windows)
+        @window = at.window(currently_active_window) unless currently_active_window.nil?
+      end
+
+      set!("value", "attribute \"AXMain\"#{construct_location("")}", true) unless currently_active_window == current_window_name
     end
     
-    def construct_window_info(location)
-      location_string = ""
-      location_string += " of #{location}" unless location.empty?
-      location_string += " of window \"#{window}\"" unless window.nil?
-      
-      raise(Osaka::InvalidLocation, "Invalid location for command:#{location_string}") if location_string.scan("of window").length > 1
-      
-      location_string
+    def construct_location(location)
+      location = Location.new(location) 
+      location += @window unless location.has_window?
+      location.as_prefixed_location
     end
     
     def get!(element, location = "")
-      system_event!("get #{element}#{construct_window_info(location)}").strip
+      system_event!("get #{element}#{construct_location(location)}").strip
     end
 
     def get_app!(element)
@@ -176,5 +183,24 @@ module Osaka
         window[7...window =~ / of application process/].strip
       }
     end 
+    
+    def set_current_window(window_name)
+      @window = at.window(window_name)
+    end
+    
+    def current_window_name
+      matchdata = @window.to_s.match(/^window "(.*)"/)
+      return "" if matchdata.nil? || matchdata[1].nil?
+      matchdata[1]
+    end
+    
+    def current_window_location
+      @window
+    end
+    
+    def current_window_invalid?(window_list)
+      @window.to_s.empty? || window_list.index(current_window_name).nil?
+    end
+    
   end
 end

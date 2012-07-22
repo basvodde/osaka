@@ -25,14 +25,14 @@ describe "Osaka::Pages" do
   end
     
   it "Should be able to select the Mail Merge" do
-    @wrapper.should_receive(:window).any_number_of_times.and_return("Pages.pages")
+    @wrapper.should_receive(:current_window_name).any_number_of_times.and_return("Pages.pages")
     expect_system_event('tell menu bar 1; tell menu "Edit"; click menu item 20; end tell; end tell')
     should_wait_until(:exists, 'button "Merge" of sheet 1 of window "Pages.pages"')
     subject.mail_merge
   end
 
   it "Should click the merge button of the mail merge dialog" do
-    @wrapper.should_receive(:window).any_number_of_times.and_return("Pages.pages")
+    @wrapper.should_receive(:current_window_name).any_number_of_times.and_return("Pages.pages")
     expect_click!('button "Merge" of sheet 1 of window "Pages.pages"')
     should_wait_until!(:exists, 'menu button "PDF" of window "Print"')
     subject.mail_merge.merge

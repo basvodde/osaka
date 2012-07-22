@@ -7,8 +7,16 @@ describe "Osaka::ApplicationWrapper" do
   quoted_name = "\"#{name}\""
   subject { Osaka::ApplicationWrapper.new(name) }
 
+  before (:each) do
+    Osaka::ScriptRunner.enable_debug_prints
+  end
+  
+  after (:each) do
+    Osaka::ScriptRunner.disable_debug_prints
+  end
+
   it "Should be able to clone wrappers" do
-    subject.window = "Window"
+    subject.set_current_window "Window"
     new_wrapper = subject.clone
     new_wrapper.should == subject
     new_wrapper.should_not.equal?(subject)
@@ -22,8 +30,9 @@ describe "Osaka::ApplicationWrapper" do
   it "Should be able to compare objects using window" do
     equal_object = Osaka::ApplicationWrapper.new(name)
     unequal_object = Osaka::ApplicationWrapper.new(name)
-    equal_object.window = subject.window = "Window"
-    unequal_object.window = "Another Window"
+    equal_object.set_current_window("Window")
+    subject.set_current_window("Window")
+    unequal_object.set_current_window "Another Window"
     
     subject.should == equal_object
     subject.should_not == unequal_object
@@ -64,6 +73,11 @@ describe "Osaka::ApplicationWrapper" do
     subject.system_event!("quit")
   end
 
+  it "Should be possible to check whether an application is still running" do
+    Osaka::ScriptRunner.should_receive(:execute).with("tell application \"System Events\"; (name of processes) contains \"#{name}\"; end tell").and_return("false")
+    subject.running?.should == false
+  end
+
   it "Should be able to generate events via the Systems Events and activate the application first" do
     subject.should_receive(:activate)
     subject.should_receive(:system_event!).with("quit")
@@ -72,7 +86,7 @@ describe "Osaka::ApplicationWrapper" do
   
   it "Should be able to check whether a specific element exists" do
     Osaka::ScriptRunner.should_receive(:execute).with(/exists window 1/).and_return("true\n")
-    subject.check.exists("window 1").should == true
+    subject.check.exists(at.window(1)).should == true
   end
   
   it "Should be able to wait for for a specific element existing" do
@@ -81,18 +95,18 @@ describe "Osaka::ApplicationWrapper" do
       counter = counter + 1
       (counter == 5).to_s
     }
-    subject.wait_until!.exists("window 1")
+    subject.wait_until!.exists(at.window(1))
   end
   
   it "Should be able to wait until exists and activate the application first" do
     subject.should_receive(:activate)
     Osaka::ScriptRunner.should_receive(:execute).with(/exists window 1/).and_return("true")
-    subject.wait_until.exists("window 1")
+    subject.wait_until.exists(at.window(1))
   end
 
   it "Should be able to wait for a specific element to not exist anymore" do
     Osaka::ScriptRunner.should_receive(:execute).with(/not exists window 1/).and_return("true")
-    subject.wait_until!.not_exists("window 1")    
+    subject.wait_until!.not_exists(at.window(1))    
   end
   
   it "Should be able to generate keystroke events" do
@@ -125,7 +139,7 @@ describe "Osaka::ApplicationWrapper" do
   it "Should be able to do a keystroke and wait until something happen in one easy line" do
     Osaka::ScriptRunner.should_receive(:execute).with(/keystroke "p"/).and_return("")
     Osaka::ScriptRunner.should_receive(:execute).with(/exists window 1/).and_return("true")
-    subject.keystroke!("p", []).wait_until!.exists("window 1")
+    subject.keystroke!("p", []).wait_until!.exists(at.window(1))
   end
   
   it "Should be able to keystroke_and_wait_until_exists and activate" do
@@ -133,12 +147,12 @@ describe "Osaka::ApplicationWrapper" do
     subject.should_receive(:focus)
     Osaka::ScriptRunner.should_receive(:execute).with(/keystroke "p"/).and_return("")
     Osaka::ScriptRunner.should_receive(:execute).with(/exists window 1/).and_return("true")
-    subject.keystroke("p", []).wait_until!.exists("window 1")    
+    subject.keystroke("p", []).wait_until!.exists(at.window(1))    
   end
   
   it "Should be able to do clicks" do
     Osaka::ScriptRunner.should_receive(:execute).with(/click menu button "PDF"/).and_return("")
-    subject.click!('menu button "PDF"')
+    subject.click!(at.menu_button("PDF"))
   end
 
   it "Should be able to do click and activate" do
@@ -149,52 +163,47 @@ describe "Osaka::ApplicationWrapper" do
   
   it "Should be able to do clicks and wait until something happened in one easy line" do
     Osaka::ScriptRunner.should_receive(:execute).with(/click/).and_return("")
-    Osaka::ScriptRunner.should_receive(:execute).with(/exists window/).and_return("true")
-    subject.click!("button").wait_until!.exists("window")
+    Osaka::ScriptRunner.should_receive(:execute).with(/exists window 1/).and_return("true")
+    subject.click!("button").wait_until!.exists(at.window(1))
   end
   
   it "Should be able to click_and_wait_until_exists and activate" do
     subject.should_receive(:activate)
     Osaka::ScriptRunner.should_receive(:execute).with(/click/).and_return("")
-    Osaka::ScriptRunner.should_receive(:execute).with(/exists window/).and_return("true")
-    subject.click("button").wait_until!.exists("window")
+    Osaka::ScriptRunner.should_receive(:execute).with(/exists window 1/).and_return("true")
+    subject.click("button").wait_until!.exists(at.window(1))
   end
     
   it "Should be able to set a value to an element" do
-    subject.should_receive(:system_event!).with(/set value of window to "newvalue"/).and_return("")
-    subject.set!("value", "window", "newvalue")
+    subject.should_receive(:system_event!).with(/set value of window 1 to "newvalue"/).and_return("")
+    subject.set!("value", at.window(1), "newvalue")
   end
 
   it "Prints a warning when setting and element and output is received" do
     check_for_warning("set")
-    subject.set!("value", "window", "newvalue")
+    subject.set!("value", at.window(1), "newvalue")
   end
   
   it "Should be able to set to boolean values" do
-    subject.should_receive(:system_event!).with(/set value of window to true/).and_return("")
-    subject.set!("value", "window", true)    
+    subject.should_receive(:system_event!).with(/set value of window 1 to true/).and_return("")
+    subject.set!("value", at.window(1), true)    
   end
     
   it "Should be able to get a value from an element" do
-    subject.should_receive(:system_event!).with(/get value of window/).and_return("1\n")
-    subject.get!("value", "window").should == "1"
+    subject.should_receive(:system_event!).with(/get value of window 1/).and_return("1\n")
+    subject.get!("value", at.window(1)).should == "1"
   end
   
   it "Should use the locally stored window when that one is set." do
-    subject.window = "1"
+    subject.set_current_window("1")
     subject.should_receive(:system_event!).with(/get value of window \"1\"/).and_return("1\n")
     subject.get!("value").should == "1"
   end
-  
-  it "Should throw an exception when window is set multiple times." do
-    subject.window = "Untitled"
-    lambda {subject.get!("value", "window 1")}.should raise_error(Osaka::InvalidLocation, "Invalid location for command: of window 1 of window \"Untitled\"")
-  end
-  
+    
   it "Should combine the location and the window" do
-    subject.window = "1"
+    subject.set_current_window("1")
     subject.should_receive(:system_event!).with(/get value of dialog 2 of window "1"/).and_return("1\n")
-    subject.get!("value", "dialog 2").should == "1"    
+    subject.get!("value", at.dialog(2)).should == "1"    
   end
   
   it "Should be able to get values from the application itself" do
@@ -204,13 +213,13 @@ describe "Osaka::ApplicationWrapper" do
     
   it "Should be able to set a value and activate" do
     subject.should_receive(:activate)
-    subject.should_receive(:set!).with("value", "window", "newvalue")
-    subject.set("value", "window", "newvalue")
+    subject.should_receive(:set!).with("value", at.window(1), "newvalue")
+    subject.set("value", at.window(1), "newvalue")
   end
     
   it "Should be able to loop over some script until something happens" do
     counter = 0
-    Osaka::ScriptRunner.should_receive(:execute).exactly(3).times.with(/exists window/).and_return {
+    Osaka::ScriptRunner.should_receive(:execute).exactly(3).times.with(/exists window 1/).and_return {
       counter = counter + 1
       if counter > 2
         "true"
@@ -219,7 +228,7 @@ describe "Osaka::ApplicationWrapper" do
       end
     }
     subject.should_receive(:activate).twice
-    subject.until!.exists("window") {
+    subject.until!.exists(at.window(1)) {
       subject.activate
     }
   end
@@ -240,9 +249,9 @@ describe "Osaka::ApplicationWrapper" do
   end
   
   it "Should initialize the current window when it is not focused yet" do
-    subject.should_receive(:window_list).and_return(["1"])
+    subject.should_receive(:window_list).and_return(["1"])    
     subject.focus
-    subject.window.should == "1"
+    subject.current_window_name.should == "1"
   end
   
   it "Shouldn't initialize current window when it is already set" do
@@ -252,7 +261,7 @@ describe "Osaka::ApplicationWrapper" do
     subject.should_receive(:window_list).and_return(["2", "1"])
     subject.should_receive(:set!)
     subject.focus
-    subject.window.should == "1"
+    subject.current_window_name.should == "1"
   end
   
   it "Should re-initialize the current window when it doesn't exist anymore" do
@@ -261,7 +270,7 @@ describe "Osaka::ApplicationWrapper" do
 
     subject.should_receive(:window_list).and_return(["2"])
     subject.focus
-    subject.window.should == "2"    
+    subject.current_window_name.should == "2"    
   end
   
   it "Should focus the current window when it doesn't have focus" do
@@ -271,6 +280,6 @@ describe "Osaka::ApplicationWrapper" do
     subject.should_receive(:window_list).and_return(["2", "1"])
     subject.should_receive(:set!).with("value", "attribute \"AXMain\" of window \"1\"", true )
     subject.focus
-  end  
-  
+  end
+    
 end

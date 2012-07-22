@@ -13,16 +13,16 @@ describe "TextEdit" do
   
   it "should set the window on activation" do
     @wrapper.should_receive(:activate)
-    @wrapper.should_receive(:window).and_return(nil)
+    @wrapper.should_receive(:current_window_name).and_return("")
     subject.should_receive(:wait_for_new_window).with([])
     @wrapper.should_receive(:window_list).and_return(["Untitled"])
-    @wrapper.should_receive(:window=).with("Untitled")
+    @wrapper.should_receive(:set_current_window).with("Untitled")
     subject.activate
   end
   
   it "shouldn't set the window on activation when it is already set" do
     @wrapper.should_receive(:activate)
-    @wrapper.should_receive(:window).and_return("Untitled")
+    @wrapper.should_receive(:current_window_name).and_return("Untitled")
     subject.activate    
   end
   

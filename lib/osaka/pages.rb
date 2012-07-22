@@ -9,7 +9,7 @@ module Osaka
     end
   
     def merge
-      @wrapper.click!("button \"Merge\" of sheet 1 of window \"#{@wrapper.window}\"")
+      @wrapper.click!("button \"Merge\" of sheet 1 of window \"#{@wrapper.current_window_name}\"")
       print_dialog_location = 'window "Print"' 
       @wrapper.wait_until!.exists("menu button \"PDF\" of #{print_dialog_location}")
       TypicalPrintDialog.new(print_dialog_location, @wrapper)
@@ -39,8 +39,8 @@ module Osaka
   
     def mail_merge
       @wrapper.system_event("tell menu bar 1; tell menu \"Edit\"; click menu item 20; end tell; end tell")
-      @wrapper.wait_until.exists("button \"Merge\" of sheet 1 of window \"#{@wrapper.window}\"")
-      PagesMailMergeDialog.new("sheet 1 of window\"#{@wrapper.window}\"", @wrapper)
+      @wrapper.wait_until.exists("button \"Merge\" of sheet 1 of window \"#{@wrapper.current_window_name}\"")
+      PagesMailMergeDialog.new("sheet 1 of window\"#{@wrapper.current_window_name}\"", @wrapper)
     end
     
     def mail_merge_to_pdf(filename)

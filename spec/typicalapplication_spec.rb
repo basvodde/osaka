@@ -9,34 +9,49 @@ describe "Osaka::TypicalApplication" do
   
   before (:each) do
     @wrapper = subject.wrapper = double("Osaka::ApplicationWrapper")
+    Osaka::ScriptRunner.enable_debug_prints
+  end
+  
+  after (:each) do
+    Osaka::ScriptRunner.disable_debug_prints
   end
   
   it "Should pass the right open string to the Keynote application osascript" do
     filename = "filename.key"
     expect_tell("open \"#{File.absolute_path(filename)}\"")
-    @wrapper.should_receive(:window=).with(filename)
+    @wrapper.should_receive(:set_current_window).with(filename)
     subject.open(filename)    
   end
   
   it "Should only get the basename of the filename when it sets the window title." do
     filename = "/root/dirname/filename.key"
     expect_tell("open \"#{File.absolute_path(filename)}\"")
-    @wrapper.should_receive(:window=).with("filename.key")
+    @wrapper.should_receive(:set_current_window).with("filename.key")
     subject.open(filename)        
   end
   
   it "Should be able to quit" do
+    @wrapper.should_receive(:running?).and_return(true)
     @wrapper.should_receive(:quit)
     subject.quit
   end
   
+  it "Should be able to check if its running" do
+    @wrapper.should_receive(:running?)
+    subject.running?
+  end
+  
+  it "Won't quit when the application isn't running" do
+    @wrapper.should_receive(:running?).and_return(false)
+    subject.quit(:dont_save)  
+  end
+  
   it "Should be able to quit without saving" do
-    @wrapper.should_receive(:window).any_number_of_times.and_return("Untitled")
+    @wrapper.should_receive(:current_window_location).any_number_of_times.and_return(at.window("Untitled"))
+    @wrapper.should_receive(:running?).and_return(true, true, false)
     @wrapper.should_receive(:quit)
-    should_do_until!(:not_exists, "window \"Untitled\"") {
-      should_check!(:exists, "sheet 1 of window \"Untitled\"", true)
-      expect_click!('button 2 of sheet 1 of window "Untitled"')
-    }
+    should_check!(:exists, Osaka::Location.new("sheet 1 of window \"Untitled\""), true)
+    expect_click!(Osaka::Location.new('button 2 of sheet 1 of window "Untitled"'))
     subject.quit(:dont_save)  
   end
   
@@ -59,7 +74,7 @@ describe "Osaka::TypicalApplication" do
     subject.wrapper.should_receive(:window_list)
     expect_keystroke("n", :command)
     subject.should_receive(:wait_for_new_window).and_return("new_window")
-    subject.wrapper.should_receive(:window=).with("new_window")
+    subject.wrapper.should_receive(:set_current_window).with("new_window")
     subject.wrapper.should_receive(:focus)
     subject.new_document
   end
@@ -79,7 +94,7 @@ describe "Osaka::TypicalApplication" do
     subject.should_receive(:wait_for_window_and_dialogs_to_close).with(:dont_save)
     subject.close(:dont_save)
   end
-    
+  
   it "Should be able to activate keynote" do
     @wrapper.should_receive(:activate)
     subject.activate
@@ -133,7 +148,7 @@ describe "Osaka::TypicalApplication" do
       app_wrapper = double("Osaka::ApplicationWrapper")
       app_cloned_wrapper = double("Osaka::ApplicationWrapper")
       app_wrapper.should_receive(:clone).and_return(app_cloned_wrapper)
-      app_cloned_wrapper.should_receive(:window=).with("Save")
+      app_cloned_wrapper.should_receive(:set_current_window).with("Save")
       Osaka::TypicalSaveDialog.new("bah", app_wrapper)
     end
     

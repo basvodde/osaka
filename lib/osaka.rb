@@ -1,5 +1,6 @@
 
 require 'osaka/scriptrunner'
+require 'osaka/location'
 require 'osaka/applicationwrapper'
 require 'osaka/applicationwrapperexpectations'
 require 'osaka/typicalapplication'

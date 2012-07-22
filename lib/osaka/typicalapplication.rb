@@ -7,7 +7,7 @@ module Osaka
     def initialize(location, wrapper)
       @location = location
       @wrapper = wrapper.clone
-      @wrapper.window = "Save"
+      @wrapper.set_current_window("Save")
     end
   
     def set_filename(filename)
@@ -85,22 +85,36 @@ module Osaka
     def open (filename)
       abolutePathFileName = File.absolute_path(filename)
       @wrapper.tell("open \"#{abolutePathFileName}\"")
-      @wrapper.window = File.basename(filename)
+      @wrapper.set_current_window(File.basename(filename))
     end
 
     def wait_for_window_and_dialogs_to_close(option)
       if (option != :user_chose)
-        @wrapper.until!.not_exists("window \"#{wrapper.window}\"") {
-          if (@wrapper.check!.exists("sheet 1 of window \"#{wrapper.window}\""))
-            @wrapper.click!("button 2 of sheet 1 of window \"#{wrapper.window}\"")
-          end
+        @wrapper.until!.not_exists(@wrapper.current_window_location) {
+          close_dialog_sheet_with_dont_save
         }
       end
     end
-      
+
+    def wait_for_application_to_quit(option)
+      if (option != :user_chose)
+        while @wrapper.running?
+          close_dialog_sheet_with_dont_save
+        end
+      end
+    end
+    
+    def close_dialog_sheet_with_dont_save
+      if (@wrapper.check!.exists(at.sheet(1) + @wrapper.current_window_location))
+        @wrapper.click!(at.button(2).sheet(1) + @wrapper.current_window_location)
+      end
+    end
+    
     def quit(option = :user_chose)
-      @wrapper.quit
-      wait_for_window_and_dialogs_to_close(option)
+      if @wrapper.running?
+        @wrapper.quit
+        wait_for_application_to_quit(option)
+      end
     end
 
     def wait_for_new_window(original_window_list)
@@ -114,7 +128,7 @@ module Osaka
     def new_document
       window_list = @wrapper.window_list
       @wrapper.keystroke("n", :command)
-      @wrapper.window = wait_for_new_window(window_list)
+      @wrapper.set_current_window(wait_for_new_window(window_list))
       @wrapper.focus
     end
     
@@ -129,6 +143,10 @@ module Osaka
   
     def activate
       @wrapper.activate
+    end
+    
+    def running?
+      @wrapper.running?
     end
   
     def create_print_dialog(location)

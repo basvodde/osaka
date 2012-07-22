@@ -9,7 +9,6 @@ describe "Mail Merge to PDF common flow" do
   end
   
   it "Should do a good mail merge with Pages and Keynote flow" do
-    
     Osaka::Numbers.should_receive(:new).and_return(@mock_numbers)
     Osaka::Pages.should_receive(:new).and_return(@mock_pages)
     

@@ -10,9 +10,9 @@ module Osaka
     
     def activate
       super
-      if (@wrapper.window.nil?)
+      if (@wrapper.current_window_name.empty?)
         wait_for_new_window([])
-        @wrapper.window = @wrapper.window_list[0]
+        @wrapper.set_current_window(@wrapper.window_list[0])
       end
     end
     

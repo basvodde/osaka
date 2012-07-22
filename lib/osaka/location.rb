@@ -49,9 +49,21 @@ module Osaka
     def menu_button(name)
       create_location_with_added_name("menu button", name)
     end
+
+    def menu(name)
+      create_location_with_added_name("menu", name)
+    end
+
+    def menu_item(name)
+      create_location_with_added_name("menu item", name)
+    end
     
     def dialog(name)
       create_location_with_added_name("dialog", name)
+    end
+    
+    def checkbox(name)
+      create_location_with_added_name("checkbox", name)
     end
     
     def sheet(name)

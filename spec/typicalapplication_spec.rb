@@ -101,8 +101,7 @@ describe "Osaka::TypicalApplication" do
   
   it "Should be able to retrieve a print dialog" do
     expect_keystroke("p", :command)
-    @wrapper.should_receive(:construct_window_info).and_return(" of window \"Untitled\"")
-    should_wait_until(:exists, "sheet 1 of window \"Untitled\"")
+    should_wait_until(:exists, at.sheet(1))
     subject.print_dialog
   end
   
@@ -116,23 +115,22 @@ describe "Osaka::TypicalApplication" do
   
   describe "Generic Print Dialog" do
     
-    location = "window 1"
-    subject { Osaka::TypicalPrintDialog.new("window 1", double(:OSAApp).as_null_object) }
+    subject { Osaka::TypicalPrintDialog.new(at.sheet(1), double(:OSAApp).as_null_object) }
 
     it "Should be able to save the PDF in a print dialog" do
       save_dialog_mock = double(:GenericSaveDialog)
       
-      expect_click!('menu button "PDF" of window 1') 
-      should_wait_until!(:exists, 'menu 1 of menu button "PDF" of window 1')
+      expect_click!(at.menu_button("PDF").sheet(1)) 
+      should_wait_until!(:exists, at.menu(1).menu_button("PDF").sheet(1))
       
-      expect_click!('menu item 2 of menu 1 of menu button "PDF" of window 1')
-      should_wait_until!(:exists, 'window "Save"')
+      expect_click!(at.menu_item(2).menu(1).menu_button("PDF").sheet(1))
+      should_wait_until!(:exists, at.window("Save"))
 
-      subject.should_receive(:create_save_dialog).with("window \"Save\"", subject.wrapper).and_return(save_dialog_mock)
+      subject.should_receive(:create_save_dialog).with(at.window("Save"), subject.wrapper).and_return(save_dialog_mock)
       save_dialog_mock.should_receive(:save).with("filename")
       
-      should_do_until!(:not_exists, 'window 1') {
-        expect_click!('checkbox 1 of window "Print"')
+      should_do_until!(:not_exists, at.sheet(1)) {
+        expect_click!(at.checkbox(1).window("Print"))
       }
       
       subject.save_as_pdf("filename")

@@ -35,8 +35,8 @@ module Osaka
   class TypicalPrintDialog
     attr_accessor :wrapper
 
-    def initialize(location, wrapper)
-      @location = location
+    def initialize(parent, wrapper)
+      @parent = parent
       @wrapper = wrapper
     end
   
@@ -45,15 +45,15 @@ module Osaka
     end
 
     def save_as_pdf(filename)
-      @wrapper.click!("menu button \"PDF\" of #{@location}").wait_until!.exists("menu 1 of menu button \"PDF\" of #{@location}")
-      @wrapper.click!("menu item 2 of menu 1 of menu button \"PDF\" of #{@location}").wait_until!.exists('window "Save"')
-      save_dialog = create_save_dialog("window \"Save\"", @wrapper)
+      @wrapper.click!(at.menu_button("PDF") + @parent).wait_until!.exists(at.menu(1).menu_button("PDF") + @parent)
+      @wrapper.click!(at.menu_item(2).menu(1).menu_button("PDF") + @parent).wait_until!.exists('window "Save"')
+      save_dialog = create_save_dialog(at.window("Save"), @wrapper)
       save_dialog.save(filename)
       
-      @wrapper.until!.not_exists(@location) {
+      @wrapper.until!.not_exists(@parent) {
         # Weird, but sometimes the dialog "hangs around" and clicking this checkbox will make it go away.
         # Anyone who knows a better solution, please let me know!
-        @wrapper.click!('checkbox 1 of window "Print"')
+        @wrapper.click!(at.checkbox(1).window("Print"))
       }
     end
   end
@@ -154,9 +154,8 @@ module Osaka
     end
   
     def print_dialog
-      location = "sheet 1#{@wrapper.construct_window_info}"
-      @wrapper.keystroke("p", :command).wait_until.exists(location)
-      create_print_dialog(location)
+      @wrapper.keystroke("p", :command).wait_until.exists(at.sheet(1))
+      create_print_dialog(at.sheet(1))
     end
   
   end

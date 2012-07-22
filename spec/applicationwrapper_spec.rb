@@ -278,7 +278,7 @@ describe "Osaka::ApplicationWrapper" do
     subject.focus
 
     subject.should_receive(:window_list).and_return(["2", "1"])
-    subject.should_receive(:set!).with("value", "attribute \"AXMain\" of window \"1\"", true )
+    subject.should_receive(:set!).with("value", "attribute \"AXMain\"", true )
     subject.focus
   end
     

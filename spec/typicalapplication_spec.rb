@@ -16,7 +16,7 @@ describe "Osaka::TypicalApplication" do
     Osaka::ScriptRunner.disable_debug_prints
   end
   
-  it "Should pass the right open string to the Keynote application osascript" do
+  it "Should pass the right open string to the application osascript" do
     filename = "filename.key"
     expect_tell("open \"#{File.absolute_path(filename)}\"")
     @wrapper.should_receive(:set_current_window).with(filename)
@@ -47,11 +47,10 @@ describe "Osaka::TypicalApplication" do
   end
   
   it "Should be able to quit without saving" do
-    @wrapper.should_receive(:current_window_location).any_number_of_times.and_return(at.window("Untitled"))
     @wrapper.should_receive(:running?).and_return(true, true, false)
     @wrapper.should_receive(:quit)
-    should_check!(:exists, Osaka::Location.new("sheet 1 of window \"Untitled\""), true)
-    expect_click!(Osaka::Location.new('button 2 of sheet 1 of window "Untitled"'))
+    should_check!(:exists, at.sheet(1), true)
+    expect_click!(at.button(2).sheet(1))
     subject.quit(:dont_save)  
   end
   

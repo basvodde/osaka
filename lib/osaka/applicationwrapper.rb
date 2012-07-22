@@ -32,19 +32,19 @@ module Osaka
   
   class CheckAction
     def execute(wrapper, condition, *args, &block)
-      wrapper.system_event!("#{condition.as_script(*args)};").strip == "true"
+      wrapper.system_event!("#{condition.as_script(wrapper, *args)};").strip == "true"
     end
   end
   
   class ExistsCondition
-    def as_script(element_to_check)
-      "exists #{element_to_check}"
+    def as_script(wrapper, element_to_check)
+      "exists #{wrapper.construct_location(element_to_check)}"
     end
   end
   
   class Not_existsCondition
-    def as_script(element_to_check)
-      "not exists #{element_to_check}"
+    def as_script(wrapper, element_to_check)
+      "not exists #{wrapper.construct_location(element_to_check)}"
     end
   end
   
@@ -132,7 +132,7 @@ module Osaka
         
     def click!(element)
       # Click seems to often output stuff, but it doesn't have much meaning so we ignore it.
-      system_event!("click #{element}")
+      system_event!("click #{construct_location(element)}")
       self
     end
 
@@ -143,7 +143,7 @@ module Osaka
         
     def set!(element, location, value)
       encoded_value = (value.class == String) ? "\"#{value}\"" : value.to_s
-      check_output( system_event!("set #{element}#{construct_location(location)} to #{encoded_value}"), "set")
+      check_output( system_event!("set #{element}#{construct_prefixed_location(location)} to #{encoded_value}"), "set")
     end
     
     def focus
@@ -155,17 +155,25 @@ module Osaka
         @window = at.window(currently_active_window) unless currently_active_window.nil?
       end
 
-      set!("value", "attribute \"AXMain\"#{construct_location("")}", true) unless currently_active_window == current_window_name
+      set!("value", "attribute \"AXMain\"", true) unless currently_active_window == current_window_name
+    end
+    
+    def form_location_with_window(location)
+      new_location = Location.new(location) 
+      new_location += @window unless new_location.has_window?
+      new_location
     end
     
     def construct_location(location)
-      location = Location.new(location) 
-      location += @window unless location.has_window?
-      location.as_prefixed_location
+      form_location_with_window(location).to_s
+    end
+
+    def construct_prefixed_location(location)
+      form_location_with_window(location).as_prefixed_location
     end
     
     def get!(element, location = "")
-      system_event!("get #{element}#{construct_location(location)}").strip
+      system_event!("get #{element}#{construct_prefixed_location(location)}").strip
     end
 
     def get_app!(element)

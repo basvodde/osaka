@@ -105,8 +105,8 @@ module Osaka
     end
     
     def close_dialog_sheet_with_dont_save
-      if (@wrapper.check!.exists(at.sheet(1) + @wrapper.current_window_location))
-        @wrapper.click!(at.button(2).sheet(1) + @wrapper.current_window_location)
+      if (@wrapper.check!.exists(at.sheet(1)))
+        @wrapper.click!(at.button(2).sheet(1))
       end
     end
     

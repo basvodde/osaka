@@ -94,6 +94,18 @@ module Osaka
       create_location_with_added_name("pop up button", name)
     end
     
+    def splitter_group(name)
+      create_location_with_added_name("splitter group", name)
+    end
+
+    def scroll_area(name)
+      create_location_with_added_name("scroll area", name)
+    end
+    
+    def outline(name)
+      create_location_with_added_name("outline", name)
+    end
+    
     def to_location_string(name)
       return name.to_s if name.kind_of? Integer
       '"' + name.to_s + '"'

@@ -4,7 +4,7 @@ require 'osaka'
 describe "Integration of mail merge flow with Pages and Numbers" do
   
   it "Should mail merge the assets and generate a PDF" do
-    
+  
     assets_directory =  File.join(File.dirname(__FILE__), "assets")
     numbers_data = File.join(assets_directory, "mail_merge_data.numbers")
     pages_template = File.join(assets_directory, "mail_merge_template.pages")

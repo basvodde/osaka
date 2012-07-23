@@ -21,8 +21,9 @@ module CommonFlows
   end
   
   def self.keynote_combine_files_from_directory_sorted(result_file, directory = ".", pattern = /^.*\.key$/)
-    files_in_directory = Dir.new(directory)
-    files_to_open = files_in_directory.select! { |f| f =~ pattern }
+    files_in_directory = Dir.new(directory).entries
+    files_in_directory.select! { |f| f =~ pattern }
+    files_to_open = files_in_directory.collect { |f| File.join(directory, f)}
     keynote_combine_files(result_file, files_to_open.sort)
   end
 end

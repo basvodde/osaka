@@ -83,6 +83,14 @@ describe "Osaka::TypicalApplication" do
     subject.save
   end
   
+  it "Should be able to save as a file" do
+    save_dialog = double("Osaka::TypicalSaveDialog")
+    subject.should_receive(:save_dialog).and_return(save_dialog)
+    save_dialog.should_receive(:save).with("filename")
+    subject.wrapper.should_receive(:set_current_window).with("filename")
+    subject.save_as("filename")
+  end
+  
   it "Should be able to close" do
     expect_keystroke("w", :command)
     subject.close
@@ -94,15 +102,46 @@ describe "Osaka::TypicalApplication" do
     subject.close(:dont_save)
   end
   
-  it "Should be able to activate keynote" do
+  it "Should be able to activate" do
     @wrapper.should_receive(:activate)
     subject.activate
+  end
+  
+  it "Should be able to focus" do
+    @wrapper.should_receive(:focus)
+    subject.focus
+  end
+  
+  it "Should be able to copy" do
+    expect_keystroke("c", :command)
+    subject.copy
+  end
+  
+  it "Should be able to paste" do
+    expect_keystroke("v", :command)
+    subject.paste  
+  end
+
+  it "Should be able to cut" do
+    expect_keystroke("x", :command)
+    subject.cut
+  end
+  
+  it "Should be able to select all" do
+    expect_keystroke("a", :command)
+    subject.select_all
   end
   
   it "Should be able to retrieve a print dialog" do
     expect_keystroke("p", :command)
     should_wait_until(:exists, at.sheet(1))
     subject.print_dialog
+  end
+  
+  it "Should be able to retrieve a save dialog" do
+    expect_keystroke("s", [:command, :shift])
+    should_wait_until(:exists, at.sheet(1))
+    subject.save_dialog    
   end
   
   describe "Application info" do
@@ -145,8 +184,7 @@ describe "Osaka::TypicalApplication" do
       app_wrapper = double("Osaka::ApplicationWrapper")
       app_cloned_wrapper = double("Osaka::ApplicationWrapper")
       app_wrapper.should_receive(:clone).and_return(app_cloned_wrapper)
-      app_cloned_wrapper.should_receive(:set_current_window).with("Save")
-      Osaka::TypicalSaveDialog.new("bah", app_wrapper)
+      Osaka::TypicalSaveDialog.new(at.sheet(1), app_wrapper)
     end
     
     it "Should set the filename in the test field" do

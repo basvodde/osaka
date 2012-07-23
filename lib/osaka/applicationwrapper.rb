@@ -82,7 +82,6 @@ module Osaka
       output
     end
     
-    
     def activate
       check_output( tell("activate"), "activate" )
     end

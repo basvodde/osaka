@@ -4,24 +4,24 @@ module Osaka
   class TypicalSaveDialog
     attr_accessor :wrapper
 
-    def initialize(parent, wrapper)
-      @parent = parent
+    def initialize(self_location, wrapper)
+      @self_location = self_location
       @wrapper = wrapper.clone
-      @wrapper.set_current_window("Save")
+      @wrapper.set_current_window("") if self_location.has_top_level_element?
     end
   
     def set_filename(filename)
-      @wrapper.set("value", at.text_field(1) + @parent, filename)
+      @wrapper.set("value", at.text_field(1) + @self_location, filename)
     end
   
     def set_folder(pathname)
-      @wrapper.keystroke("g", [ :command, :shift ]).wait_until.exists(at.sheet(1) + @parent)
-      @wrapper.set("value", at.text_field(1).sheet(1) + @parent, pathname)
-      @wrapper.click(at.button("Go").sheet(1) + @parent).wait_until.not_exists(at.sheet(1) + @parent)
+      @wrapper.keystroke("g", [ :command, :shift ]).wait_until.exists(at.sheet(1) + @self_location)
+      @wrapper.set("value", at.text_field(1).sheet(1) + @self_location, pathname)
+      @wrapper.click(at.button("Go").sheet(1) + @self_location).wait_until.not_exists(at.sheet(1) + @self_location)
     end
   
     def click_save
-      @wrapper.click(at.button("Save") + @parent).wait_until.not_exists(@parent)
+      @wrapper.click(at.button("Save") + @self_location).wait_until.not_exists(@self_location)
     end
   
     def save(filename)
@@ -136,6 +136,17 @@ module Osaka
       @wrapper.keystroke("s", :command)
     end
     
+    def save_dialog
+      @wrapper.keystroke("s", [:command, :shift]).wait_until.exists(at.sheet(1))
+      create_save_dialog(at.sheet(1))
+    end
+    
+    def save_as(filename)
+      dialog = save_dialog
+      dialog.save(filename)
+      @wrapper.set_current_window(File.basename(filename))
+    end
+    
     def close(option = :user_chose)
       @wrapper.keystroke("w", :command)
       wait_for_window_and_dialogs_to_close(option)
@@ -145,12 +156,36 @@ module Osaka
       @wrapper.activate
     end
     
+    def focus
+      @wrapper.focus
+    end
+    
     def running?
       @wrapper.running?
     end
   
+    def copy
+      @wrapper.keystroke("c", :command)
+    end
+
+    def paste
+      @wrapper.keystroke("v", :command)
+    end
+
+    def cut
+      @wrapper.keystroke("x", :command)
+    end
+
+    def select_all
+      @wrapper.keystroke("a", :command)
+    end
+    
     def create_print_dialog(location)
       TypicalPrintDialog.new(location, @wrapper)
+    end
+    
+    def create_save_dialog(location)
+      TypicalSaveDialog.new(location, @wrapper)
     end
   
     def print_dialog

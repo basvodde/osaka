@@ -10,4 +10,5 @@ require 'osaka/keynote'
 require 'osaka/calculator'
 require 'osaka/textedit'
 require 'osaka/mailmergeflow'
+require 'osaka/keynoteflow'
 

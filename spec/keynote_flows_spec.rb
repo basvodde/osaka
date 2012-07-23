@@ -43,7 +43,7 @@ describe "Common flows in keynote" do
   
   it "Should be able to combine multiple files from one directory sorted" do
     files_in_dir = [".", "..", "one.key", "05_file.key", "02key.wrong", "another", "01hey.key", "last"]
-    files_matching = ["05_file.key", "01hey.key", "one.key"]
+    files_matching = ["./05_file.key", "./01hey.key", "./one.key"]
     Dir.should_receive(:new).with(".").and_return(files_in_dir)
     CommonFlows.should_receive(:keynote_combine_files).with("results.key", files_matching.sort)
     CommonFlows.keynote_combine_files_from_directory_sorted("results.key")    
@@ -51,8 +51,10 @@ describe "Common flows in keynote" do
 
   it "Should be able to combine multiple files from one directory sorted with pattern" do
     files_in_dir = [".", "..", "05_file.key", "02key.wrong", "another", "01hey.key", "last"]
-    files_in_dir_to_be_used = ["01hey.key", "05_file.key"]
-    Dir.should_receive(:new).with("dirname").and_return(files_in_dir)
+    files_in_dir_to_be_used = ["dirname/01hey.key", "dirname/05_file.key"]
+    mocked_dir = double(:Dir)
+    Dir.should_receive(:new).with("dirname").and_return(mocked_dir)
+    mocked_dir.should_receive(:entries).and_return(files_in_dir)
     CommonFlows.should_receive(:keynote_combine_files).with("results.key", files_in_dir_to_be_used)
     CommonFlows.keynote_combine_files_from_directory_sorted("results.key", "dirname", /^\d+.*\.key$/)    
   end

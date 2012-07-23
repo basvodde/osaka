@@ -22,6 +22,15 @@ describe "Osaka::ScriptRunner" do
     subject.execute("random number")
     Osaka::ScriptRunner::disable_debug_prints
   end
+
+  it "Should be able to run on debug printing with HTML tags" do
+    subject.should_receive(:do_system).and_return("Blah blah blah")
+    subject.should_receive(:puts).with('random number<br>')
+    subject.should_receive(:puts).with('Output: <b>Blah blah blah</b><br>')
+    Osaka::ScriptRunner::enable_debug_prints(:short_html)
+    subject.execute("random number")
+    Osaka::ScriptRunner::disable_debug_prints
+  end
   
   it "Should not print any debugging information by default " do
     subject.should_receive(:do_system).and_return("")

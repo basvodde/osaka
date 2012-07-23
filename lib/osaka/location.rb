@@ -25,6 +25,10 @@ module Osaka
       return "" if to_s.empty?
       " of " + to_s
     end
+    
+    def has_top_level_element?
+      has_window? || has_menu_bar?
+    end
 
     def button(name)
       create_location_with_added_name("button", name)
@@ -39,7 +43,7 @@ module Osaka
     end
     
     def has_window?
-      as_prefixed_location.scan(" of window").length == 1
+      has_element?("window")
     end
     
     def static_text(name)
@@ -57,6 +61,18 @@ module Osaka
     def menu_item(name)
       create_location_with_added_name("menu item", name)
     end
+
+    def menu_bar(name)
+      create_location_with_added_name("menu bar", name)
+    end
+    
+    def has_menu_bar?
+      has_element?("menu bar")
+    end
+    
+    def menu_bar_item(name)
+      create_location_with_added_name("menu bar item", name)
+    end
     
     def dialog(name)
       create_location_with_added_name("dialog", name)
@@ -70,6 +86,14 @@ module Osaka
       create_location_with_added_name("sheet", name)
     end
     
+    def text_field(name)
+      create_location_with_added_name("text field", name)
+    end
+
+    def pop_up_button(name)
+      create_location_with_added_name("pop up button", name)
+    end
+    
     def to_location_string(name)
       return name.to_s if name.kind_of? Integer
       '"' + name.to_s + '"'
@@ -77,6 +101,10 @@ module Osaka
     
     def create_location_with_added_name(element, name)
       self + Location.new(element + " " + to_location_string(name))
+    end
+    
+    def has_element?(name)
+      as_prefixed_location.scan(" of #{name}").length >= 1
     end
     
     def ==(obj)

@@ -6,6 +6,7 @@ module Osaka
     def initialize
       @name = "Calculator"
       @wrapper = ApplicationWrapper.new("Calculator")
+      @wrapper.set_current_window(@name)
     end
     
     def activate
@@ -17,7 +18,7 @@ module Osaka
     end
     
     def click(key)
-      @wrapper.click!("button \"#{key}\" of group 2 of window \"#{@name}\"")
+      @wrapper.click!(at.button(key).group(2))
     end
     
     def key(k)
@@ -25,8 +26,7 @@ module Osaka
     end
     
     def result
-      @wrapper.get!('value', "static text 1 of group 1")
+      @wrapper.get!('value', at.static_text(1).group(1))
     end
-    
   end
 end

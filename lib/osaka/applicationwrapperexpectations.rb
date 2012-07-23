@@ -37,6 +37,10 @@ module Osaka
       @wrapper.should_receive(:click).with(location).and_return(@wrapper)
     end
     
+    def expect_click_menu_bar(menu_item, menu_name)
+      @wrapper.should_receive(:click_menu_bar).with(menu_item, menu_name).and_return(@wrapper)
+    end
+    
     def expect_tell(do_this)
       @wrapper.should_receive(:tell).with(do_this)
     end

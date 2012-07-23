@@ -4,24 +4,24 @@ module Osaka
   class TypicalSaveDialog
     attr_accessor :wrapper
 
-    def initialize(location, wrapper)
-      @location = location
+    def initialize(parent, wrapper)
+      @parent = parent
       @wrapper = wrapper.clone
       @wrapper.set_current_window("Save")
     end
   
     def set_filename(filename)
-      @wrapper.set("value", "text field 1 of #{@location}", filename)
+      @wrapper.set("value", at.text_field(1) + @parent, filename)
     end
   
     def set_folder(pathname)
-      @wrapper.keystroke("g", [ :command, :shift ]).wait_until.exists("sheet 1 of #{@location}")
-      @wrapper.set("value", "text field 1 of sheet 1 of #{@location}", pathname)
-      @wrapper.click("button \"Go\" of sheet 1 of #{@location}").wait_until.not_exists("sheet 1 of #{@location}")
+      @wrapper.keystroke("g", [ :command, :shift ]).wait_until.exists(at.sheet(1) + @parent)
+      @wrapper.set("value", at.text_field(1).sheet(1) + @parent, pathname)
+      @wrapper.click(at.button("Go").sheet(1) + @parent).wait_until.not_exists(at.sheet(1) + @parent)
     end
   
     def click_save
-      @wrapper.click("button \"Save\" of #{@location}").wait_until.not_exists("#{@location}")
+      @wrapper.click(at.button("Save") + @parent).wait_until.not_exists(@parent)
     end
   
     def save(filename)

@@ -24,7 +24,7 @@ describe "Mac GUI Calculator" do
   end
     
   it "Should be able to click a button on the calculator" do
-    expect_click!(at.button("1").group(2).window("Calculator"))
+    expect_click!(at.button("1").group(2))
     subject.click("1")
   end
   
@@ -40,7 +40,7 @@ describe "Mac GUI Calculator" do
   end
   
   it "Should be able to get the value from the screen" do
-    @wrapper.should_receive(:get!).with("value", at.static_text(1).group(1).to_s).and_return("0")
+    @wrapper.should_receive(:get!).with("value", at.static_text(1).group(1)).and_return("0")
     subject.result.should == "0"
   end
   

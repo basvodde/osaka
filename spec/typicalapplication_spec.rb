@@ -139,7 +139,7 @@ describe "Osaka::TypicalApplication" do
   
   describe "Generic Save Dialog" do
     
-    subject { Osaka::TypicalSaveDialog.new("window 1", double("Osaka::ApplicationWrapper").as_null_object)}
+    subject { Osaka::TypicalSaveDialog.new(at.sheet(1), double("Osaka::ApplicationWrapper").as_null_object)}
     
     it "Should clone the wrapper and change the window name to Save" do
       app_wrapper = double("Osaka::ApplicationWrapper")
@@ -171,22 +171,22 @@ describe "Osaka::TypicalApplication" do
     end
     
     it "Should be able to click save" do
-      expect_click('button "Save" of window 1')
-      should_wait_until(:not_exists, 'window 1')
+      expect_click(at.button("Save").sheet(1))
+      should_wait_until(:not_exists, at.sheet(1))
       subject.click_save
     end
     
     it "Should be able to set the filename" do
-      subject.wrapper.should_receive(:set).with('value', 'text field 1 of window 1', "filename")
+      subject.wrapper.should_receive(:set).with('value', at.text_field(1).sheet(1), "filename")
       subject.set_filename("filename")
     end
     
     it "Should be able to set the path" do
       expect_keystroke("g", [ :command, :shift ])
-      should_wait_until(:exists,  "sheet 1 of window 1")
-      subject.wrapper.should_receive(:set).with("value", "text field 1 of sheet 1 of window 1", "path")
-      expect_click('button "Go" of sheet 1 of window 1')
-      should_wait_until(:not_exists, "sheet 1 of window 1")
+      should_wait_until(:exists,  at.sheet(1).sheet(1))
+      subject.wrapper.should_receive(:set).with("value", at.text_field(1).sheet(1).sheet(1), "path")
+      expect_click(at.button("Go").sheet(1).sheet(1))
+      should_wait_until(:not_exists, at.sheet(1).sheet(1))
       subject.set_folder("path")
     end
   end

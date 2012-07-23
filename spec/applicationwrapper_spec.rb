@@ -160,7 +160,7 @@ describe "Osaka::ApplicationWrapper" do
     subject.should_receive(:click!).with("button")
     subject.click("button")    
   end
-  
+    
   it "Should be able to do clicks and wait until something happened in one easy line" do
     Osaka::ScriptRunner.should_receive(:execute).with(/click/).and_return("")
     Osaka::ScriptRunner.should_receive(:execute).with(/exists window 1/).and_return("true")
@@ -172,6 +172,12 @@ describe "Osaka::ApplicationWrapper" do
     Osaka::ScriptRunner.should_receive(:execute).with(/click/).and_return("")
     Osaka::ScriptRunner.should_receive(:execute).with(/exists window 1/).and_return("true")
     subject.click("button").wait_until!.exists(at.window(1))
+  end
+
+  it "Should be able to click on menu bar items" do
+    subject.should_receive("activate")
+    subject.should_receive("click!").with(at.menu_item("Hey").menu(1).menu_bar_item("File").menu_bar(1))
+    subject.click_menu_bar(at.menu_item("Hey"), "File")    
   end
     
   it "Should be able to set a value to an element" do

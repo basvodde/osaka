@@ -140,6 +140,12 @@ module Osaka
       activate
       click!(element)
     end
+    
+    def click_menu_bar(menu_item, menu_name)
+      activate
+      menu_bar_location = at.menu_bar_item(menu_name).menu_bar(1)
+      click!(menu_item + at.menu(1) + menu_bar_location)      
+    end
         
     def set!(element, location, value)
       encoded_value = (value.class == String) ? "\"#{value}\"" : value.to_s
@@ -159,8 +165,8 @@ module Osaka
     end
     
     def form_location_with_window(location)
-      new_location = Location.new(location) 
-      new_location += @window unless new_location.has_window?
+      new_location = Location.new(location)
+      new_location += @window unless new_location.has_top_level_element?
       new_location
     end
     

@@ -11,8 +11,9 @@ module Osaka
 
     @@debug_info_enabled = false
 
-    def self.enable_debug_prints
+    def self.enable_debug_prints(debug_info_format = :plain_text)
       @@debug_info_enabled = true
+      @@debug_info_format = debug_info_format
     end
 
     def self.disable_debug_prints
@@ -29,7 +30,16 @@ module Osaka
       script_commands.each { |l| 
         escaped_commands += " -e \"#{l.strip}\""
       }
-      puts "Executing: osascript#{escaped_commands}" if debug_prints?
+      if (debug_prints?)
+        if (@@debug_info_format == :plain_text)
+          debug_output = "Executing: osascript#{escaped_commands}"
+        elsif (@@debug_info_format == :short_html)
+          debug_output = applescript
+          debug_output += "<br>"
+        end        
+        puts debug_output
+      end
+      
 
       output = ""
       begin
@@ -38,7 +48,12 @@ module Osaka
         raise(Osaka::ScriptRunnerError, "Error received while executing: #{applescript}")
       end
       if (!output.empty? && debug_prints?)
-        puts "Output was: #{output}"
+        if (@@debug_info_format == :plain_text)
+          debug_output = "Output was: #{output}"
+        elsif (@@debug_info_format == :short_html)
+          debug_output = "Output: <b>#{output}</b><br>"
+        end        
+        puts debug_output
       end
       output
     end  

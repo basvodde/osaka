@@ -4,50 +4,6 @@ module Osaka
   class InvalidLocation < RuntimeError
   end
   
-  class ConditionProxy
-    
-    def initialize(wrapper, action)
-      @wrapper = wrapper
-      @action = action
-    end
-    
-    def create_condition_class_based_on_name(sym)
-      classname = "#{sym.to_s[0].upcase}#{sym.to_s[1..-1]}Condition"
-      eval(classname).new
-    end
-
-    def method_missing(sym, *args, &block)
-      condition = create_condition_class_based_on_name(sym)
-      @action.execute(@wrapper, condition, *args, &block)      
-    end
-  end
-  
-  class RepeatAction
-    def execute(wrapper, condition, *args, &block)
-      while (!CheckAction.new.execute(wrapper, condition, *args, &block))
-        yield unless block.nil?
-      end
-    end
-  end
-  
-  class CheckAction
-    def execute(wrapper, condition, *args, &block)
-      wrapper.system_event!("#{condition.as_script(wrapper, *args)};").strip == "true"
-    end
-  end
-  
-  class ExistsCondition
-    def as_script(wrapper, element_to_check)
-      "exists #{wrapper.construct_location(element_to_check)}"
-    end
-  end
-  
-  class Not_existsCondition
-    def as_script(wrapper, element_to_check)
-      "not exists #{wrapper.construct_location(element_to_check)}"
-    end
-  end
-  
   class ApplicationWrapper
   
     attr_reader :name
@@ -95,22 +51,51 @@ module Osaka
       system_event!(event)
     end
 
-    def wait_until
+    def exists(location)
+      system_event!("exists #{construct_location(location)}").strip == "true"
+    end
+
+    def not_exists(location)
+      system_event!("not exists #{construct_location(location)}").strip == "true"
+    end
+        
+    def wait_until(locations, action)
+      while(true)
+          locations.flatten.each { |location| 
+            return location if yield location
+        }
+        action.() unless action.nil?
+      end
+    end
+    
+    def wait_until_exists(*locations)
       activate
-      wait_until!
+      wait_until_exists!(locations)
     end
     
-    def check
-      ConditionProxy.new(self, CheckAction.new)
+    def wait_until_exists!(*locations, &action)
+      wait_until(locations, action) { |location|
+        exists(location)
+      }
     end
     
-    alias check! check
-    
-    def until!
-      ConditionProxy.new(self, RepeatAction.new)
+    alias until_exists wait_until_exists
+    alias until_exists! wait_until_exists!
+
+    def wait_until_not_exists(*locations, &action)
+      activate
+      wait_until_not_exists!(*locations, action)
     end
-    
-    alias wait_until! until!
+
+    def wait_until_not_exists!(*locations, &action)
+      wait_until(locations, action) { |location|
+        not_exists(location)
+      }
+    end
+
+    alias until_not_exists wait_until_not_exists
+    alias until_not_exists! wait_until_not_exists!
+
         
     def construct_modifier_statement(modifier_keys)
       modified_key_string = [ modifier_keys ].flatten.collect! { |mod_key| mod_key.to_s + " down"}.join(", ")
@@ -118,8 +103,13 @@ module Osaka
       modifier_command
     end
     
+    def construct_key_statement(key_keys)
+      return "return" if key_keys == :return
+      "\"#{key_keys}\""
+    end
+    
     def keystroke!(key, modifier_keys = [])
-      check_output( system_event!("keystroke \"#{key}\"#{construct_modifier_statement(modifier_keys)}"), "keystroke")
+      check_output( system_event!("keystroke #{construct_key_statement(key)}#{construct_modifier_statement(modifier_keys)}"), "keystroke")
       self
     end
     

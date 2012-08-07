@@ -27,14 +27,14 @@ describe "Osaka::Pages" do
   it "Should be able to select the Mail Merge" do
     @wrapper.should_receive(:current_window_name).any_number_of_times.and_return("Pages.pages")
     expect_click_menu_bar(at.menu_item(20), "Edit")
-    should_wait_until(:exists, at.button("Merge").sheet(1))
+    expect_wait_until_exists(at.button("Merge").sheet(1))
     subject.mail_merge
   end
 
   it "Should click the merge button of the mail merge dialog" do
     @wrapper.should_receive(:current_window_name).any_number_of_times.and_return("Pages.pages")
     expect_click!(at.button("Merge").sheet(1))
-    should_wait_until!(:exists, at.menu_button("PDF").window("Print"))
+    expect_wait_until_exists!(at.menu_button("PDF").window("Print"))
     subject.mail_merge.merge
   end
 end
@@ -52,14 +52,14 @@ describe "Osaka::Pages Mail Merge dialog" do
   
   it "Should be able to set the mail merge dialog to merge to new document" do
     expect_click(at.pop_up_button(2).sheet(1))
-    should_wait_until!(:exists, at.menu_item(1).menu(1).pop_up_button(2).sheet(1))
+    expect_wait_until_exists!(at.menu_item(1).menu(1).pop_up_button(2).sheet(1))
     expect_click!(at.menu_item(1).menu(1).pop_up_button(2).sheet(1))
     subject.set_merge_to_new_document
   end
   
   it "Should be able to set the mail merge dialog to merge to printer" do
     expect_click(at.pop_up_button(2).sheet(1))
-    should_wait_until!(:exists, at.menu_item(2).menu(1).pop_up_button(2).sheet(1))
+    expect_wait_until_exists!(at.menu_item(2).menu(1).pop_up_button(2).sheet(1))
     expect_click!(at.menu_item(2).menu(1).pop_up_button(2).sheet(1))
     subject.set_merge_to_printer    
   end

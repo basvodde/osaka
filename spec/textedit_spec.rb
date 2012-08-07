@@ -10,22 +10,7 @@ describe "TextEdit" do
   before (:each) do
     @wrapper = subject.wrapper = double("Osaka::ApplicationWrapper")
   end
-  
-  it "should set the window on activation" do
-    @wrapper.should_receive(:activate)
-    @wrapper.should_receive(:current_window_name).and_return("")
-    subject.should_receive(:wait_for_new_window).with([])
-    @wrapper.should_receive(:window_list).and_return(["Untitled"])
-    @wrapper.should_receive(:set_current_window).with("Untitled")
-    subject.activate
-  end
-  
-  it "shouldn't set the window on activation when it is already set" do
-    @wrapper.should_receive(:activate)
-    @wrapper.should_receive(:current_window_name).and_return("Untitled")
-    subject.activate    
-  end
-  
+    
   it "Should be able to type some text" do
     expect_keystroke('Hello World')
     subject.type("Hello World")

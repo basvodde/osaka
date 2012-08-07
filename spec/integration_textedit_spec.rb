@@ -16,17 +16,17 @@ describe "Integration test using TextEdit" do
   end
   
   it "can type in the window" do
-    subject.activate
+    subject.new_document
     subject.type("Hello World")
     subject.text.should == "Hello World"
+    subject.close(:dont_save)
   end
   
   it "can type in two windows using two instances" do
-    
     editor1 = subject
     editor2 = Osaka::TextEdit.new
         
-    editor1.activate
+    editor1.new_document
     editor2.new_document
     
     editor1.type("Typing in window 1")

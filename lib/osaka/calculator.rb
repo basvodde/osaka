@@ -26,6 +26,7 @@ module Osaka
     end
     
     def result
+      @wrapper.wait_until_exists!(at.static_text(1).group(1))
       @wrapper.get!('value', at.static_text(1).group(1))
     end
   end

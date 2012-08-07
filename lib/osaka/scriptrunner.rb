@@ -7,6 +7,9 @@ module Osaka
   class SystemCommandFailed < RuntimeError
   end
 
+  class VersioningError < RuntimeError
+  end
+  
   module ScriptRunner
 
     @@debug_info_enabled = false

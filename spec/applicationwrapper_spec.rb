@@ -84,34 +84,47 @@ describe "Osaka::ApplicationWrapper" do
     subject.system_event("quit")
   end
   
-  it "Should be able to check whether a specific element exists" do
-    Osaka::ScriptRunner.should_receive(:execute).with(/exists window 1/).and_return("true\n")
-    subject.check.exists(at.window(1)).should == true
+  it "Should be able to check whether a location exists" do
+    Osaka::ScriptRunner.should_receive(:execute).with(/exists button 1/).and_return("true\n")
+    subject.exists(at.button(1)).should == true
+  end
+
+  it "Should be able to check whether a location does not exists" do
+    Osaka::ScriptRunner.should_receive(:execute).with(/not exists window 1/).and_return("true\n")
+    subject.not_exists(at.window(1)).should == true    
   end
   
-  it "Should be able to wait for for a specific element existing" do
-    counter = 0
-    Osaka::ScriptRunner.should_receive(:execute).exactly(5).times.with(/exists window 1/).and_return {
-      counter = counter + 1
-      (counter == 5).to_s
-    }
-    subject.wait_until!.exists(at.window(1))
+  it "Should be able to wait until multiple locations exists and return the one that happened" do
+    subject.should_receive(:exists).with(at.button(1)).and_return(false, false, false)
+    subject.should_receive(:exists).with(at.sheet(5)).and_return(false, false, true)
+    subject.wait_until_exists!(at.button(1), at.sheet(5)).should == at.sheet(5)
   end
   
   it "Should be able to wait until exists and activate the application first" do
     subject.should_receive(:activate)
-    Osaka::ScriptRunner.should_receive(:execute).with(/exists window 1/).and_return("true")
-    subject.wait_until.exists(at.window(1))
+    subject.should_receive(:wait_until_exists!).with([at.window(1)])
+    subject.wait_until_exists(at.window(1))
   end
 
+  it "Should be able to wait for a specific element and activate" do
+    subject.should_receive(:activate)
+    subject.should_receive(:wait_until_not_exists!).with(at.window(1), nil)
+    subject.wait_until_not_exists(at.window(1))
+  end
+  
   it "Should be able to wait for a specific element to not exist anymore" do
-    Osaka::ScriptRunner.should_receive(:execute).with(/not exists window 1/).and_return("true")
-    subject.wait_until!.not_exists(at.window(1))    
+    subject.should_receive(:not_exists).with(at.window(1)).and_return(false, false, true)
+    subject.wait_until_not_exists!(at.window(1))    
   end
   
   it "Should be able to generate keystroke events" do
     Osaka::ScriptRunner.should_receive(:execute).with(/keystroke "p"/).and_return("")
     subject.keystroke!("p")
+  end
+
+  it "Should be able to generate return keystroke event" do
+    Osaka::ScriptRunner.should_receive(:execute).with(/keystroke return/).and_return("")
+    subject.keystroke!(:return)
   end
 
   it "Prints a warning when keystroke results in some outputShould be able to generate keystroke events" do
@@ -139,7 +152,7 @@ describe "Osaka::ApplicationWrapper" do
   it "Should be able to do a keystroke and wait until something happen in one easy line" do
     Osaka::ScriptRunner.should_receive(:execute).with(/keystroke "p"/).and_return("")
     Osaka::ScriptRunner.should_receive(:execute).with(/exists window 1/).and_return("true")
-    subject.keystroke!("p", []).wait_until!.exists(at.window(1))
+    subject.keystroke!("p", []).wait_until_exists!(at.window(1))
   end
   
   it "Should be able to keystroke_and_wait_until_exists and activate" do
@@ -147,7 +160,7 @@ describe "Osaka::ApplicationWrapper" do
     subject.should_receive(:focus)
     Osaka::ScriptRunner.should_receive(:execute).with(/keystroke "p"/).and_return("")
     Osaka::ScriptRunner.should_receive(:execute).with(/exists window 1/).and_return("true")
-    subject.keystroke("p", []).wait_until!.exists(at.window(1))    
+    subject.keystroke("p", []).wait_until_exists!(at.window(1))    
   end
   
   it "Should be able to do clicks" do
@@ -164,14 +177,14 @@ describe "Osaka::ApplicationWrapper" do
   it "Should be able to do clicks and wait until something happened in one easy line" do
     Osaka::ScriptRunner.should_receive(:execute).with(/click/).and_return("")
     Osaka::ScriptRunner.should_receive(:execute).with(/exists window 1/).and_return("true")
-    subject.click!("button").wait_until!.exists(at.window(1))
+    subject.click!("button").wait_until_exists!(at.window(1))
   end
   
   it "Should be able to click_and_wait_until_exists and activate" do
     subject.should_receive(:activate)
     Osaka::ScriptRunner.should_receive(:execute).with(/click/).and_return("")
     Osaka::ScriptRunner.should_receive(:execute).with(/exists window 1/).and_return("true")
-    subject.click("button").wait_until!.exists(at.window(1))
+    subject.click("button").wait_until_exists!(at.window(1))
   end
 
   it "Should be able to click on menu bar items" do
@@ -224,17 +237,9 @@ describe "Osaka::ApplicationWrapper" do
   end
     
   it "Should be able to loop over some script until something happens" do
-    counter = 0
-    Osaka::ScriptRunner.should_receive(:execute).exactly(3).times.with(/exists window 1/).and_return {
-      counter = counter + 1
-      if counter > 2
-        "true"
-      else
-        "false"
-      end
-    }
+    Osaka::ScriptRunner.should_receive(:execute).and_return("false", "false", "true")
     subject.should_receive(:activate).twice
-    subject.until!.exists(at.window(1)) {
+    subject.until_exists!(at.window(1)) {
       subject.activate
     }
   end

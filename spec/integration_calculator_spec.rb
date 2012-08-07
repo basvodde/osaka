@@ -35,7 +35,6 @@ describe "Integration test using the Calculator" do
   
   it "Should do whole formulas using key" do
     subject.key("100+10*3+99=")
-    sleep 0.5
     subject.result.should == "229"        
   end
   

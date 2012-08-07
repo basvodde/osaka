@@ -40,6 +40,7 @@ describe "Mac GUI Calculator" do
   end
   
   it "Should be able to get the value from the screen" do
+    expect_wait_until_exists!(at.static_text(1).group(1))
     @wrapper.should_receive(:get!).with("value", at.static_text(1).group(1)).and_return("0")
     subject.result.should == "0"
   end

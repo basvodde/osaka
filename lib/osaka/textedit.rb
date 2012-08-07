@@ -8,14 +8,6 @@ module Osaka
       @wrapper = ApplicationWrapper.new("TextEdit")
     end
     
-    def activate
-      super
-      if (@wrapper.current_window_name.empty?)
-        wait_for_new_window([])
-        @wrapper.set_current_window(@wrapper.window_list[0])
-      end
-    end
-    
     def type(text)
       @wrapper.keystroke(text)
     end

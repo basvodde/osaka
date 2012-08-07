@@ -55,7 +55,8 @@ module Osaka
       @wrapper.until_not_exists!(@parent) {
         # Weird, but sometimes the dialog "hangs around" and clicking this checkbox will make it go away.
         # Anyone who knows a better solution, please let me know!
-        @wrapper.click!(at.checkbox(1) + @parent)
+        # This is for snow leopard
+        @wrapper.click!(at.checkbox(1) + @parent) if @wrapper.exists(at.checkbox(1) + @parent)
       }
     end
   end

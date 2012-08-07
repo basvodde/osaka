@@ -220,6 +220,7 @@ describe "Osaka::TypicalApplication" do
       save_dialog_mock.should_receive(:save).with("filename")
       
       expect_until_not_exists!(at.sheet(1))
+      expect_exists(at.checkbox(1).sheet(1)).and_return(true)
       expect_click!(at.checkbox(1).sheet(1))
       
       subject.save_as_pdf("filename")

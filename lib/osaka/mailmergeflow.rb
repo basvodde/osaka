@@ -12,6 +12,9 @@ module CommonFlows
     pages.open(pages_file)
     pages.mail_merge_to_pdf(output_file)
     
+    numbers.close(:dont_save)
+    pages.close(:dont_save)
+
     numbers.quit(:dont_save)
     pages.quit(:dont_save)
     

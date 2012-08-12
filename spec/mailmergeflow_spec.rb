@@ -15,6 +15,9 @@ describe "Mail Merge to PDF common flow" do
 
     mock_pages.should_receive(:open).with("/template/pages")
     mock_pages.should_receive(:mail_merge_to_pdf).with("/output/file.pdf")
+
+    mock_numbers.should_receive(:close).with(:dont_save)
+    mock_pages.should_receive(:close).with(:dont_save)
     
     mock_numbers.should_receive(:quit).with(:dont_save)
     mock_pages.should_receive(:quit).with(:dont_save)

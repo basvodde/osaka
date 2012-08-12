@@ -7,8 +7,9 @@ describe "Osaka::TypicalApplication" do
   
   subject { Osaka::TypicalApplication.new("ApplicationName") }
   
+  let(:wrapper) { subject.wrapper = double("Osaka::ApplicationWrapper") }
+  
   before (:each) do
-    @wrapper = subject.wrapper = double("Osaka::ApplicationWrapper")
     Osaka::ScriptRunner.enable_debug_prints
   end
   
@@ -99,7 +100,7 @@ describe "Osaka::TypicalApplication" do
     subject.should_receive(:duplicate_available?).and_return(true)
     subject.should_receive(:duplicate).and_return(new_instance)
     new_instance.should_receive(:wrapper).and_return(new_instance_wrapper)
-    new_instance_wrapper.should_receive(:clone).and_return(@wrapper)
+    new_instance_wrapper.should_receive(:clone).and_return(wrapper)
     
     subject.should_receive(:close)
     subject.should_receive(:save_dialog).and_return(save_dialog)
@@ -123,7 +124,7 @@ describe "Osaka::TypicalApplication" do
     subject.should_receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window", "New name duplicate window")
     expect_keystroke("s", [:command, :shift])  
     subject.should_receive(:clone).and_return(new_instance)
-    new_instance.should_receive(:wrapper).and_return(@wrapper)
+    new_instance.should_receive(:wrapper).and_return(wrapper)
     expect_keystroke!(:return)
     expect_set_current_window("New name duplicate window")
     subject.duplicate.should == new_instance
@@ -253,7 +254,7 @@ describe "Osaka::TypicalApplication" do
     end
     
     it "Should set the path when a full path is given" do
-      @wrapper.as_null_object
+      wrapper.as_null_object
       subject.should_receive(:set_filename)
       subject.should_receive(:set_folder).with("/path/second")
       subject.save("/path/second/name")
@@ -266,7 +267,7 @@ describe "Osaka::TypicalApplication" do
     end
     
     it "Should be able to set the filename" do
-      @wrapper.should_receive(:set).with('value', at.text_field(1).sheet(1), "filename")
+      wrapper.should_receive(:set).with('value', at.text_field(1).sheet(1), "filename")
       subject.set_filename("filename")
     end
     

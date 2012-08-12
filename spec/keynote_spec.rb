@@ -6,13 +6,10 @@ describe "Osaka::Keynote" do
   include(*Osaka::ApplicationWrapperExpectations)
 
   subject { Osaka::Keynote.new }
-  
-  before (:each) do
-    @wrapper = subject.wrapper = double("Osaka::ApplicationWrapper").as_null_object
-  end
+  let(:wrapper) {subject.wrapper = double("Osaka::ApplicationWrapper").as_null_object}
   
   it "Should create the correct keynote print dialog" do
-    subject.create_print_dialog("window").class.should == Osaka::KeynotePrintDialog
+    subject.create_print_dialog("window").should be_instance_of Osaka::KeynotePrintDialog
   end
   
   it "Should be possible to select all the slides in the default location" do

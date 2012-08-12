@@ -19,7 +19,7 @@ describe "Osaka::ApplicationWrapper" do
     subject.set_current_window "Window"
     new_wrapper = subject.clone
     new_wrapper.should == subject
-    new_wrapper.should_not.equal?(subject)
+    new_wrapper.should_not equal(subject)
   end
   
   it "Should be able to compare objects using names" do

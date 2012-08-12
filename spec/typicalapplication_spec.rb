@@ -125,6 +125,7 @@ describe "Osaka::TypicalApplication" do
     expect_keystroke("s", [:command, :shift])  
     subject.should_receive(:clone).and_return(new_instance)
     new_instance.should_receive(:wrapper).and_return(wrapper)
+    subject.should_receive(:sleep).with(0.4) # Avoiding Mountain Lion crash
     expect_keystroke!(:return)
     expect_set_current_window("New name duplicate window")
     subject.duplicate.should == new_instance

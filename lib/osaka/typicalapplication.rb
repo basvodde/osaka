@@ -155,6 +155,7 @@ module Osaka
       }
       new_instance = clone
       new_instance.wrapper.set_current_window(do_and_wait_for_new_window {
+        sleep(0.4) # This sleep is added because mountain lion keynote crashes without it!
         @wrapper.keystroke!(:return)
       })
       

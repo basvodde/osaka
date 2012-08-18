@@ -1,18 +1,18 @@
 
 module Osaka
   class PagesMailMergeDialog
-    attr_accessor :wrapper, :location
+    attr_accessor :control, :location
 
-    def initialize(location, wrapper)
+    def initialize(location, control)
       @location = location
-      @wrapper = wrapper
+      @control = control
     end
   
     def merge
-      @wrapper.click!(at.button("Merge").sheet(1))
+      control.click!(at.button("Merge").sheet(1))
       print_dialog_location = 'window "Print"' 
-      @wrapper.wait_until_exists!("menu button \"PDF\" of #{print_dialog_location}")
-      TypicalPrintDialog.new(print_dialog_location, @wrapper)
+      control.wait_until_exists!("menu button \"PDF\" of #{print_dialog_location}")
+      TypicalPrintDialog.new(print_dialog_location, control)
     end
         
     def set_merge_to_new_document
@@ -25,9 +25,9 @@ module Osaka
     
   private
     def set_merge_to_document_printer(value)
-      @wrapper.click(at.pop_up_button(2).sheet(1))
-      @wrapper.wait_until_exists!(at.menu_item(value).menu(1).pop_up_button(2).sheet(1))
-      @wrapper.click!(at.menu_item(value).menu(1).pop_up_button(2).sheet(1))
+      control.click(at.pop_up_button(2).sheet(1))
+      control.wait_until_exists!(at.menu_item(value).menu(1).pop_up_button(2).sheet(1))
+      control.click!(at.menu_item(value).menu(1).pop_up_button(2).sheet(1))
     end    
   end
 
@@ -38,9 +38,9 @@ module Osaka
     end
   
     def mail_merge
-      @wrapper.click_menu_bar(at.menu_item(20), "Edit")
-      @wrapper.wait_until_exists(at.button("Merge").sheet(1))
-      PagesMailMergeDialog.new(at.sheet(1), @wrapper)
+      control.click_menu_bar(at.menu_item(20), "Edit")
+      control.wait_until_exists(at.button("Merge").sheet(1))
+      PagesMailMergeDialog.new(at.sheet(1), control)
     end
     
     def mail_merge_to_pdf(filename)

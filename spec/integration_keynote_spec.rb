@@ -4,6 +4,9 @@ require 'osaka'
 describe "Integration tests for Keynote and Common Flows" do
   
   it "Should be able to do a combine with just one file" do
+    
+    # Osaka::ScriptRunner.enable_debug_prints(:short_html)
+    
     assets_directory =  File.join(File.dirname(__FILE__), "assets")
     
     keynote_file = File.join(assets_directory, "01_first_slides.key")

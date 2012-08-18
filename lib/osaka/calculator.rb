@@ -1,33 +1,34 @@
 
 module Osaka
   class Calculator < TypicalApplication
-    attr_accessor :wrapper
+
+    attr_accessor :control
     
     def initialize
       @name = "Calculator"
-      @wrapper = ApplicationWrapper.new("Calculator")
-      @wrapper.set_current_window(@name)
+      @control = RemoteControl.new("Calculator")
+      control.set_current_window(@name)
     end
     
     def activate
       super
-      if (@wrapper.current_window_name.empty?)
+      if (control.current_window_name.empty?)
         wait_for_new_window([])
-        @wrapper.set_current_window(@wrapper.window_list[0])
+        control.set_current_window(control.window_list[0])
       end
     end
     
     def click(key)
-      @wrapper.click!(at.button(key).group(2))
+      control.click!(at.button(key).group(2))
     end
     
     def key(k)
-      @wrapper.keystroke(k)
+      control.keystroke(k)
     end
     
     def result
-      @wrapper.wait_until_exists!(at.static_text(1).group(1))
-      @wrapper.get!('value', at.static_text(1).group(1))
+      control.wait_until_exists!(at.static_text(1).group(1))
+      control.get!('value', at.static_text(1).group(1))
     end
   end
 end

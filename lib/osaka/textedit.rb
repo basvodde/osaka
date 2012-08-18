@@ -1,19 +1,19 @@
 
 module Osaka
   class TextEdit < TypicalApplication
-    attr_accessor :wrapper
+    attr_accessor :control
     
     def initialize
       @name = "TextEdit"
-      @wrapper = ApplicationWrapper.new("TextEdit")
+      @control = RemoteControl.new("TextEdit")
     end
     
     def type(text)
-      @wrapper.keystroke(text)
+      control.keystroke(text)
     end
     
     def text
-      @wrapper.get!("value", 'text area 1 of scroll area 1')
+      control.get!("value", 'text area 1 of scroll area 1')
     end
     
   end

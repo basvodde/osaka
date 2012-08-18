@@ -4,7 +4,7 @@ module Osaka
   class InvalidLocation < RuntimeError
   end
   
-  class ApplicationWrapper
+  class RemoteControl
   
     attr_reader :name
     

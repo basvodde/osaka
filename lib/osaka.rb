@@ -1,9 +1,10 @@
 
 require 'osaka/scriptrunner'
 require 'osaka/location'
-require 'osaka/applicationwrapper'
-require 'osaka/applicationwrapperexpectations'
+require 'osaka/remotecontrol'
 require 'osaka/typicalapplication'
+require 'osaka/typicalsavedialog'
+require 'osaka/typicalprintdialog'
 require 'osaka/pages'
 require 'osaka/numbers'
 require 'osaka/keynote'
@@ -11,4 +12,5 @@ require 'osaka/calculator'
 require 'osaka/textedit'
 require 'osaka/mailmergeflow'
 require 'osaka/keynoteflow'
+require 'osaka/osakaexpectations'
 

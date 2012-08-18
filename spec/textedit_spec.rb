@@ -7,7 +7,7 @@ describe "TextEdit" do
 
   subject { Osaka::TextEdit.new }
 
-  let(:wrapper) { subject.wrapper = double("Osaka::ApplicationWrapper") }
+  let(:control) { subject.control = double("Osaka::ApplicationWrapper") }
 
   it "Should be able to type some text" do
     expect_keystroke('Hello World')

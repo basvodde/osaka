@@ -7,7 +7,7 @@ describe "Osaka::Pages" do
 
   subject { Osaka::Pages.new }
   
-  let (:wrapper) { subject.wrapper = double("Osaka::ApplicationWrapper").as_null_object}
+  let (:control) { subject.control = double("Osaka::ApplicationWrapper").as_null_object}
   
   it "Should be able to do mail merge to a PDF flow" do
     
@@ -23,14 +23,14 @@ describe "Osaka::Pages" do
   end
     
   it "Should be able to select the Mail Merge" do
-    wrapper.should_receive(:current_window_name).any_number_of_times.and_return("Pages.pages")
+    expect_current_window_name.any_number_of_times.and_return("Pages.pages")
     expect_click_menu_bar(at.menu_item(20), "Edit")
     expect_wait_until_exists(at.button("Merge").sheet(1))
     subject.mail_merge
   end
 
   it "Should click the merge button of the mail merge dialog" do
-    wrapper.should_receive(:current_window_name).any_number_of_times.and_return("Pages.pages")
+    expect_current_window_name.any_number_of_times.and_return("Pages.pages")
     expect_click!(at.button("Merge").sheet(1))
     expect_wait_until_exists!(at.menu_button("PDF").window("Print"))
     subject.mail_merge.merge
@@ -42,7 +42,7 @@ describe "Osaka::Pages Mail Merge dialog" do
   include(*Osaka::OsakaExpectations)
 
   subject { Osaka::PagesMailMergeDialog.new("", nil) }
-  let(:wrapper) {subject.wrapper = double("Osaka::ApplicationWrapper").as_null_object}
+  let(:control) {subject.control = double("Osaka::ApplicationWrapper").as_null_object}
   
   it "Should be able to set the mail merge dialog to merge to new document" do
     expect_click(at.pop_up_button(2).sheet(1))

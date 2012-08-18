@@ -6,17 +6,17 @@ describe "Mac GUI Calculator" do
   include(*Osaka::OsakaExpectations)
 
   subject { Osaka::Calculator.new }
-  let(:wrapper) { subject.wrapper = double("Osaka::ApplicationWrapper")}
+  let(:control) { subject.control = double("Osaka::RemoteControl")}
 
   it "Should be setting the window when starting the Calculator" do
     
     # TODO: Fix this duplication between this and TextEdit.
     
-    wrapper.should_receive(:activate)
-    wrapper.should_receive(:current_window_name).and_return("")
+    expect_activate
+    expect_current_window_name.and_return("")
     subject.should_receive(:wait_for_new_window).with([])
-    wrapper.should_receive(:window_list).and_return(["Calculator"])
-    wrapper.should_receive(:set_current_window).with("Calculator")
+    expect_window_list.and_return(["Calculator"])
+    expect_set_current_window("Calculator")
     subject.activate
   end
     
@@ -31,14 +31,14 @@ describe "Mac GUI Calculator" do
   end
   
   it "Should be able to quit the calculator" do
-    wrapper.should_receive(:running?).and_return(true)
-    wrapper.should_receive(:quit)
+    expect_running?.and_return(true)
+    expect_quit
     subject.quit
   end
   
   it "Should be able to get the value from the screen" do
     expect_wait_until_exists!(at.static_text(1).group(1))
-    wrapper.should_receive(:get!).with("value", at.static_text(1).group(1)).and_return("0")
+    expect_get!("value", at.static_text(1).group(1)).and_return("0")
     subject.result.should == "0"
   end
   

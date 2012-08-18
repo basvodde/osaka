@@ -7,7 +7,7 @@ describe "Osaka::TypicalApplication" do
   
   subject { Osaka::TypicalApplication.new("ApplicationName") }
   
-  let(:wrapper) { subject.wrapper = double("Osaka::ApplicationWrapper") }
+  let(:control) { subject.control = double("Osaka::RemoteControl") }
 
   before (:each) do
     Osaka::ScriptRunner.enable_debug_prints
@@ -20,6 +20,13 @@ describe "Osaka::TypicalApplication" do
   it "Should be able to clone TypicalApplications" do
     expect_clone
     subject.clone    
+  end
+  
+  it "Should be able to clone the typical applications and the remote controls will be different" do
+    subject.control.set_current_window "Original"
+    new_instance = subject.clone
+    new_instance.control.set_current_window "Clone"
+    subject.control.current_window_name.should == "Original"
   end
   
   it "Should pass the right open string to the application osascript" do
@@ -94,13 +101,13 @@ describe "Osaka::TypicalApplication" do
 
   it "Should be able to save as a file using the duplicate..." do
     new_instance = mock(:TypicalApplication)
-    new_instance_wrapper = mock(:ApplicationWrapper)
+    new_instance_control = mock(:RemoteControl)
     save_dialog = double("Osaka::TypicalSaveDialog").as_null_object
 
     subject.should_receive(:duplicate_available?).and_return(true)
     subject.should_receive(:duplicate).and_return(new_instance)
-    new_instance.should_receive(:wrapper).and_return(new_instance_wrapper)
-    new_instance_wrapper.should_receive(:clone).and_return(wrapper)
+    new_instance.should_receive(:control).and_return(new_instance_control)
+    new_instance_control.should_receive(:clone).and_return(control)
     
     subject.should_receive(:close)
     subject.should_receive(:save_dialog).and_return(save_dialog)
@@ -124,7 +131,7 @@ describe "Osaka::TypicalApplication" do
     subject.should_receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window", "New name duplicate window")
     expect_keystroke("s", [:command, :shift])  
     subject.should_receive(:clone).and_return(new_instance)
-    new_instance.should_receive(:wrapper).and_return(wrapper)
+    new_instance.should_receive(:control).and_return(control)
     subject.should_receive(:sleep).with(0.4) # Avoiding Mountain Lion crash
     expect_keystroke!(:return)
     expect_set_current_window("New name duplicate window")
@@ -170,8 +177,7 @@ describe "Osaka::TypicalApplication" do
     end
     
   end
-  
-  
+    
   it "Should be able to select all" do
     expect_keystroke("a", :command)
     subject.select_all
@@ -210,80 +216,4 @@ describe "Osaka::TypicalApplication" do
     end
   end
   
-  describe "Generic Print Dialog" do
-    
-    subject { Osaka::TypicalPrintDialog.new(at.sheet(1), double(:OSAApp).as_null_object) }
-
-    it "Should be able to save the PDF in a print dialog" do
-      save_dialog_mock = double(:GenericSaveDialog)
-      
-      expect_click!(at.menu_button("PDF").sheet(1)) 
-      expect_wait_until_exists!(at.menu(1).menu_button("PDF").sheet(1))
-      
-      expect_click!(at.menu_item(2).menu(1).menu_button("PDF").sheet(1))
-      expect_wait_until_exists!(at.window("Save"), at.sheet(1).window("Print")).and_return(at.window("Save"))
-
-      subject.should_receive(:create_save_dialog).with(at.window("Save"), subject.wrapper).and_return(save_dialog_mock)
-      save_dialog_mock.should_receive(:save).with("filename")
-      
-      expect_until_not_exists!(at.sheet(1))
-      expect_exists(at.checkbox(1).sheet(1)).and_return(true)
-      expect_click!(at.checkbox(1).sheet(1))
-      
-      subject.save_as_pdf("filename")
-    end
-  end
-  
-  describe "Generic Save Dialog" do
-    
-    subject { Osaka::TypicalSaveDialog.new(at.sheet(1), double("Osaka::ApplicationWrapper").as_null_object)}
-    
-    it "Should clone the wrapper and change the window name to Save" do
-      app_wrapper = double("Osaka::ApplicationWrapper")
-      app_cloned_wrapper = double("Osaka::ApplicationWrapper")
-      app_wrapper.should_receive(:clone).and_return(app_cloned_wrapper)
-      Osaka::TypicalSaveDialog.new(at.sheet(1), app_wrapper)
-    end
-    
-    it "Should set the filename in the test field" do
-      subject.should_receive(:set_filename).with("filename")
-      subject.should_receive(:click_save)
-      subject.should_not_receive(:set_folder)
-      subject.save("filename")
-    end
-    
-    it "Should pick only the base filename when a path is given" do
-      subject.should_receive(:set_filename).with("filename")
-      subject.should_receive(:set_folder)
-      subject.should_receive(:click_save)
-      subject.save("/path/filename")
-    end
-    
-    it "Should set the path when a full path is given" do
-      wrapper.as_null_object
-      subject.should_receive(:set_filename)
-      subject.should_receive(:set_folder).with("/path/second")
-      subject.save("/path/second/name")
-    end
-    
-    it "Should be able to click save" do
-      expect_click(at.button("Save").sheet(1))
-      expect_wait_until_not_exists(at.sheet(1))
-      subject.click_save
-    end
-    
-    it "Should be able to set the filename" do
-      wrapper.should_receive(:set).with('value', at.text_field(1).sheet(1), "filename")
-      subject.set_filename("filename")
-    end
-    
-    it "Should be able to set the path" do
-      expect_keystroke("g", [ :command, :shift ])
-      expect_wait_until_exists(at.sheet(1).sheet(1))
-      expect_set("value", at.text_field(1).sheet(1).sheet(1), "path")
-      expect_click(at.button("Go").sheet(1).sheet(1))
-      expect_wait_until_not_exists(at.sheet(1).sheet(1))
-      subject.set_folder("path")
-    end
-  end
 end

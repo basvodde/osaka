@@ -5,8 +5,8 @@ describe "Osakas Ruby expectations" do
 
   include(*Osaka::OsakaExpectations)
 
-  subject { double("Wrapper") }
-  let(:wrapper) { subject }
+  subject { double("Control") }
+  let(:control) { subject }
   
   it "Wait until exists can be called without a code block" do
     expect_wait_until_exists!(at.window(1))

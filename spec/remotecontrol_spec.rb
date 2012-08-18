@@ -1,14 +1,14 @@
 
 require 'osaka'
 
-describe "Osaka::ApplicationWrapper" do
+describe "Osaka::RemoteControl" do
 
   include(*Osaka::OsakaExpectations)
 
   name = "ApplicationName"
 
-  subject { Osaka::ApplicationWrapper.new(name) }
-  let(:wrapper) { subject }
+  subject { Osaka::RemoteControl.new(name) }
+  let(:control) { subject }
 
   before (:each) do
     Osaka::ScriptRunner.enable_debug_prints
@@ -37,21 +37,29 @@ describe "Osaka::ApplicationWrapper" do
 
   context "Able to compare different remote controls" do
     
-    it "Should be able to clone wrappers" do
+    it "Should be able to clone controls" do
       subject.set_current_window "Window"
-      new_wrapper = subject.clone
-      new_wrapper.should == subject
-      new_wrapper.should_not equal(subject)
+      new_control = subject.clone
+      new_control.should == subject
+      new_control.should_not equal(subject)
+    end
+    
+    it "Should be having different current window instances when cloning" do
+      subject.set_current_window "Window"
+      new_control = subject.clone
+      new_control.set_current_window "Not the same"
+      subject.current_window_name.should_not == new_control.current_window_name
+      
     end
   
     it "Should be able to compare objects using names" do
-      subject.should == Osaka::ApplicationWrapper.new(name)
-      subject.should_not == Osaka::ApplicationWrapper.new("otherName")
+      subject.should == Osaka::RemoteControl.new(name)
+      subject.should_not == Osaka::RemoteControl.new("otherName")
     end
   
     it "Should be able to compare objects using window" do
-      equal_object = Osaka::ApplicationWrapper.new(name)
-      unequal_object = Osaka::ApplicationWrapper.new(name)
+      equal_object = Osaka::RemoteControl.new(name)
+      unequal_object = Osaka::RemoteControl.new(name)
       equal_object.set_current_window("Window")
       subject.set_current_window("Window")
       unequal_object.set_current_window "Another Window"

@@ -68,9 +68,9 @@ module Osaka
       end
     end
     
-    def wait_until_exists(*locations)
+    def wait_until_exists(*locations, &action)
       activate
-      wait_until_exists!(locations)
+      wait_until_exists!(*locations, &action)
     end
     
     def wait_until_exists!(*locations, &action)
@@ -84,7 +84,7 @@ module Osaka
 
     def wait_until_not_exists(*locations, &action)
       activate
-      wait_until_not_exists!(*locations, action)
+      wait_until_not_exists!(*locations, &action)
     end
 
     def wait_until_not_exists!(*locations, &action)
@@ -116,7 +116,7 @@ module Osaka
     def keystroke(key, modifier_keys = [])
       activate
       focus
-      keystroke!(key, modifier_keys)
+      (modifier_keys == []) ? keystroke!(key) : keystroke!(key, modifier_keys)
     end
         
     def click!(element)

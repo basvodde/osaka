@@ -3,7 +3,7 @@ require 'osaka'
 
 describe "Mac GUI Calculator" do
 
-  include(*Osaka::ApplicationWrapperExpectations)
+  include(*Osaka::OsakaExpectations)
 
   subject { Osaka::Calculator.new }
   let(:wrapper) { subject.wrapper = double("Osaka::ApplicationWrapper")}

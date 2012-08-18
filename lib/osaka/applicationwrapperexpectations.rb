@@ -1,6 +1,11 @@
 
 module Osaka
-  module ApplicationWrapperExpectations
+  module OsakaExpectations
+        
+    def expect_execute_osascript(command = nil)
+      return Osaka::ScriptRunner.should_receive(:execute).with(command) unless command.nil?
+      Osaka::ScriptRunner.should_receive(:execute)
+    end
     
     def expect_clone
       wrapper.should_receive(:clone)
@@ -32,6 +37,14 @@ module Osaka
     
     def expect_set(element, location, value)
       wrapper.should_receive(:set).with(element, location, value)
+    end
+
+    def expect_set!(element, location, value)
+      wrapper.should_receive(:set!).with(element, location, value)
+    end
+    
+    def expect_get_app!(element)
+      wrapper.should_receive(:get_app!).with(element)
     end
     
     def expect_keystroke(key, modifier = [])
@@ -67,13 +80,21 @@ module Osaka
     def expect_system_event(event)
       wrapper.should_receive(:system_event).with(event)
     end
+
+    def expect_system_event!(event)
+      wrapper.should_receive(:system_event!).with(event)
+    end
     
     def expect_exists(location)
       wrapper.should_receive(:exists).with(location)
     end
     
-    def expect_wait_until_exists(location)
-      wrapper.should_receive(:wait_until_exists).with(location)
+    def expect_not_exists(location)
+      wrapper.should_receive(:not_exists).with(location)
+    end
+    
+    def expect_wait_until_exists(*location)
+      wrapper.should_receive(:wait_until_exists).with(*location)
     end
 
     def expect_wait_until_exists!(*location)
@@ -82,6 +103,10 @@ module Osaka
     
     def expect_wait_until_not_exists(location)
       wrapper.should_receive(:wait_until_not_exists).with(location)
+    end
+
+    def expect_wait_until_not_exists!(location, action)
+      wrapper.should_receive(:wait_until_not_exists!).with(location)
     end
     
     def expect_until_not_exists!(element)

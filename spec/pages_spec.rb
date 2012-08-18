@@ -3,7 +3,7 @@ require 'osaka'
 
 describe "Osaka::Pages" do
 
-  include(*Osaka::ApplicationWrapperExpectations)
+  include(*Osaka::OsakaExpectations)
 
   subject { Osaka::Pages.new }
   
@@ -39,7 +39,7 @@ end
 
 describe "Osaka::Pages Mail Merge dialog" do
   
-  include(*Osaka::ApplicationWrapperExpectations)
+  include(*Osaka::OsakaExpectations)
 
   subject { Osaka::PagesMailMergeDialog.new("", nil) }
   let(:wrapper) {subject.wrapper = double("Osaka::ApplicationWrapper").as_null_object}

@@ -3,12 +3,12 @@ require 'osaka'
 
 describe "Osaka::TypicalApplication" do
 
-  include(*Osaka::ApplicationWrapperExpectations)
+  include(*Osaka::OsakaExpectations)
   
   subject { Osaka::TypicalApplication.new("ApplicationName") }
   
   let(:wrapper) { subject.wrapper = double("Osaka::ApplicationWrapper") }
-  
+
   before (:each) do
     Osaka::ScriptRunner.enable_debug_prints
   end
@@ -16,7 +16,7 @@ describe "Osaka::TypicalApplication" do
   after (:each) do
     Osaka::ScriptRunner.disable_debug_prints
   end
-  
+    
   it "Should be able to clone TypicalApplications" do
     expect_clone
     subject.clone    
@@ -152,20 +152,25 @@ describe "Osaka::TypicalApplication" do
     subject.focus
   end
   
-  it "Should be able to copy" do
-    expect_keystroke("c", :command)
-    subject.copy
+  context "Copy pasting" do
+
+    it "Should be able to copy" do
+      expect_keystroke("c", :command)
+      subject.copy
+    end
+
+    it "Should be able to paste" do
+      expect_keystroke("v", :command)
+      subject.paste  
+    end
+
+    it "Should be able to cut" do
+      expect_keystroke("x", :command)
+      subject.cut
+    end
+    
   end
   
-  it "Should be able to paste" do
-    expect_keystroke("v", :command)
-    subject.paste  
-  end
-
-  it "Should be able to cut" do
-    expect_keystroke("x", :command)
-    subject.cut
-  end
   
   it "Should be able to select all" do
     expect_keystroke("a", :command)

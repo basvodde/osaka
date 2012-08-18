@@ -3,7 +3,7 @@ require 'osaka'
 
 describe "Osaka::Keynote" do
 
-  include(*Osaka::ApplicationWrapperExpectations)
+  include(*Osaka::OsakaExpectations)
 
   subject { Osaka::Keynote.new }
   let(:wrapper) {subject.wrapper = double("Osaka::ApplicationWrapper").as_null_object}

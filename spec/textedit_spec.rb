@@ -3,7 +3,7 @@ require 'osaka'
 
 describe "TextEdit" do
 
-  include(*Osaka::ApplicationWrapperExpectations)
+  include(*Osaka::OsakaExpectations)
 
   subject { Osaka::TextEdit.new }
 

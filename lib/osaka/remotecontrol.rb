@@ -1,4 +1,6 @@
 
+require 'timeout'
+
 module Osaka
 
   class InvalidLocation < RuntimeError
@@ -60,11 +62,18 @@ module Osaka
     end
         
     def wait_until(locations, action)
-      while(true)
-          locations.flatten.each { |location| 
-            return location if yield location
+      
+      begin
+        Timeout::timeout(5) {
+          while(true)
+              locations.flatten.each { |location| 
+                return location if yield location
+            }
+            action.() unless action.nil?
+          end
         }
-        action.() unless action.nil?
+      rescue Exception => e
+        raise Osaka::TimeoutError, "Timed out while waiting for: #{locations.to_s}"
       end
     end
     

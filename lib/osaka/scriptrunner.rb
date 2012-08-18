@@ -7,6 +7,9 @@ module Osaka
   class SystemCommandFailed < RuntimeError
   end
 
+  class TimeoutError < RuntimeError
+  end
+
   class VersioningError < RuntimeError
   end
   

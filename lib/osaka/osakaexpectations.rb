@@ -93,12 +93,12 @@ module Osaka
       control.should_receive(:system_event!).with(event)
     end
     
-    def expect_exists(location)
-      control.should_receive(:exists).with(location)
+    def expect_exists?(location)
+      control.should_receive(:exists?).with(location)
     end
     
-    def expect_not_exists(location)
-      control.should_receive(:not_exists).with(location)
+    def expect_not_exists?(location)
+      control.should_receive(:not_exists?).with(location)
     end
     
     def expect_wait_until_exists(*location)

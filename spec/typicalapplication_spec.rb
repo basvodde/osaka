@@ -89,7 +89,7 @@ describe "Osaka::TypicalApplication" do
     it "Should be able to quit without saving" do
       expect_running?.and_return(true, true, false)
       expect_quit
-      expect_exists(at.sheet(1)).and_return(true)
+      expect_exists?(at.sheet(1)).and_return(true)
       expect_click!(at.button("Don’t Save").sheet(1))
       subject.quit(:dont_save)  
     end
@@ -140,7 +140,7 @@ describe "Osaka::TypicalApplication" do
     end
   
     it "Should be able to check whether Duplicate is supported" do
-      expect_exists(at.menu_item("Duplicate").menu(1).menu_bar_item("File").menu_bar(1)).and_return(true)
+      expect_exists?(at.menu_item("Duplicate").menu(1).menu_bar_item("File").menu_bar(1)).and_return(true)
       subject.duplicate_available?.should == true
     end
   
@@ -163,7 +163,7 @@ describe "Osaka::TypicalApplication" do
     end
     
     it "Should be able to check whether the save will pop up a dialog or not" do
-      expect_exists(at.menu_item("Save…").menu(1).menu_bar_item("File").menu_bar(1)).and_return(true)
+      expect_exists?(at.menu_item("Save…").menu(1).menu_bar_item("File").menu_bar(1)).and_return(true)
       subject.save_pops_up_dialog?.should == true
     end
 

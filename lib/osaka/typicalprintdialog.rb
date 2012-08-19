@@ -24,7 +24,7 @@ module Osaka
         # Weird, but sometimes the dialog "hangs around" and clicking this checkbox will make it go away.
         # Anyone who knows a better solution, please let me know!
         # This is for snow leopard
-        control.click!(at.checkbox(1)) if control.exists(at.checkbox(1))
+        control.click!(at.checkbox(1)) if control.exists?(at.checkbox(1))
       }
     end
   end

@@ -24,7 +24,7 @@ describe "Osaka::TypicalPrintDialog" do
     save_dialog_mock.should_receive(:save).with("filename")
     
     expect_until_not_exists!(at.window("Print"))
-    expect_exists(at.checkbox(1)).and_return(true)
+    expect_exists?(at.checkbox(1)).and_return(true)
     expect_click!(at.checkbox(1))
     
     subject.save_as_pdf("filename")

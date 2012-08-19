@@ -52,7 +52,7 @@ module Osaka
     end
     
     def close_dialog_sheet_with_dont_save
-      if (control.exists(at.sheet(1)))
+      if (control.exists?(at.sheet(1)))
         control.click!(at.button("Don’t Save").sheet(1))
       end
     end
@@ -82,7 +82,7 @@ module Osaka
     end
     
     def duplicate_available?
-      control.exists(at.menu_item("Duplicate").menu(1).menu_bar_item("File").menu_bar(1))
+      control.exists?(at.menu_item("Duplicate").menu(1).menu_bar_item("File").menu_bar(1))
     end
     
     def duplicate
@@ -106,7 +106,7 @@ module Osaka
     end
     
     def save_pops_up_dialog?
-      control.exists(at.menu_item("Save…").menu(1).menu_bar_item("File").menu_bar(1))
+      control.exists?(at.menu_item("Save…").menu(1).menu_bar_item("File").menu_bar(1))
     end
     
     def save_dialog

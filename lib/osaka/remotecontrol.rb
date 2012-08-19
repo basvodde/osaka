@@ -54,11 +54,11 @@ module Osaka
       system_event!(event)
     end
 
-    def exists(location)
+    def exists?(location)
       system_event!("exists #{construct_location(location)}").strip == "true"
     end
 
-    def not_exists(location)
+    def not_exists?(location)
       system_event!("not exists #{construct_location(location)}").strip == "true"
     end
         
@@ -85,7 +85,7 @@ module Osaka
     
     def wait_until_exists!(*locations, &action)
       wait_until(locations, action) { |location|
-        exists(location)
+        exists?(location)
       }
     end
     
@@ -99,7 +99,7 @@ module Osaka
 
     def wait_until_not_exists!(*locations, &action)
       wait_until(locations, action) { |location|
-        not_exists(location)
+        not_exists?(location)
       }
     end
 
@@ -152,7 +152,7 @@ module Osaka
     end
     
     def focus      
-      if (base_location.to_s.empty? || not_exists(base_location))
+      if (base_location.to_s.empty? || not_exists?(base_location))
         currently_active_window = window_list[0]
         currently_active_window ||= ""
         @base_location = (currently_active_window.to_s.empty?) ? Location.new("") : at.window(currently_active_window)

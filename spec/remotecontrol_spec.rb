@@ -100,49 +100,49 @@ describe "Osaka::RemoteControl" do
     
     it "Should be able to check whether a location exists" do
       expect_execute_osascript(/exists button 1/).and_return("true\n")
-      subject.exists(at.button(1)).should be_true
+      subject.exists?(at.button(1)).should be_true
     end
 
     it "Should be able to check whether a location does not exists" do
       expect_execute_osascript(/not exists window 1/).and_return("true\n")
-      subject.not_exists(at.window(1)).should be_true
+      subject.not_exists?(at.window(1)).should be_true
     end
   end
   
   context "Waiting and doing until elements exist or not" do
   
     it "Should be able to wait for only one location to exist" do
-      expect_exists(at.button(1)).and_return(false, false, true)
+      expect_exists?(at.button(1)).and_return(false, false, true)
       subject.wait_until_exists!(at.button(1)).should == at.button(1)
     end
 
     it "Should be able to wait for only one location to exist (with activate)" do
       expect_activate
-      expect_exists(at.button(1)).and_return(false, false, true)
+      expect_exists?(at.button(1)).and_return(false, false, true)
       subject.wait_until_exists(at.button(1)).should == at.button(1)
     end
       
     it "Should be able to wait until multiple locations exists and return the one that happened" do
-      expect_exists(at.button(1)).and_return(false, false, false)
-      expect_exists(at.sheet(5)).and_return(false, false, true)
+      expect_exists?(at.button(1)).and_return(false, false, false)
+      expect_exists?(at.sheet(5)).and_return(false, false, true)
       subject.wait_until_exists!(at.button(1), at.sheet(5)).should == at.sheet(5)
     end
 
     it "Should be able to wait until multiple locations exists and return the one that happened (with activate)" do
       expect_activate
-      expect_exists(at.button(1)).and_return(false, false)
-      expect_exists(at.sheet(5)).and_return(false, true)
+      expect_exists?(at.button(1)).and_return(false, false)
+      expect_exists?(at.sheet(5)).and_return(false, true)
       subject.wait_until_exists(at.button(1), at.sheet(5)).should == at.sheet(5)
     end
     
     it "Should be able to wait for one location to NOT exist" do
-      expect_not_exists(at.button(1)).and_return(false, false, true)
+      expect_not_exists?(at.button(1)).and_return(false, false, true)
       subject.wait_until_not_exists!(at.button(1)).should == at.button(1)      
     end
 
     it "Should be able to wait for one location to NOT exist (with activate)" do
       expect_activate
-      expect_not_exists(at.button(4)).and_return(false, true)
+      expect_not_exists?(at.button(4)).and_return(false, true)
       subject.wait_until_not_exists(at.button(4)).should == at.button(4)      
     end
     
@@ -352,7 +352,7 @@ describe "Osaka::RemoteControl" do
 
     it "Shouldn't initialize current window when it is already set" do
       subject.set_current_window("1")
-      expect_not_exists(at.window("1")).and_return(false)
+      expect_not_exists?(at.window("1")).and_return(false)
       expect_focus!
       
       subject.focus
@@ -361,7 +361,7 @@ describe "Osaka::RemoteControl" do
     
     it "Should re-initialize the current window when it doesn't exist anymore" do
       subject.set_current_window("1")
-      expect_not_exists(at.window("1")).and_return(true)
+      expect_not_exists?(at.window("1")).and_return(true)
       expect_window_list.and_return(["2"])
       expect_focus!
             
@@ -371,7 +371,7 @@ describe "Osaka::RemoteControl" do
 
     it "Should focus the current window when it doesn't have focus" do
       subject.set_current_window("1")
-      expect_not_exists(at.window("1")).and_return(false)
+      expect_not_exists?(at.window("1")).and_return(false)
       expect_focus!
       subject.focus
     end

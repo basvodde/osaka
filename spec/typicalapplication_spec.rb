@@ -7,7 +7,7 @@ describe "Osaka::TypicalApplication" do
   
   subject { Osaka::TypicalApplication.new("ApplicationName") }
   
-  let(:control) { subject.control = double("Osaka::RemoteControl") }
+  let(:control) { subject.control = mock("RemoteControl", :name => "ApplicationName", :base_location => "") }
 
   before (:each) do
     Osaka::ScriptRunner.enable_debug_prints
@@ -109,8 +109,8 @@ describe "Osaka::TypicalApplication" do
   
   context "Save and duplicate documents" do
     
-    let(:save_dialog) { double("TypicalSaveDialog") }
-    let(:new_instance_control) { mock(:RemoteControl) }
+    let(:save_dialog) { mock("Typical Save Dialog") }
+    let(:new_instance_control) { mock("RemoteControl") }
     
     it "Should be able to save" do
       expect_keystroke("s", :command)

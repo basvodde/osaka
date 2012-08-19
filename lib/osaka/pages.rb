@@ -10,9 +10,9 @@ module Osaka
   
     def merge
       control.click!(at.button("Merge").sheet(1))
-      print_dialog_location = 'window "Print"' 
-      control.wait_until_exists!("menu button \"PDF\" of #{print_dialog_location}")
-      TypicalPrintDialog.new(print_dialog_location, control)
+      print_dialog_location = at.window("Print")
+      control.wait_until_exists!(at.menu_button("PDF") + print_dialog_location)
+      TypicalPrintDialog.new(control.name, print_dialog_location)
     end
         
     def set_merge_to_new_document

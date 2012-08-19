@@ -320,42 +320,66 @@ describe "Osaka::RemoteControl" do
     
   end
 
-  describe "Dealing with the current window and window_lists" do
+  describe "Dealing with base locations and window lists" do
+
+    it "Should be possible to pass a base location in the creation" do
+      subject = Osaka::RemoteControl.new("Application", at.window("Window"))
+      subject.base_location.should == at.window("Window")
+    end
 
     it "Should be able to get an array of multiple window names" do
       expect_get_app!("windows").and_return("window one of application process process, window two of application process process\n")
       subject.window_list.should == ["one", "two"]    
     end
-
-    it "Should initialize the current window when it is not focused yet" do
-      expect_window_list.and_return(["1"])    
-      subject.focus
-      subject.current_window_name.should == "1"
+    
+    it "Should be able to focus the currently active window" do
+      subject.base_location = at.sheet(1).window("boo")
+      expect_system_event!("set value of attribute \"AXMain\" of window \"boo\" to true")
+      subject.focus!
     end
-
-    it "Shouldn't initialize current window when it is already set" do
-      subject.set_current_window("1")
-      expect_window_list.and_return(["2", "1"])
-      expect_set!("value", "attribute \"AXMain\"", true)
-      
+    
+    it "Should initialize the current window when it is not focused yet" do      
+      expect_window_list.and_return(["1"])
+      expect_focus!
       subject.focus
       subject.current_window_name.should == "1"
     end
     
+    it "Should be able to extract the current window name also when the base location has more than just a window " do
+      subject.base_location = at.sheet(1).window("Window")
+      subject.current_window_name.should == "Window"      
+    end
+
+    it "Shouldn't initialize current window when it is already set" do
+      subject.set_current_window("1")
+      expect_not_exists(at.window("1")).and_return(false)
+      expect_focus!
+      
+      subject.focus
+      subject.base_location.should == at.window("1")
+    end
+    
     it "Should re-initialize the current window when it doesn't exist anymore" do
       subject.set_current_window("1")
-
+      expect_not_exists(at.window("1")).and_return(true)
       expect_window_list.and_return(["2"])
+      expect_focus!
+            
       subject.focus
       subject.current_window_name.should == "2"    
     end
 
     it "Should focus the current window when it doesn't have focus" do
       subject.set_current_window("1")
-
-      expect_window_list.and_return(["2", "1"])
-      expect_set!("value", "attribute \"AXMain\"", true )
+      expect_not_exists(at.window("1")).and_return(false)
+      expect_focus!
       subject.focus
     end
+    
+    it "Shouldn't focus when there is no window set at all" do
+      expect_window_list.and_return([""])
+      subject.focus
+    end
+    
   end 
 end

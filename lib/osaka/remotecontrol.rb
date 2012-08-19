@@ -9,14 +9,15 @@ module Osaka
   class RemoteControl
   
     attr_reader :name
+    attr_accessor :base_location
     
-    def initialize(name)
+    def initialize(name, base_location = Location.new(""))
       @name = name
-      @window = Location.new("")
+      @base_location = base_location
     end
     
     def ==(obj)
-      @name == obj.name && current_window_name == obj.current_window_name
+      @name == obj.name && base_location == obj.base_location
     end
     
     def tell(command)
@@ -150,21 +151,23 @@ module Osaka
       check_output( system_event!("set #{element}#{construct_prefixed_location(location)} to #{encoded_value}"), "set")
     end
     
-    def focus
-      current_windows = window_list
-      currently_active_window = current_windows[0]
-      currently_active_window ||= ""
-      
-      if current_window_invalid?(current_windows)
-        @window = at.window(currently_active_window) unless currently_active_window.nil?
+    def focus      
+      if (base_location.to_s.empty? || not_exists(base_location))
+        currently_active_window = window_list[0]
+        currently_active_window ||= ""
+        @base_location = (currently_active_window.to_s.empty?) ? Location.new("") : at.window(currently_active_window)
       end
 
-      set!("value", "attribute \"AXMain\"", true) unless currently_active_window == current_window_name
+      focus!
+    end
+    
+    def focus!
+      system_event!("set value of attribute \"AXMain\" of #{base_location.top_level_element} to true") unless base_location.top_level_element.to_s.empty?
     end
     
     def form_location_with_window(location)
       new_location = Location.new(location)
-      new_location += @window unless new_location.has_top_level_element?
+      new_location += @base_location unless new_location.has_top_level_element?
       new_location
     end
     
@@ -197,22 +200,17 @@ module Osaka
     end 
     
     def set_current_window(window_name)
-      @window = at.window(window_name)
+      @base_location = at.window(window_name)
     end
     
     def current_window_name
-      matchdata = @window.to_s.match(/^window "(.*)"/)
+      matchdata = @base_location.to_s.match(/window "(.*)"/)
       return "" if matchdata.nil? || matchdata[1].nil?
       matchdata[1]
     end
     
-    def current_window_location
-      @window
-    end
-    
     def current_window_invalid?(window_list)
-      @window.to_s.empty? || window_list.index(current_window_name).nil?
+      @base_location.to_s.empty? || window_list.index(current_window_name).nil?
     end
-    
   end
 end

@@ -37,7 +37,7 @@ module Osaka
 
     def wait_for_window_and_dialogs_to_close(option)
       if (option != :user_chose)
-        control.until_not_exists!(control.current_window_location) {
+        control.until_not_exists!(control.base_location) {
           close_dialog_sheet_with_dont_save
         }
       end
@@ -116,7 +116,7 @@ module Osaka
       else
         control.keystroke("s", [:command, :shift]).wait_until_exists(at.sheet(1))
       end
-      create_save_dialog(at.sheet(1))
+      create_save_dialog(at.sheet(1) + control.base_location)
     end
     
     def save_as(filename)
@@ -164,16 +164,16 @@ module Osaka
     end
     
     def create_print_dialog(location)
-      TypicalPrintDialog.new(location, control)
+      TypicalPrintDialog.new(control.name, location)
     end
     
     def create_save_dialog(location)
-      TypicalSaveDialog.new(location, control)
+      TypicalSaveDialog.new(control.name, location)
     end
   
     def print_dialog
       control.keystroke("p", :command).wait_until_exists(at.sheet(1))
-      create_print_dialog(at.sheet(1))
+      create_print_dialog(at.sheet(1) + control.base_location)
     end
   
   end

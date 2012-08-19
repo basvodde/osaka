@@ -18,6 +18,10 @@ module Osaka
     def expect_focus
       control.should_receive(:focus)
     end
+
+    def expect_focus!
+      control.should_receive(:focus!)
+    end
     
     def expect_set_current_window(name)
       control.should_receive(:set_current_window).with(name)

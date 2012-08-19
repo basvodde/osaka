@@ -5,7 +5,7 @@ describe "Osakas Ruby expectations" do
 
   include(*Osaka::OsakaExpectations)
 
-  subject { double("Control") }
+  subject { mock("RemoteControl") }
   let(:control) { subject }
   
   it "Wait until exists can be called without a code block" do

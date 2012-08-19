@@ -17,6 +17,10 @@ module Osaka
       Location.new(to_s + " of " + other_location.to_s)
     end
     
+    def top_level_element
+      Location.new(@location_name[/window (.*)$/])
+    end
+    
     def to_s
       @location_name
     end

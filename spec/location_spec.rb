@@ -13,6 +13,12 @@ describe "Location path for an applescript command" do
     location.to_s.should == "location"
   end
   
+  it "Should be able to get the top-level element out" do
+    location = at.sheet(1).sheet(2).window("three")
+    location.top_level_element.should == at.window("three")
+  end
+  
+  
   it "Should be able to create locations using at" do
     at.button(1).to_s.should == "button 1"
   end

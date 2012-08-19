@@ -6,7 +6,7 @@ describe "Osaka::Keynote" do
   include(*Osaka::OsakaExpectations)
 
   subject { Osaka::Keynote.new }
-  let(:control) {subject.control = double("Osaka::RemoteControl").as_null_object}
+  let(:control) {subject.control = mock("RemoteControl").as_null_object}
   
   it "Should create the correct keynote print dialog" do
     subject.create_print_dialog("window").should be_instance_of Osaka::KeynotePrintDialog

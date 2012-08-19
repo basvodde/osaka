@@ -3,7 +3,7 @@ require "osaka"
 
 describe "Common flows in keynote" do
 
-  let(:mock_keynote) { double(:Keynote)}
+  let(:mock_keynote) { mock("First keynote")}
 
   it "Should be able to combine just one single file" do
     Osaka::Keynote.should_receive(:new).and_return(mock_keynote)
@@ -15,8 +15,8 @@ describe "Common flows in keynote" do
   end
   
   it "Should be able to combine multiple files in one result" do
-    mock2_keynote = double(:Keynote)
-    mock3_keynote = double(:Keynote)
+    mock2_keynote = mock("Second keynote")
+    mock3_keynote = mock("Third keynote")
     Osaka::Keynote.should_receive(:new).and_return(mock_keynote, mock2_keynote, mock3_keynote)  
     mock_keynote.should_receive(:open).with("one_file.key")
     mock_keynote.should_receive(:save_as).with("result.key")
@@ -50,7 +50,7 @@ describe "Common flows in keynote" do
   it "Should be able to combine multiple files from one directory sorted with pattern" do
     files_in_dir = [".", "..", "05_file.key", "02key.wrong", "another", "01hey.key", "last"]
     files_in_dir_to_be_used = ["dirname/01hey.key", "dirname/05_file.key"]
-    mocked_dir = double(:Dir)
+    mocked_dir = mock("Directory with keynote files")
     Dir.should_receive(:new).with("dirname").and_return(mocked_dir)
     mocked_dir.should_receive(:entries).and_return(files_in_dir)
     CommonFlows.should_receive(:keynote_combine_files).with("results.key", files_in_dir_to_be_used)

@@ -12,7 +12,7 @@ module Osaka
     end
 
     def create_print_dialog(location)
-      KeynotePrintDialog.new(location, control)
+      KeynotePrintDialog.new(control.name, at.window("Print"))
     end
     
     def select_all_slides

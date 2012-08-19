@@ -7,7 +7,7 @@ describe "TextEdit" do
 
   subject { Osaka::TextEdit.new }
 
-  let(:control) { subject.control = double("Osaka::ApplicationWrapper") }
+  let(:control) { subject.control = mock("RemoteControl") }
 
   it "Should be able to type some text" do
     expect_keystroke('Hello World')

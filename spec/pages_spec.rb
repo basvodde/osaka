@@ -7,12 +7,12 @@ describe "Osaka::Pages" do
 
   subject { Osaka::Pages.new }
   
-  let (:control) { subject.control = double("Osaka::ApplicationWrapper").as_null_object}
+  let (:control) { subject.control = mock("Remote Control").as_null_object}
   
   it "Should be able to do mail merge to a PDF flow" do
     
-    mail_merge_dialog = double(:PagesMailMergeDialog)
-    print_dialog = double(:GenericPrintDialog)
+    mail_merge_dialog = mock("Pages Mail Merge Dialog")
+    print_dialog = mock("Generic Print Dialog")
     
     subject.should_receive(:mail_merge).and_return(mail_merge_dialog)
     mail_merge_dialog.should_receive(:merge).and_return(print_dialog)
@@ -42,7 +42,7 @@ describe "Osaka::Pages Mail Merge dialog" do
   include(*Osaka::OsakaExpectations)
 
   subject { Osaka::PagesMailMergeDialog.new("", nil) }
-  let(:control) {subject.control = double("Osaka::ApplicationWrapper").as_null_object}
+  let(:control) {subject.control = mock("RemoteControl").as_null_object}
   
   it "Should be able to set the mail merge dialog to merge to new document" do
     expect_click(at.pop_up_button(2).sheet(1))

@@ -4,15 +4,8 @@ require 'osaka'
 describe "Osaka::TypicalSaveDialog" do
 
   include(*Osaka::OsakaExpectations)
-  subject { Osaka::TypicalSaveDialog.new(at.sheet(1), double("Osaka::RemoteControl").as_null_object)}
-  let(:control) { subject.control = double("Osaka::RemoteControl") }
-  
-  it "Should clone the control and change the window name to Save" do
-    app_control = double("Osaka::RemoteControl")
-    app_cloned_control = double("Osaka::RemoteControl")
-    app_control.should_receive(:clone).and_return(app_cloned_control)
-    Osaka::TypicalSaveDialog.new(at.sheet(1), app_control)
-  end
+  subject { Osaka::TypicalSaveDialog.new("Application", at.sheet(1))}
+  let(:control) { subject.control = mock("RemoteControl", :base_location => at.sheet(1)) }
   
   it "Should set the filename in the test field" do
     subject.should_receive(:set_filename).with("filename")
@@ -36,22 +29,22 @@ describe "Osaka::TypicalSaveDialog" do
   end
   
   it "Should be able to click save" do
-    expect_click(at.button("Save").sheet(1))
+    expect_click(at.button("Save"))
     expect_wait_until_not_exists(at.sheet(1))
     subject.click_save
   end
   
   it "Should be able to set the filename" do
-    control.should_receive(:set).with('value', at.text_field(1).sheet(1), "filename")
+    control.should_receive(:set).with('value', at.text_field(1), "filename")
     subject.set_filename("filename")
   end
   
   it "Should be able to set the path" do
     expect_keystroke("g", [ :command, :shift ])
-    expect_wait_until_exists(at.sheet(1).sheet(1))
-    expect_set("value", at.text_field(1).sheet(1).sheet(1), "path")
-    expect_click(at.button("Go").sheet(1).sheet(1))
-    expect_wait_until_not_exists(at.sheet(1).sheet(1))
+    expect_wait_until_exists(at.sheet(1))
+    expect_set("value", at.text_field(1).sheet(1), "path")
+    expect_click(at.button("Go").sheet(1))
+    expect_wait_until_not_exists(at.sheet(1))
     subject.set_folder("path")
   end
 

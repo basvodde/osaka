@@ -3,8 +3,8 @@ require "osaka"
 
 describe "Mail Merge to PDF common flow" do
 
-  let(:mock_numbers) { double(:Numbers)}
-  let(:mock_pages) { double(:Pages) }
+  let(:mock_numbers) { mock("Number")}
+  let(:mock_pages) { mock("Pages") }
 
   it "Should do a good mail merge with Pages and Keynote flow" do
     Osaka::Numbers.should_receive(:new).and_return(mock_numbers)

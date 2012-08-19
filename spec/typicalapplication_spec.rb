@@ -153,7 +153,7 @@ describe "Osaka::TypicalApplication" do
       subject.should_receive(:duplicate_available?).and_return(true)
 
       subject.should_receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window", "New name duplicate window")
-      expect_keystroke("s", [:command, :shift])  
+      expect_click_menu_bar(at.menu_item("Duplicate"), "File")
 
       subject.stub_chain(:clone, :control).and_return(new_instance_control)
       subject.should_receive(:sleep).with(0.4) # Avoiding Mountain Lion crash

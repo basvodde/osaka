@@ -9,9 +9,7 @@ describe "Mac GUI Calculator" do
   let(:control) { subject.control = mock("RemoteControl")}
 
   it "Should be setting the window when starting the Calculator" do
-    
-    # TODO: Fix this duplication between this and TextEdit.
-    
+        
     expect_activate
     expect_current_window_name.and_return("")
     subject.should_receive(:wait_for_new_window).with([])

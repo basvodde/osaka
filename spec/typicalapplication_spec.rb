@@ -148,12 +148,23 @@ describe "Osaka::TypicalApplication" do
       subject.should_receive(:duplicate_available?).and_return(false)
       lambda {subject.duplicate}.should raise_error(Osaka::VersioningError, "MacOS Versioning Error: Duplicate is not available on this Mac version")
     end
+
+    it "Should return a new keynote instance variable after duplication (Lion!)" do
+      simulate_mac_version(:lion)
+      subject.should_receive(:duplicate_available?).and_return(true)
+      
+      expect_click_menu_bar(at.menu_item("Duplicate"), "File")
+      subject.should_receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window")
+
+      subject.stub_chain(:clone, :control).and_return(new_instance_control)
+      subject.duplicate.control.should equal(new_instance_control)
+    end
   
     it "Should return a new keynote instance variable after duplication" do
       subject.should_receive(:duplicate_available?).and_return(true)
 
-      subject.should_receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window", "New name duplicate window")
       expect_click_menu_bar(at.menu_item("Duplicate"), "File")
+      subject.should_receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window", "New name duplicate window")
 
       subject.stub_chain(:clone, :control).and_return(new_instance_control)
       subject.should_receive(:sleep).with(0.4) # Avoiding Mountain Lion crash

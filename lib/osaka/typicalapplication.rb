@@ -96,7 +96,7 @@ module Osaka
       new_instance.control.set_current_window(do_and_wait_for_new_window {
         sleep(0.4) # This sleep is added because mountain lion keynote crashes without it!
         control.keystroke!(:return)
-      })
+      }) unless control.mac_version == :lion
       
       new_instance
     end

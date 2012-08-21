@@ -93,7 +93,6 @@ describe "Osaka::RemoteControl" do
       expect_system_event!("quit")
       subject.system_event("quit")
     end
-    
   end
   
   context "Check whether things exist or not" do
@@ -175,6 +174,10 @@ describe "Osaka::RemoteControl" do
       subject.activate
     end
     
+    it "Should be able to launch and deal with the warning" do
+      expect_execute_and_warning_for("launch")
+      subject.launch      
+    end
   end
     
     

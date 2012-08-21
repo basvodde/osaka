@@ -44,6 +44,10 @@ module Osaka
     def activate
       check_output( tell("activate"), "activate" )
     end
+    
+    def launch
+      check_output( tell("launch"), "launch" )
+    end
   
     def quit
       keystroke("q", :command)

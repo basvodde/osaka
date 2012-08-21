@@ -14,6 +14,10 @@ module Osaka
     def expect_activate
       control.should_receive(:activate)
     end
+
+    def expect_launch
+      control.should_receive(:launch)
+    end
     
     def expect_focus
       control.should_receive(:focus)

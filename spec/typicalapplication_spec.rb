@@ -184,8 +184,16 @@ describe "Osaka::TypicalApplication" do
   end
     
   it "Should be able to activate" do
+    expect_running?.and_return(true)
     expect_activate
     subject.activate
+  end
+  
+  it "Should be able to activate and launch. This is done because activate alone in Lion lead to strange behavior" do
+    expect_running?.and_return(false)
+    expect_launch
+    expect_activate
+    subject.activate    
   end
   
   it "Should be able to focus" do

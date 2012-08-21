@@ -10,6 +10,8 @@ describe "Mac GUI Calculator" do
 
   it "Should be setting the window when starting the Calculator" do
         
+    expect_running?.and_return(false)
+    expect_launch
     expect_activate
     expect_current_window_name.and_return("")
     subject.should_receive(:wait_for_new_window).with([])

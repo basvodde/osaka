@@ -136,6 +136,7 @@ module Osaka
     end
   
     def activate
+      control.launch unless control.running? # This is to deal with some odd behavior in Lion. (different in Mountain Lion and Snow Leopard)
       control.activate
     end
     

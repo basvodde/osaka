@@ -136,7 +136,9 @@ module Osaka
     end
   
     def activate
-      control.launch unless control.running? # This is to deal with some odd behavior in Lion. (different in Mountain Lion and Snow Leopard)
+      if (control.mac_version == :lion)
+        control.launch unless control.running? 
+      end
       control.activate
     end
     

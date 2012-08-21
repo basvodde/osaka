@@ -29,11 +29,34 @@ describe "Osaka::RemoteControl" do
     subject.print_warning("ThisAction", "Message")
   end
   
-  it "Should be possible to check whether an application is still running" do
-    expect_execute_osascript("tell application \"System Events\"; (name of processes) contains \"#{name}\"; end tell").and_return("false")
-    subject.running?.should be_false
-  end
-  
+  context "Query things from the OS" do
+
+    it "Should be possible to check whether an application is still running" do
+      expect_execute_osascript("tell application \"System Events\"; (name of processes) contains \"#{name}\"; end tell").and_return("false")
+      subject.running?.should be_false
+    end
+    
+    it "Can get the OS version (lion)" do
+      expect_execute_osascript("system version of (system info)").and_return("10.7\n")
+      subject.mac_version.should == :lion
+      subject.mac_version_string.should == "10.7"
+    end
+
+    it "Can get the OS version (mountain lion)" do
+      expect_execute_osascript("system version of (system info)").and_return("10.8\n")
+      subject.mac_version.should == :mountain_lion
+    end
+
+    it "Can get the OS version (snow leopard)" do
+      expect_execute_osascript("system version of (system info)").and_return("10.6\n")
+      subject.mac_version.should == :snow_leopard
+    end
+
+    it "Can get the OS version (snow leopard)" do
+      expect_execute_osascript("system version of (system info)").and_return("1\n")
+      subject.mac_version.should == :other
+    end
+  end  
 
   context "Able to compare different remote controls" do
     

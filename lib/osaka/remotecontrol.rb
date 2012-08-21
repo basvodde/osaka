@@ -216,5 +216,31 @@ module Osaka
     def current_window_invalid?(window_list)
       @base_location.to_s.empty? || window_list.index(current_window_name).nil?
     end
+
+    def mac_version
+      @mac_version_string ||= Osaka::ScriptRunner.execute("system version of (system info)").strip
+      @mac_version ||= case @mac_version_string
+        when "10.6"
+          :snow_leopard
+        when "10.7"
+          :lion
+        when "10.8"
+          :mountain_lion
+        else
+          :other
+        end
+        
+    end
+    
+    def mac_version_string
+      mac_version
+      @mac_version_string
+    end
+    
+    
+    def convert_mac_version_string_to_symbol(version_string)
+      
+    end
+    
   end
 end

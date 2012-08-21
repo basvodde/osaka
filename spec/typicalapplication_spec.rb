@@ -7,7 +7,7 @@ describe "Osaka::TypicalApplication" do
   
   subject { Osaka::TypicalApplication.new("ApplicationName") }
   
-  let(:control) { subject.control = mock("RemoteControl", :name => "ApplicationName", :base_location => "") }
+  let(:control) { subject.control = mock("RemoteControl", :name => "ApplicationName", :base_location => "", :mac_version => :mountain_lion) }
 
   before (:each) do
     Osaka::ScriptRunner.enable_debug_prints
@@ -184,16 +184,16 @@ describe "Osaka::TypicalApplication" do
   end
     
   it "Should be able to activate" do
-    expect_running?.and_return(true)
     expect_activate
     subject.activate
   end
   
   it "Should be able to activate and launch. This is done because activate alone in Lion lead to strange behavior" do
+    simulate_mac_version(:lion)
     expect_running?.and_return(false)
     expect_launch
     expect_activate
-    subject.activate    
+    subject.activate
   end
   
   it "Should be able to focus" do

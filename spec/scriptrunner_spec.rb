@@ -68,4 +68,5 @@ describe "Osaka::ScriptRunner" do
     subject.should_receive(:do_system).with('osascript script.scpt a b c').and_return(true)
     subject.execute_file("script.scpt", "a b c")    
   end
+  
 end

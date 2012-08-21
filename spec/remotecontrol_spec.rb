@@ -37,9 +37,9 @@ describe "Osaka::RemoteControl" do
     end
     
     it "Can get the OS version (lion)" do
-      expect_execute_osascript("system version of (system info)").and_return("10.7\n")
+      expect_execute_osascript("system version of (system info)").and_return("10.7.4\n")
       subject.mac_version.should == :lion
-      subject.mac_version_string.should == "10.7"
+      subject.mac_version_string.should == "10.7.4"
     end
 
     it "Can get the OS version (mountain lion)" do

@@ -220,11 +220,11 @@ module Osaka
     def mac_version
       @mac_version_string ||= Osaka::ScriptRunner.execute("system version of (system info)").strip
       @mac_version ||= case @mac_version_string
-        when "10.6"
+        when /^10.6.*/
           :snow_leopard
-        when "10.7"
+        when /^10.7.*/
           :lion
-        when "10.8"
+        when /^10.8.*/
           :mountain_lion
         else
           :other

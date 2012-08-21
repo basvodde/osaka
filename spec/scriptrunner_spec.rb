@@ -32,6 +32,17 @@ describe "Osaka::ScriptRunner" do
     Osaka::ScriptRunner::disable_debug_prints
   end
   
+  it "Should be able to generate a script of the run for later debugging purposes" do
+    subject.should_receive(:do_system).and_return("Blah blah blah")
+    file = mock("Mocked output file")
+    File.should_receive(:open).with("output_script", File::WRONLY|File::APPEND|File::CREAT, 0755).and_yield(file)
+    file.should_receive(:puts).with("osascript -e \"random number\"")
+    Osaka::ScriptRunner.enable_debug_prints(:script, "output_script")
+    subject.execute("random number")
+    Osaka::ScriptRunner::disable_debug_prints
+  end
+  
+  
   it "Should not print any debugging information by default " do
     subject.should_receive(:do_system).and_return("")
     subject.should_not_receive(:puts)

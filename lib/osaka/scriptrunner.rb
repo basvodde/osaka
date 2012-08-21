@@ -17,9 +17,10 @@ module Osaka
 
     @@debug_info_enabled = false
 
-    def self.enable_debug_prints(debug_info_format = :plain_text)
+    def self.enable_debug_prints(debug_info_format = :plain_text, filename = "")
       @@debug_info_enabled = true
       @@debug_info_format = debug_info_format
+      @@debug_info_script_filename = filename
     end
 
     def self.disable_debug_prints
@@ -42,6 +43,10 @@ module Osaka
         elsif (@@debug_info_format == :short_html)
           debug_output = applescript
           debug_output += "<br>"
+        elsif (@@debug_info_format == :script)
+          File.open(@@debug_info_script_filename, File::WRONLY|File::APPEND|File::CREAT, 0755) { |file|
+            file.puts("osascript#{escaped_commands}")
+          }
         end        
         puts debug_output
       end

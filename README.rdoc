@@ -6,6 +6,10 @@ This is a Ruby 1.9 library for automating work via GUI on Mac (using OSA/Applesc
 
   $ sudo gem install osaka
 
+NOTE: 
+
+You have to enable the "access for assistive devices" for the scripts to run. You do this via System Preferences -> Universal Access / Accessibility -> "enable access for assistive devices"
+
 = How to use
 
 Examples:

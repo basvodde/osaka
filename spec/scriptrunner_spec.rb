@@ -42,7 +42,13 @@ describe "Osaka::ScriptRunner" do
     Osaka::ScriptRunner::disable_debug_prints
   end
   
-  
+  it "Should explain how to turn on the access for assistive devices when it is disabled... and exit" do
+    subject.should_receive(:do_system).and_raise(Osaka::SystemCommandFailed.new ("execution error: System Events got an error: Access for assistive devices is disabled. (-25211)"))
+    subject.should_receive(:puts).with(/system preferences/)
+    subject.should_receive(:exit)
+    subject.execute("anything")
+  end
+    
   it "Should not print any debugging information by default " do
     subject.should_receive(:do_system).and_return("")
     subject.should_not_receive(:puts)

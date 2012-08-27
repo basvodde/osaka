@@ -146,7 +146,7 @@ describe "Osaka::TypicalApplication" do
   
     it "Should throw an exception when duplicate is not available"do
       subject.should_receive(:duplicate_available?).and_return(false)
-      lambda {subject.duplicate}.should raise_error(Osaka::VersioningError, "MacOS Versioning Error: Duplicate is not available on this Mac version")
+      expect {subject.duplicate}.to raise_error(Osaka::VersioningError, "MacOS Versioning Error: Duplicate is not available on this Mac version")
     end
 
     it "Should return a new keynote instance variable after duplication (Lion!)" do

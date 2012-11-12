@@ -86,7 +86,7 @@ module Osaka
           exit
           return
         end
-        raise(Osaka::ScriptRunnerError, "Error received while executing: #{applescript}")
+        raise(Osaka::ScriptRunnerError, "Error received while executing: \"#{applescript}\" with message \"#{ex.message}\"")
       end
       print_debug_info_for_additional_output(output)
       output

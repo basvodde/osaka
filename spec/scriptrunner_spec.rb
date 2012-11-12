@@ -61,8 +61,8 @@ describe "Osaka::ScriptRunner" do
   end
   
   it "Should raise an exception witha proper error message when the applescript fails" do
-    subject.should_receive(:do_system).and_raise(Osaka::SystemCommandFailed)
-    expect {subject.execute("Fuck off!")}.to raise_error(Osaka::ScriptRunnerError, "Error received while executing: Fuck off!")
+    subject.should_receive(:do_system).and_raise(Osaka::SystemCommandFailed.new("Message"))
+    expect {subject.execute("Fuck off!")}.to raise_error(Osaka::ScriptRunnerError, "Error received while executing: \"Fuck off!\" with message \"Message\"")
   end
   
   it "Should be able to execute an file containing applescript" do

@@ -344,6 +344,16 @@ describe "Osaka::RemoteControl" do
       subject.window_list.should == ["one"]    
     end
     
+    it "Should be able to get the attributes of a window and parse the result" do
+      expect_get!("attributes", at.window(1)).and_return("attribute AXRole of window 1 of application process ApplicationName, attribute AXRoleDescription of window 1 of application process ApplicationName, attribute AXSubrole of window 1 of application process ApplicationName")
+      subject.attributes(at.window(1)).should == ["AXRole", "AXRoleDescription", "AXSubrole"]
+    end
+
+    it "Should be able to get the attributes of the application too" do
+    expect_get!("attributes", at.window(1)).and_return("attribute AXRole of application process ApplicationName, attribute AXRoleDescription of application process ApplicationName")
+      subject.attributes(at.window(1)).should == ["AXRole", "AXRoleDescription"]
+    end
+    
   end
 
   describe "Dealing with base locations and window lists" do

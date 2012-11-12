@@ -190,6 +190,13 @@ module Osaka
     def get_app!(element)
       system_event!("get #{element}").strip
     end
+    
+    def attributes(location = "")
+      attributelist = get!("attributes", location)
+      attributelist.split("of application process #{name}").collect { |attribute|
+        attribute_match = attribute.match("attribute (.+?) .*")[1]
+      }
+    end
 
     def set(element, location, value)
       activate

@@ -41,20 +41,22 @@ describe "Osaka::TypicalApplication" do
       subject.control.current_window_name.should == "Original"
     end
   
-    it "Should pass the right open string to the application osascript" do
-      filename = "filename.key"
-      expect_tell("open \"#{File.absolute_path(filename)}\"")
-      expect_set_current_window(filename)
-      subject.open(filename)    
-    end
   end
   
   context "Opening and new document" do
     
+    it "Should pass the right open string to the application osascript" do
+      filename = "filename.key"
+      expect_tell("open \"#{File.absolute_path(filename)}\"")
+      subject.stub(:do_and_wait_for_new_window).and_yield.and_return(filename)
+      expect_set_current_window(filename)
+      subject.open(filename)    
+    end
+
     it "Should only get the basename of the filename when it sets the window title." do
       filename = "/root/dirname/filename.key"
-      expect_tell("open \"#{File.absolute_path(filename)}\"")
-      expect_set_current_window("filename.key")
+      subject.should_receive(:do_and_wait_for_new_window).and_return("filename")
+      expect_set_current_window("filename")
       subject.open(filename)        
     end
     

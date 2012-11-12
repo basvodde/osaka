@@ -31,8 +31,10 @@ module Osaka
   
     def open (filename)
       abolutePathFileName = File.absolute_path(filename)
-      control.tell("open \"#{abolutePathFileName}\"")
-      control.set_current_window(File.basename(filename))
+      new_window = do_and_wait_for_new_window {
+        control.tell("open \"#{abolutePathFileName}\"")
+      }
+      control.set_current_window(File.basename(new_window))
     end
 
     def wait_for_window_and_dialogs_to_close(option)

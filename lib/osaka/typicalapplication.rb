@@ -134,7 +134,7 @@ module Osaka
     
     def wait_for_save_dialog_and_save_file(filename)
       control.wait_until_exists(at.sheet(1))
-      dialog = create_save_dialog(at.sheet(1) + control.base_location)
+      dialog = create_dialog(TypicalSaveDialog, at.sheet(1))
       dialog.save(filename)
       control.set_current_window(File.basename(filename))
     end
@@ -175,18 +175,14 @@ module Osaka
       control.keystroke("a", :command)
     end
     
-    def create_print_dialog(location)
-      TypicalPrintDialog.new(control.name, location)
-    end
-    
-    def create_save_dialog(location)
-      TypicalSaveDialog.new(control.name, location)
-    end
-  
     def print_dialog
       control.keystroke("p", :command).wait_until_exists(at.sheet(1))
-      create_print_dialog(at.sheet(1) + control.base_location)
+      create_dialog(TypicalPrintDialog, at.sheet(1))
     end
-  
+    
+    def create_dialog(dialog_class, location)
+      dialog_class.new(control.name, location + (location.has_top_level_element? ? "" : control.base_location))
+    end
+    
   end
 end

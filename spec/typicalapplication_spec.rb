@@ -148,7 +148,7 @@ describe "Osaka::TypicalApplication" do
     
     it "Should be able to wait for a save dialog and save the file" do
       expect_wait_until_exists(at.sheet(1))
-      subject.should_receive(:create_save_dialog).with(at.sheet(1) + "base").and_return(save_dialog)
+      subject.should_receive(:create_dialog).with(Osaka::TypicalSaveDialog, at.sheet(1)).and_return(save_dialog)
       save_dialog.should_receive(:save).with("/tmp/filename")
       expect_set_current_window("filename")
       subject.wait_for_save_dialog_and_save_file("/tmp/filename")
@@ -256,12 +256,25 @@ describe "Osaka::TypicalApplication" do
     end
   end
     
-  describe "Application info" do
+  context "Application info" do
     it "Should be able to retrieve an application info object and parse it" do
       expect_tell('get info for (path to application "ApplicationName")').and_return('name:ApplicationName.app, creation date:date "Sunday, December 21, 2008 PM 06:14:11"}')
       app_info = subject.get_info
       app_info.name.should == "ApplicationName.app"
     end
   end
+  
+  context "Simple Application helpers to create objects" do
+    it "Should be able to create dialogs with a helper" do
+      Osaka::TypicalSaveDialog.should_receive(:new).with(control.name, at.sheet(1) + control.base_location)
+      subject.create_dialog(Osaka::TypicalSaveDialog, at.sheet(1))
+    end
+    
+    it "Should be able to create top level dialogs also with the helper" do
+      Osaka::TypicalSaveDialog.should_receive(:new).with(control.name, at.window("toplevel"))
+      subject.create_dialog(Osaka::TypicalSaveDialog, at.window("toplevel"))
+    end
+  end
+  
   
 end

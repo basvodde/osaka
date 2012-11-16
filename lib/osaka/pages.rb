@@ -30,12 +30,65 @@ module Osaka
       control.click!(at.menu_item(value).menu(1).pop_up_button(2).sheet(1))
     end    
   end
+  
+  class PagesInspector
+    attr_accessor :control
+    attr_accessor :location_symbol_map
+
+    def initialize(application_name, own_location)
+      @control = Osaka::RemoteControl.new(application_name, own_location)
+      @location_symbol_map = {}
+      @location_symbol_map[:document] = 1
+      @location_symbol_map[:layout] = 2
+      @location_symbol_map[:wrap] = 3
+      @location_symbol_map[:text] = 4
+      @location_symbol_map[:graphic] = 5
+      @location_symbol_map[:metrics] = 6
+      @location_symbol_map[:table] = 7
+      @location_symbol_map[:chart] = 8
+      @location_symbol_map[:link] = 9
+      @location_symbol_map[:quicktime] = 10
+    end    
+    
+    def get_location_from_symbol(inspector_name)
+      at.radio_button(@location_symbol_map[inspector_name]).radio_group(1)
+    end
+    
+    def select_inspector(inspector)
+      control.click(get_location_from_symbol(inspector))
+      control.wait_until_exists(at.window(inspector.to_s))
+      control.set_current_window(inspector.to_s)
+    end
+    
+    def change_mail_merge_source
+      select_inspector(:link)
+      control.click(at.button("Choose...").tab_group(1).group(1))        
+    end
+    
+  end
 
   class Pages < TypicalApplication
   
     def initialize
       super "Pages"
     end
+    
+    def type(text)
+      control.keystroke(text)
+    end
+  
+    def set_mail_merge_document(filename)
+      inspector.change_mail_merge_source
+      control.wait_until_exists(at.sheet(1))
+      open_dialog = do_and_wait_for_new_window {
+        control.click(at.radio_button("Numbers Document:").radio_group(1).sheet(1))
+      }
+      dialog = create_dialog(TypicalOpenDialog, at.window(open_dialog))
+      dialog.set_folder(File.dirname(filename))
+      dialog.select_file(File.basename(filename))
+      
+    end
+    
   
     def mail_merge
       control.click_menu_bar(at.menu_item(20), "Edit")
@@ -51,10 +104,15 @@ module Osaka
     end
 
     def inspector
-      do_and_wait_for_new_window {
-        control.click_menu_bar("Show Inspector", "View")
+      if !control.exists?(at.menu_item("Show Inspector").menu(1).menu_bar_item("View").menu_bar(1))
+        control.click_menu_bar(at.menu_item("Hide Inspector"), "View")
+        control.wait_until_exists(at.menu_item("Show Inspector").menu(1).menu_bar_item("View").menu_bar(1))
+      end
+
+      window_name = do_and_wait_for_new_window {
+        control.click_menu_bar(at.menu_item("Show Inspector"), "View")
       }
-      
+      PagesInspector.new(control.name, at.window(window_name))
     end
   
   end

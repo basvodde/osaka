@@ -10,7 +10,6 @@ describe "Osaka::TypicalSaveDialog" do
   it "Should set the filename in the test field" do
     subject.should_receive(:set_filename).with("filename")
     subject.should_receive(:click_save)
-    subject.should_not_receive(:set_folder)
     subject.save("filename")
   end
   
@@ -39,13 +38,5 @@ describe "Osaka::TypicalSaveDialog" do
     subject.set_filename("filename")
   end
   
-  it "Should be able to set the path" do
-    expect_keystroke("g", [ :command, :shift ])
-    expect_wait_until_exists(at.sheet(1))
-    expect_set("value", at.text_field(1).sheet(1), "path")
-    expect_click(at.button("Go").sheet(1))
-    expect_wait_until_not_exists(at.sheet(1))
-    subject.set_folder("path")
-  end
 
 end

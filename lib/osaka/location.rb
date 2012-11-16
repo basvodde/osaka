@@ -42,6 +42,10 @@ module Osaka
       create_location_with_added_name("group", name)
     end
     
+    def tab_group(name)
+      create_location_with_added_name("tab group", name)
+    end
+    
     def window(name)
       create_location_with_added_name("window", name)
     end
@@ -108,6 +112,22 @@ module Osaka
     
     def outline(name)
       create_location_with_added_name("outline", name)
+    end
+    
+    def ui_element(name)
+        create_location_with_added_name("UI element", name)
+    end
+
+    def row(name)
+        create_location_with_added_name("row", name)
+    end
+    
+    def radio_group(name)
+      create_location_with_added_name("radio group", name)
+    end
+
+    def radio_button(name)
+      create_location_with_added_name("radio button", name)
     end
     
     def to_location_string(name)

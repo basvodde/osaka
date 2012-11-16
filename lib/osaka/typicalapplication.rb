@@ -34,7 +34,7 @@ module Osaka
       new_window = do_and_wait_for_new_window {
         control.tell("open \"#{abolutePathFileName}\"")
       }
-      control.set_current_window(File.basename(new_window))
+      control.set_current_window(new_window)
     end
 
     def wait_for_window_and_dialogs_to_close(option)
@@ -103,6 +103,12 @@ module Osaka
       new_instance
     end
     
+    def duplicate_and_close_original
+      new_instance = duplicate        
+      close        
+      @control = new_instance.control
+    end
+    
     def save
       control.keystroke("s", :command)
     end
@@ -111,23 +117,24 @@ module Osaka
       control.exists?(at.menu_item("Save…").menu(1).menu_bar_item("File").menu_bar(1))
     end
     
-    def save_dialog
+    def save_as(filename)
       if save_pops_up_dialog?
         save
-        control.wait_until_exists(at.sheet(1))
       else
-        control.keystroke("s", [:command, :shift]).wait_until_exists(at.sheet(1))
+        if duplicate_available?
+          duplicate_and_close_original
+          save
+        else
+          control.keystroke("s", [:command, :shift])
+        end
       end
-      create_save_dialog(at.sheet(1) + control.base_location)
+      
+      wait_for_save_dialog_and_save_file(filename)      
     end
     
-    def save_as(filename)
-      if duplicate_available?
-        new_instance = duplicate        
-        close        
-        @control = new_instance.control.clone
-      end      
-      dialog = save_dialog
+    def wait_for_save_dialog_and_save_file(filename)
+      control.wait_until_exists(at.sheet(1))
+      dialog = create_save_dialog(at.sheet(1) + control.base_location)
       dialog.save(filename)
       control.set_current_window(File.basename(filename))
     end

@@ -7,7 +7,7 @@ describe "Osaka::TypicalApplication" do
   
   subject { Osaka::TypicalApplication.new("ApplicationName") }
   
-  let(:control) { subject.control = mock("RemoteControl", :name => "ApplicationName", :base_location => "", :mac_version => :mountain_lion) }
+  let(:control) { subject.control = mock("RemoteControl", :name => "ApplicationName", :base_location => "base", :mac_version => :mountain_lion) }
 
   before (:each) do
     Osaka::ScriptRunner.enable_debug_prints
@@ -118,29 +118,50 @@ describe "Osaka::TypicalApplication" do
       expect_keystroke("s", :command)
       subject.save
     end
-  
+
     it "Should be able to save as a file without duplicate being available" do
+      subject.should_receive(:save_pops_up_dialog?).and_return(false)
       subject.should_receive(:duplicate_available?).and_return(false)
       
-      subject.should_receive(:save_dialog).and_return(save_dialog)
-      save_dialog.should_receive(:save).with("filename")
-      expect_set_current_window("filename")
+      expect_keystroke("s", [:command, :shift])
+      subject.should_receive(:wait_for_save_dialog_and_save_file).with("filename")
       
       subject.save_as("filename")
     end
 
     it "Should be able to save as a file using the duplicate..." do
+      subject.should_receive(:save_pops_up_dialog?).and_return(false)
       subject.should_receive(:duplicate_available?).and_return(true)
 
-      subject.stub_chain(:duplicate, :control, :clone).and_return(new_instance_control)
-      subject.should_receive(:close)
-      subject.stub_chain(:save_dialog, :save)
-      new_instance_control.should_receive(:set_current_window).with("filename")
-      
+      subject.should_receive(:duplicate_and_close_original)
+      subject.should_receive(:save)
+      subject.should_receive(:wait_for_save_dialog_and_save_file).with("filename")      
       subject.save_as("filename")
-      subject.control.should equal(new_instance_control)   
     end
-  
+    
+    it "Should be able to use normal Save when that pops up a dialog instead of save_as" do
+      subject.should_receive(:save_pops_up_dialog?).and_return(true)
+      subject.should_receive(:save)
+      subject.should_receive(:wait_for_save_dialog_and_save_file).with("filename")      
+      subject.save_as("filename")
+    end
+    
+    it "Should be able to wait for a save dialog and save the file" do
+      expect_wait_until_exists(at.sheet(1))
+      subject.should_receive(:create_save_dialog).with(at.sheet(1) + "base").and_return(save_dialog)
+      save_dialog.should_receive(:save).with("/tmp/filename")
+      expect_set_current_window("filename")
+      subject.wait_for_save_dialog_and_save_file("/tmp/filename")
+    end
+    
+    
+    it "Should be able to duplicate and close the original document" do
+      subject.stub_chain(:duplicate, :control).and_return(new_instance_control)
+      subject.should_receive(:close)
+      subject.duplicate_and_close_original
+      subject.control.should equal(new_instance_control)
+    end
+    
     it "Should be able to check whether Duplicate is supported" do
       expect_exists?(at.menu_item("Duplicate").menu(1).menu_bar_item("File").menu_bar(1)).and_return(true)
       subject.duplicate_available?.should == true
@@ -178,20 +199,6 @@ describe "Osaka::TypicalApplication" do
     it "Should be able to check whether the save will pop up a dialog or not" do
       expect_exists?(at.menu_item("Save…").menu(1).menu_bar_item("File").menu_bar(1)).and_return(true)
       subject.save_pops_up_dialog?.should == true
-    end
-
-    it "Should be able to retrieve a save dialog by using save as" do
-      subject.should_receive(:save_pops_up_dialog?).and_return(false)
-      expect_keystroke("s", [:command, :shift])
-      expect_wait_until_exists(at.sheet(1))
-      subject.save_dialog    
-    end
-
-    it "Should be able to retrieve a save dialog using duplicate and save" do
-      subject.should_receive(:save_pops_up_dialog?).and_return(true)
-      subject.should_receive(:save)
-      expect_wait_until_exists(at.sheet(1))
-      subject.save_dialog
     end
     
   end

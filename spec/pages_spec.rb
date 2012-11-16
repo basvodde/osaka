@@ -35,6 +35,13 @@ describe "Osaka::Pages" do
     expect_wait_until_exists!(at.menu_button("PDF").window("Print"))
     subject.mail_merge.merge
   end
+  
+  it "Should be able to get an inspector object" do
+    subject.should_receive(:do_and_wait_for_new_window).and_yield.and_return("Link")
+    expect_click_menu_bar("Show Inspector", "View")
+    subject.inspector
+  end
+  
 end
 
 describe "Osaka::Pages Mail Merge dialog" do

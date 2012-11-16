@@ -49,6 +49,13 @@ module Osaka
       print_dialog = mail_merge_dialog.merge
       print_dialog.save_as_pdf(filename)
     end
+
+    def inspector
+      do_and_wait_for_new_window {
+        control.click_menu_bar("Show Inspector", "View")
+      }
+      
+    end
   
   end
 end

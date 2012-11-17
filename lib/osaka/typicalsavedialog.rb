@@ -12,8 +12,8 @@ module Osaka
     end
 
     def save(filename)
-      set_filename(File.basename(filename))
       set_folder(File.dirname(filename))
+      set_filename(File.basename(filename))
       click_save
     end
 

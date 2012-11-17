@@ -81,10 +81,16 @@ describe "Osaka::Pages" do
     subject.should_receive(:create_dialog).with(Osaka::TypicalOpenDialog, at.window("dialog")).and_return(dialog_mock)
     dialog_mock.should_receive(:set_folder).with("/tmp")
     dialog_mock.should_receive(:select_file).with("filename")
-    
+    expect_click(at.button("OK").sheet(1))
     
     subject.set_mail_merge_document("/tmp/filename")    
   end
+  
+  it "Should be able to insert a merge field" do
+    expect_click_menu_bar(at.menu_item("Data").menu(1).menu_item("Merge Field"), "Insert")
+    subject.mail_merge_field("Data")
+  end
+  
   
 end
 

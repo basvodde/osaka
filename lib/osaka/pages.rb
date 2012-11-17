@@ -86,10 +86,14 @@ module Osaka
       dialog = create_dialog(TypicalOpenDialog, at.window(open_dialog))
       dialog.set_folder(File.dirname(filename))
       dialog.select_file(File.basename(filename))
+      control.click(at.button("OK").sheet(1))
       
     end
     
-  
+    def mail_merge_field(field_name)
+      control.click_menu_bar(at.menu_item(field_name).menu(1).menu_item("Merge Field"), "Insert")
+    end
+    
     def mail_merge
       control.click_menu_bar(at.menu_item(20), "Edit")
       control.wait_until_exists(at.button("Merge").sheet(1))

@@ -22,20 +22,12 @@ describe "Osaka::Numbers" do
     subject.new_document 
   end
   
-  it "Should be able to easily create a document, put something, save it, and close it again" do
-    
-    Osaka::Numbers.should_receive(:new).any_number_of_times.and_return(mock("Numbers"))
-    subject.should_receive(:new_document)
-    subject.should_receive(:method_call_from_code_block)
-    subject.should_receive(:save_as).with("filename")
-    subject.should_receive(:close)
+  it "Should be able to use a class method for creating documents quickly" do
+      Osaka::Numbers.should_receive(:new).any_number_of_times.and_return(mock("App"))
+      subject.should_receive(:create_document)
 
-    Osaka::Numbers.create_document("filename") { |doc|
-      doc.method_call_from_code_block
-    }
-    
+      Osaka::Numbers.create_document("filename") { |doc|
+      }    
   end
-  
-  
-  
+    
 end

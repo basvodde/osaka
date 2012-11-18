@@ -14,10 +14,17 @@ describe "Osaka::Pages" do
     it "Should be able to type in the file" do
       expect_keystroke("Hello")
       subject.type("Hello")
-    end
-    
+    end  
   end
   
+  it "Should be able to use a class method for creating documents quickly" do
+      Osaka::Pages.should_receive(:new).any_number_of_times.and_return(mock("App"))
+      subject.should_receive(:create_document)
+
+      Osaka::Pages.create_document("filename") { |doc|
+      }    
+  end
+    
   it "Should be able to do mail merge to a PDF flow" do
     
     mail_merge_dialog = mock("Pages Mail Merge Dialog")

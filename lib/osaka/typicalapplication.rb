@@ -83,6 +83,13 @@ module Osaka
       control.focus
     end
     
+    def create_document(filename)
+      new_document
+      yield self
+      save_as(filename)
+      close
+    end
+    
     def duplicate_available?
       control.exists?(at.menu_item("Duplicate").menu(1).menu_bar_item("File").menu_bar(1))
     end

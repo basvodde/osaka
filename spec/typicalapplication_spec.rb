@@ -68,6 +68,18 @@ describe "Osaka::TypicalApplication" do
       subject.new_document
     end
     
+    it "Should be able to easily create a document, put something, save it, and close it again" do
+
+      subject.should_receive(:new_document)
+      subject.should_receive(:method_call_from_code_block)
+      subject.should_receive(:save_as).with("filename")
+      subject.should_receive(:close)
+
+      subject.create_document("filename") { |doc|
+        doc.method_call_from_code_block
+      }
+    end
+    
   end
   
   context "Quiting and closing and checking whether the app is still running" do

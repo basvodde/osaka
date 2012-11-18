@@ -13,12 +13,9 @@ module Osaka
       })
     end
     
-    def self.create_document(filename)
+    def self.create_document(filename, &block)
       numbers = Osaka::Numbers.new
-      numbers.new_document
-      yield numbers
-      numbers.save_as(filename)
-      numbers.close
+      numbers.create_document(filename, &block)
     end
     
     def fill_cell(column, row, value)

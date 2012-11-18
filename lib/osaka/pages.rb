@@ -77,6 +77,11 @@ module Osaka
       control.keystroke(text)
     end
   
+    def self.create_document(filename, &block)
+      numbers = Osaka::Pages.new
+      numbers.create_document(filename, &block)
+    end
+  
     def set_mail_merge_document(filename)
       inspector.change_mail_merge_source
       control.wait_until_exists(at.sheet(1))

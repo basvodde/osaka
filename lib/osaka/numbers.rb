@@ -1,5 +1,16 @@
 
 module Osaka
+  
+  class Location
+    def cell(name)
+      create_location_with_added_name("cell", name)
+    end
+
+    def table(name)
+      create_location_with_added_name("table", name)
+    end
+  end
+  
   class Numbers < TypicalApplication
   
     def initialize
@@ -19,7 +30,18 @@ module Osaka
     end
     
     def fill_cell(column, row, value)
+      if (column > column_count)
+        set_column_count(column)
+      end
       control.tell("tell document 1; tell sheet 1; tell table 1; set value of cell #{column} of row #{row} to \"#{value}\"; end tell; end tell; end tell")
+    end
+    
+    def column_count
+      control.tell("tell document 1; tell sheet 1; tell table 1; get column count; end tell; end tell; end tell").to_i
+    end
+    
+    def set_column_count(amount)
+      control.tell("tell document 1; tell sheet 1; tell table 1; set column count to #{amount}; end tell; end tell; end tell")
     end
     
   end

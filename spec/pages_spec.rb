@@ -103,13 +103,10 @@ describe "Osaka::Pages" do
     
   end
   
-  
   it "Should be able to insert a merge field" do
     expect_click_menu_bar(at.menu_item("Data").menu(1).menu_item("Merge Field"), "Insert")
     subject.mail_merge_field("Data")
   end
-  
-  
 end
 
 describe "Osaka::Pages Inspector" do

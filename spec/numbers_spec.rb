@@ -41,6 +41,11 @@ describe "Osaka::Numbers" do
     subject.new_document 
   end
   
+  it "Should be able to change the header columns" do
+    expect_click_menu_bar(at.menu_item("0").menu(1).menu_item("Header Columns"), "Table")
+    subject.set_header_columns(0)
+  end
+  
   it "Should be able to use a class method for creating documents quickly" do
       Osaka::Numbers.should_receive(:new).any_number_of_times.and_return(mock("App"))
       subject.should_receive(:create_document)

@@ -98,7 +98,7 @@ module Osaka
       end
       control.click(at.button("OK").sheet(1))      
     end
-    
+        
     def mail_merge_field(field_name)
       control.click_menu_bar(at.menu_item(field_name).menu(1).menu_item("Merge Field"), "Insert")
     end

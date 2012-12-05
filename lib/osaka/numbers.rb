@@ -42,7 +42,12 @@ module Osaka
     
     def set_column_count(amount)
       control.tell("tell document 1; tell sheet 1; tell table 1; set column count to #{amount}; end tell; end tell; end tell")
+    end    
+    
+    def set_header_columns(column)
+      control.click_menu_bar(at.menu_item(column.to_s).menu(1).menu_item("Header Columns"), "Table")
     end
+    
     
   end
 end

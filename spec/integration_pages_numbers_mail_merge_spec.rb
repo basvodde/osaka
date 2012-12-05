@@ -18,7 +18,7 @@ describe "Integration of mail merge flow with Pages and Numbers" do
   it "Should mail merge the assets and generate a PDF" do
 
     Osaka::Numbers.create_document(@numbers_filename) { |doc|
-      # doc.fill_cell(2, 1, "Data")
+      doc.fill_cell(2, 1, "Data")
       doc.fill_cell(2, 2, "Hello World")
       doc.fill_cell(2, 3, "of Data")
       doc.fill_cell(2, 4, "in Numbers")

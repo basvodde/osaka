@@ -191,5 +191,11 @@ module Osaka
       dialog_class.new(control.name, location + (location.has_top_level_element? ? "" : control.base_location))
     end
     
+    def select_file_from_open_dialog(filename, dialog_location)
+      dialog = create_dialog(TypicalOpenDialog, dialog_location)
+      dialog.set_folder(File.dirname(filename))
+      dialog.select_file(File.basename(filename))
+      
+    end
   end
 end

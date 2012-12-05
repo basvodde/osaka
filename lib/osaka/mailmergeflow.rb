@@ -2,21 +2,18 @@
 module CommonFlows
   
   def self.number_and_pages_mail_merge(numbers_file, pages_file, output_file)
-    numbers = Osaka::Numbers.new
-    pages = Osaka::Pages.new
     
-    numbers.open(numbers_file)
-    yield numbers if block_given?
-    numbers.save
-    
-    pages.open(pages_file)
-    pages.mail_merge_to_pdf(output_file)
-    
-    numbers.close(:dont_save)
-    pages.close(:dont_save)
+    if block_given?
+      Osaka::Numbers.create_document(numbers_file) { |numbers|
+        yield numbers         
+      }      
+    end
 
-    numbers.quit(:dont_save)
+    pages = Osaka::Pages.new
+    pages.open(pages_file)
+    pages.set_mail_merge_document(numbers_file)
+    pages.mail_merge_to_pdf(output_file)
+    pages.close(:dont_save)
     pages.quit(:dont_save)
-    
   end
 end

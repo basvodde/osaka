@@ -166,6 +166,15 @@ describe "Osaka::TypicalApplication" do
       subject.wait_for_save_dialog_and_save_file("/tmp/filename")
     end
     
+    it "Should be able to pick a file from an open dialog" do
+      dialog_mock = mock("Open Dialog")
+      subject.should_receive(:create_dialog).with(Osaka::TypicalOpenDialog, at.window("dialog")).and_return(dialog_mock)
+      dialog_mock.should_receive(:set_folder).with("/tmp")
+      dialog_mock.should_receive(:select_file).with("filename")
+      
+      subject.select_file_from_open_dialog("/tmp/filename", at.window("dialog"))
+    end
+    
     
     it "Should be able to duplicate and close the original document" do
       subject.stub_chain(:duplicate, :control).and_return(new_instance_control)

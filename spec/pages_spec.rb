@@ -84,14 +84,25 @@ describe "Osaka::Pages" do
     subject.should_receive(:do_and_wait_for_new_window).and_yield.and_return("dialog")
     expect_click(at.radio_button("Numbers Document:").radio_group(1).sheet(1))
     
-    dialog_mock = mock("Open Dialog")
-    subject.should_receive(:create_dialog).with(Osaka::TypicalOpenDialog, at.window("dialog")).and_return(dialog_mock)
-    dialog_mock.should_receive(:set_folder).with("/tmp")
-    dialog_mock.should_receive(:select_file).with("filename")
+    subject.should_receive(:select_file_from_open_dialog).with("/tmp/filename", at.window("dialog"))
     expect_click(at.button("OK").sheet(1))
     
-    subject.set_mail_merge_document("/tmp/filename")    
+    expect_exists?(at.sheet(1).sheet(1)).and_return(false)
+    subject.set_mail_merge_document("/tmp/filename")
   end
+  
+  it "Should be able to stop when an error happens due to mail merge. This is especially important since otherwise Pages goes nuts and crashes :)" do
+    subject.should_receive(:inspector).and_return(mock("Inspector").as_null_object)    
+    expect_wait_until_exists(at.sheet(1))
+    subject.should_receive(:do_and_wait_for_new_window)
+    subject.should_receive(:select_file_from_open_dialog)
+    
+    expect_exists?(at.sheet(1).sheet(1)).and_return(true)
+        
+    expect {subject.set_mail_merge_document("/tmp/filename") }.to raise_error(Osaka::PagesError, "Setting Mail Merge numbers file failed")
+    
+  end
+  
   
   it "Should be able to insert a merge field" do
     expect_click_menu_bar(at.menu_item("Data").menu(1).menu_item("Merge Field"), "Insert")

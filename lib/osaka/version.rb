@@ -1,4 +1,4 @@
 
 module Osaka
-  VERSION = "0.4.3"
+  VERSION = "0.4.5"
 end

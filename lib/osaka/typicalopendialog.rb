@@ -36,7 +36,7 @@ module Osaka
     
     def select_file_by_row(row)
       raise(OpenDialogCantSelectFile, "Tried to select a file, but it either doesn't exist or is greyed out") if (greyed_out?(row))
-      control.set!("selected", at.row(1) + file_list_location, true)
+      control.set!("selected", at.row(row) + file_list_location, true)
     end
       
     def amount_of_files_in_list
@@ -49,11 +49,12 @@ module Osaka
       control.get!("value", field_location_from_row(row))
     end
       
-    def select_file(filename)
+    def select_file(filename)      
       amount_of_files_in_list.times() { |row|
         if filename_at(row+1) == filename
           select_file_by_row(row+1)
           click_open
+          return
         end
       }
     end

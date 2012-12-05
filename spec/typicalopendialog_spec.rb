@@ -23,7 +23,7 @@ describe "Osaka::TypicalOpenDialog" do
   end
 
   it "Should be able to select a file from Row 3" do
-    subject.should_receive(:amount_of_files_in_list).and_return(3)
+    subject.should_receive(:amount_of_files_in_list).and_return(10)
     subject.should_receive(:filename_at).and_return("filename", "filename2", "filename3")
     subject.should_receive(:select_file_by_row).with(3)
     subject.should_receive(:click_open)

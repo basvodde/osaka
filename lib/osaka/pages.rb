@@ -1,5 +1,9 @@
 
 module Osaka
+  
+  class PagesError < RuntimeError
+  end
+  
   class PagesMailMergeDialog
     attr_accessor :control, :location
 
@@ -88,11 +92,11 @@ module Osaka
       open_dialog = do_and_wait_for_new_window {
         control.click(at.radio_button("Numbers Document:").radio_group(1).sheet(1))
       }
-      dialog = create_dialog(TypicalOpenDialog, at.window(open_dialog))
-      dialog.set_folder(File.dirname(filename))
-      dialog.select_file(File.basename(filename))
-      control.click(at.button("OK").sheet(1))
-      
+      select_file_from_open_dialog(filename, at.window(open_dialog))
+      if (control.exists?(at.sheet(1).sheet(1)))
+        raise(PagesError, "Setting Mail Merge numbers file failed")
+      end
+      control.click(at.button("OK").sheet(1))      
     end
     
     def mail_merge_field(field_name)

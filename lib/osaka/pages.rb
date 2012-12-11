@@ -66,6 +66,7 @@ module Osaka
     
     def change_mail_merge_source
       select_inspector(:link)
+      control.click(at.radio_button(3).tab_group(1).group(1)).wait_until_exists(at.button("Choose...").tab_group(1).group(1))
       control.click(at.button("Choose...").tab_group(1).group(1))        
     end
     

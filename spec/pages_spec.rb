@@ -140,6 +140,8 @@ describe "Osaka::Pages Inspector" do
   
   it "Change the mail merge source" do
     subject.should_receive(:select_inspector).with(:link)
+    expect_click(at.radio_button(3).tab_group(1).group(1))
+    expect_wait_until_exists(at.button("Choose...").tab_group(1).group(1))
     expect_click(at.button("Choose...").tab_group(1).group(1))
     subject.change_mail_merge_source
   end

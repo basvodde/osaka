@@ -55,7 +55,7 @@ module Osaka
     
     def close_dialog_sheet_with_dont_save
       if (control.exists?(at.sheet(1)))
-        control.click!(at.button("Don’t Save").sheet(1))
+        control.click!(at.button("Delete").sheet(1))
       end
     end
     

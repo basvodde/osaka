@@ -77,7 +77,7 @@ module Osaka
             action.() unless action.nil?
           end
         }
-      rescue Exception => e
+      rescue Exception
         raise Osaka::TimeoutError, "Timed out while waiting for: #{locations.to_s}"
       end
     end
@@ -194,7 +194,7 @@ module Osaka
     def attributes(location = "")
       attributelist = get!("attributes", location)
       attributelist.split("of application process #{name}").collect { |attribute|
-        attribute_match = attribute.match("attribute (.+?) .*")[1]
+        attribute.match("attribute (.+?) .*")[1]
       }
     end
 

@@ -98,7 +98,7 @@ module Osaka
       unless duplicate_available?
         raise(Osaka::VersioningError, "MacOS Versioning Error: Duplicate is not available on this Mac version")
       end
-      new_window = do_and_wait_for_new_window {
+      do_and_wait_for_new_window {
         control.click_menu_bar(at.menu_item("Duplicate"), "File")
       }
       new_instance = clone

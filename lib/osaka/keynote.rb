@@ -16,12 +16,14 @@ module Osaka
     end
     
     def select_all_slides
-      if control.exists?(at.button("Slides").group(1).outline(1).scroll_area(2).splitter_group(1).splitter_group(1))
-        control.click(at.button("Slides").group(1).outline(1).scroll_area(2).splitter_group(1).splitter_group(1))
-      else
-        control.click(at.button("Slides").group(1).outline(1).scroll_area(1).splitter_group(1).splitter_group(1))
-      end
+      light_table_view
       select_all
+    end
+
+    def light_table_view
+      if control.exists?(at.menu_item("Light Table").menu(1).menu_bar_item("View").menu_bar(1))
+        control.click(at.menu_item("Light Table").menu(1).menu_bar_item("View").menu_bar(1))
+      end
     end
   end
 end

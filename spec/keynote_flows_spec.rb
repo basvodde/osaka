@@ -7,6 +7,7 @@ describe "Common flows in keynote" do
 
   it "Should be able to combine just one single file" do
     Osaka::Keynote.should_receive(:new).and_return(mock_keynote)
+    mock_keynote.should_receive(:light_table_view)
     mock_keynote.should_receive(:open).with("one_file.key")
     mock_keynote.should_receive(:save_as).with("result.key")
     mock_keynote.should_receive(:save)
@@ -19,6 +20,7 @@ describe "Common flows in keynote" do
     mock3_keynote = mock("Third keynote")
     Osaka::Keynote.should_receive(:new).and_return(mock_keynote, mock2_keynote, mock3_keynote)  
     mock_keynote.should_receive(:open).with("one_file.key")
+    mock_keynote.should_receive(:light_table_view)
     mock_keynote.should_receive(:save_as).with("result.key")
     mock_keynote.should_receive(:select_all_slides).exactly(2).times
     mock_keynote.should_receive(:paste).exactly(2).times

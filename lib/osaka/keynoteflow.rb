@@ -4,7 +4,9 @@ module CommonFlows
     keynote = Osaka::Keynote.new
     files_to_merge = [files_to_merge].flatten
     keynote.open(files_to_merge.shift)
+    keynote.light_table_view
     keynote.save_as(result_file)
+    
     
     files_to_merge.each { |file|
       combine_keynote = Osaka::Keynote.new

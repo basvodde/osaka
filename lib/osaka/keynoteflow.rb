@@ -2,6 +2,10 @@
 module CommonFlows
   def self.keynote_combine_files(result_file, files_to_merge)
     keynote = Osaka::Keynote.new
+    if keynote.windows_open?
+      puts "Close keynote windows before running script"
+      exit 1
+    end
     files_to_merge = [files_to_merge].flatten
     keynote.open(files_to_merge.shift)
     keynote.light_table_view
@@ -9,16 +13,20 @@ module CommonFlows
     
     
     files_to_merge.each { |file|
+      puts "--- Appending " + file + " ---"
       combine_keynote = Osaka::Keynote.new
       combine_keynote.open(file)
       combine_keynote.select_all_slides
       combine_keynote.copy
+      combine_keynote.close
+#      sleep 5
       keynote.select_all_slides
       keynote.paste
-      combine_keynote.close
+#      sleep 5
     }
     
     keynote.save
+    keynote.close
     keynote.quit
   end
   
@@ -28,4 +36,17 @@ module CommonFlows
     files_to_open = files_in_directory.collect { |f| File.join(directory, f)}
     keynote_combine_files(result_file, files_to_open.sort)
   end
+  
+  # def not_ok_to_run?(result_file, files_to_merge)
+  #   keynote = Osaka::Keynote.new
+  #   if keynote.windows_open?
+  #     puts "Close keynote windows before running script"
+  #     return false
+  #   end
+  #   if keynote.windows_open?
+  #     puts "Close keynote windows before running script"
+  #     exit 1
+  #   end
+  #   
+    
 end

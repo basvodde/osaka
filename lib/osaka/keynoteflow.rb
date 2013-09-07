@@ -13,8 +13,6 @@ module CommonFlows
     
     
     files_to_merge.each { |file|
-      puts "--- Appending " + file + " ---"
-      combine_keynote = Osaka::Keynote.new
       combine_keynote.open(file)
       combine_keynote.select_all_slides
       combine_keynote.copy

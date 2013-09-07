@@ -3,9 +3,10 @@ module CommonFlows
   def self.keynote_combine_files(result_file, files_to_merge)
     keynote = Osaka::Keynote.new
     if keynote.windows_open?
-      puts "Close keynote windows before running script"
-      exit 1
+      tell_user "Close keynote windows before running script"
+      return
     end
+    
     files_to_merge = [files_to_merge].flatten
     keynote.open(files_to_merge.shift)
     keynote.light_table_view
@@ -13,6 +14,7 @@ module CommonFlows
     
     
     files_to_merge.each { |file|
+      combine_keynote = Osaka::Keynote.new
       combine_keynote.open(file)
       combine_keynote.select_all_slides
       combine_keynote.copy
@@ -24,6 +26,10 @@ module CommonFlows
     keynote.save
     keynote.close
     keynote.quit
+  end
+  
+  def message(message)
+    puts message
   end
   
   def self.keynote_combine_files_from_directory_sorted(result_file, directory = ".", pattern = /^.*\.key$/)

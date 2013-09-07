@@ -18,7 +18,7 @@ describe "Common flows in keynote" do
   it "Should exit if keynote windows are already open" do
     Osaka::Keynote.should_receive(:new).and_return(mock_keynote)
     mock_keynote.should_receive(:windows_open?).and_return(true)
-    CommonFlows.stub!(:tell_user)
+    CommonFlows.stub!(:message)
     CommonFlows.keynote_combine_files("result.key", "one_file.key")
   end
   

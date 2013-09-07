@@ -3,7 +3,7 @@ module CommonFlows
   def self.keynote_combine_files(result_file, files_to_merge)
     keynote = Osaka::Keynote.new
     if keynote.windows_open?
-      tell_user "Close keynote windows before running script"
+        message "Close keynote windows before running script"
       return
     end
     
@@ -28,8 +28,8 @@ module CommonFlows
     keynote.quit
   end
   
-  def message(message)
-    puts message
+  def self.message(m)
+    puts m
   end
   
   def self.keynote_combine_files_from_directory_sorted(result_file, directory = ".", pattern = /^.*\.key$/)

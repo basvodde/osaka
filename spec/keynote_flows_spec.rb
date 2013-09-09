@@ -42,7 +42,6 @@ describe "Common flows in keynote" do
     mock_keynote.should_receive(:save_as).with("result.key")
     mock_keynote.should_receive(:select_all_slides).exactly(2).times
     mock_keynote.should_receive(:paste).exactly(2).times
-    # mock_keynote.should_receive(:save)
     
     mock2_keynote.should_receive(:open).with("two_file.key")
     mock2_keynote.should_receive(:select_all_slides)

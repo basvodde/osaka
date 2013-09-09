@@ -66,6 +66,11 @@ module Osaka
       end
     end
 
+    def windows_open?
+      control.activate
+      control.window_list.length != 0
+    end
+    
     def do_and_wait_for_new_window
       control.activate
       latest_window_list = original_window_list = control.window_list

@@ -2,16 +2,33 @@
 require "osaka"
 
 describe "Common flows in keynote" do
+  
+  def no_windows_open
+    mock_keynote.should_receive(:windows_open?).and_return(false)
+  end
+  
+  def should_shutdown
+    mock_keynote.should_receive(:save)
+    mock_keynote.should_receive(:close)
+    mock_keynote.should_receive(:quit)
+  end
 
   let(:mock_keynote) { mock("First keynote")}
 
+  it "Should exit if keynote windows are already open" do
+    Osaka::Keynote.should_receive(:new).and_return(mock_keynote)
+    mock_keynote.should_receive(:windows_open?).and_return(true)
+    CommonFlows.stub!(:message)
+    CommonFlows.keynote_combine_files("result.key", "one_file.key")
+  end
+  
   it "Should be able to combine just one single file" do
     Osaka::Keynote.should_receive(:new).and_return(mock_keynote)
+    no_windows_open
     mock_keynote.should_receive(:light_table_view)
     mock_keynote.should_receive(:open).with("one_file.key")
     mock_keynote.should_receive(:save_as).with("result.key")
-    mock_keynote.should_receive(:save)
-    mock_keynote.should_receive(:quit)
+    should_shutdown
     CommonFlows.keynote_combine_files("result.key", "one_file.key")
   end
   
@@ -19,14 +36,13 @@ describe "Common flows in keynote" do
     mock2_keynote = mock("Second keynote")
     mock3_keynote = mock("Third keynote")
     Osaka::Keynote.should_receive(:new).and_return(mock_keynote, mock2_keynote, mock3_keynote)  
+    no_windows_open
     mock_keynote.should_receive(:open).with("one_file.key")
     mock_keynote.should_receive(:light_table_view)
     mock_keynote.should_receive(:save_as).with("result.key")
     mock_keynote.should_receive(:select_all_slides).exactly(2).times
     mock_keynote.should_receive(:paste).exactly(2).times
-    mock_keynote.should_receive(:save)
     
-
     mock2_keynote.should_receive(:open).with("two_file.key")
     mock2_keynote.should_receive(:select_all_slides)
     mock2_keynote.should_receive(:copy)
@@ -37,7 +53,7 @@ describe "Common flows in keynote" do
     mock3_keynote.should_receive(:copy)
     mock3_keynote.should_receive(:close)
     
-    mock_keynote.should_receive(:quit)
+    should_shutdown
     CommonFlows.keynote_combine_files("result.key", ["one_file.key", "two_file.key", "three_file.key"])    
   end
   

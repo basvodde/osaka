@@ -69,7 +69,7 @@ module Osaka
     def wait_until(locations, action)
       
       begin
-        Timeout::timeout(5) {
+        Timeout::timeout(10) {
           while(true)
               locations.flatten.each { |location| 
                 return location if yield location

@@ -3,6 +3,18 @@ require 'osaka'
 
 describe "Integration tests for Keynote and Common Flows" do
   
+  it "Should exit with message if files are open" do
+    
+    assets_directory =  File.join(File.dirname(__FILE__), "assets")
+    
+    keynote_file = File.join(assets_directory, "01_first_slides.key")
+    keynote = Osaka::Keynote.new
+    keynote.open(keynote_file)
+    CommonFlows.stub!(:message)
+    CommonFlows.keynote_combine_files(nil, keynote_file)
+    keynote.close()
+  end
+  
   it "Should be able to do a combine with just one file" do
     
     assets_directory =  File.join(File.dirname(__FILE__), "assets")

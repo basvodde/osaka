@@ -1,7 +1,7 @@
 require 'tmpdir'
 require 'osaka'
 
-describe "Integration tests for Keynote and Common Flows" do
+describe "Integration tests for Keynote and Common Flows", :integration => true do
   
   it "Should exit with message if files are open" do
     

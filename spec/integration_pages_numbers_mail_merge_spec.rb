@@ -1,7 +1,7 @@
 require 'tmpdir'
 require 'osaka'
 
-describe "Integration of mail merge flow with Pages and Numbers" do
+describe "Integration of mail merge flow with Pages and Numbers", :integration => true do
 
 
   before (:each) do

@@ -3,7 +3,7 @@ require 'osaka'
 
 describe "Integration tests for Numbers" do
   
-  it "Should be able to fill in large index cells" do
+  it "Should be able to fill in large index cells", :integration => true do
     
     Dir.mktmpdir { |dir|
       

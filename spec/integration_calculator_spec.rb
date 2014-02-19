@@ -1,7 +1,7 @@
 
 require 'osaka'
 
-describe "Integration test using the Calculator" do
+describe "Integration test using the Calculator", :integration => true do
 
   subject { Osaka::Calculator.new }
 

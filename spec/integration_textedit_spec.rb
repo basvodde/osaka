@@ -1,7 +1,7 @@
 
 require 'osaka'
 
-describe "Integration test using TextEdit" do
+describe "Integration test using TextEdit", :integration => true do
 
   subject { Osaka::TextEdit.new }
 

@@ -5,9 +5,6 @@ module Osaka
   class ScriptRunnerError < RuntimeError
   end
   
-  class SystemCommandFailed < RuntimeError
-  end
-
   class TimeoutError < RuntimeError
   end
 
@@ -70,7 +67,7 @@ module Osaka
       
       output = ""
       begin
-        output = do_system("osascript#{escaped_commands}")
+        output = CommandRunner::run("osascript#{escaped_commands}")
       rescue Osaka::SystemCommandFailed => ex
         if ex.message =~ /assistive devices/ 
           puts <<-eom
@@ -94,14 +91,8 @@ module Osaka
     end  
   
     def self.execute_file(scriptName, parameters = "")
-      do_system("osascript #{scriptName} #{parameters}".strip)
+      CommandRunner::run("osascript #{scriptName} #{parameters}".strip)
     end
 
-  private
-    def self.do_system(command)
-      output = `#{command} 2>&1`
-      raise Osaka::SystemCommandFailed, "message" + output unless $?.success?
-      output
-    end
   end
 end

@@ -1,4 +1,5 @@
 
+require 'osaka/commandrunner'
 require 'osaka/scriptrunner'
 require 'osaka/location'
 require 'osaka/remotecontrol'

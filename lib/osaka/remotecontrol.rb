@@ -78,7 +78,7 @@ module Osaka
           end
         }
       rescue Exception
-        raise Osaka::TimeoutError, "Timed out while waiting for: #{locations.to_s}"
+        raise Osaka::TimeoutError, "Timed out while waiting for: #{locations.join(", ")}"
       end
     end
     

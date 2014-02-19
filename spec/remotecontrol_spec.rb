@@ -181,7 +181,12 @@ describe "Osaka::RemoteControl" do
     
     it "Should print a proper error message when it times out while waiting for something" do
       Timeout.should_receive(:timeout).with(10).and_raise(Timeout::Error.new)
-      expect { subject.until_exists!(at.window(1)) }.to raise_error(Osaka::TimeoutError, "Timed out while waiting for: [window 1]")
+      expect { subject.until_exists!(at.window(1)) }.to raise_error(Osaka::TimeoutError, "Timed out while waiting for: window 1")
+    end
+
+    it "Should print a proper error message when it times out while waiting for more than one thing" do
+      Timeout.should_receive(:timeout).with(10).and_raise(Timeout::Error.new)
+      expect { subject.until_exists!(at.window(1), at.button(2)) }.to raise_error(Osaka::TimeoutError, "Timed out while waiting for: window 1, button 2")
     end
   end
 

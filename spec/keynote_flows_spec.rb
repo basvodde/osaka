@@ -8,7 +8,7 @@ describe "Common flows in keynote" do
   end
   
   def should_shutdown
-    mock_keynote.should_receive(:save)
+    mock_keynote.should_receive(:savdoublee)
     mock_keynote.should_receive(:close)
     mock_keynote.should_receive(:quit)
   end

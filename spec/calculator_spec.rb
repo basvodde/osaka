@@ -6,8 +6,8 @@ describe "Mac GUI Calculator" do
   include(*Osaka::OsakaExpectations)
 
   subject { Osaka::Calculator.new }
-  let(:control) { subject.control = mock("RemoteControl", :mac_version => :mountain_lion)}
-
+  let(:control) { subject.control = double("RemoteControl", :mac_version => :mountain_lion)}
+    
   it "Should be setting the window when starting the Calculator" do
         
     expect_activate

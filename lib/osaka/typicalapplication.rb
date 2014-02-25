@@ -10,6 +10,9 @@ module Osaka
     end    
   end
 
+  class ApplicationWindowsMustBeClosed < StandardError
+  end
+
   class TypicalApplication
   
     attr_accessor :control
@@ -66,11 +69,6 @@ module Osaka
       end
     end
 
-    def windows_open?
-      control.activate
-      control.window_list.length != 0
-    end
-    
     def do_and_wait_for_new_window
       control.activate
       latest_window_list = original_window_list = control.window_list
@@ -200,7 +198,10 @@ module Osaka
       dialog = create_dialog(TypicalOpenDialog, dialog_location)
       dialog.set_folder(File.dirname(filename))
       dialog.select_file(File.basename(filename))
-      
+    end
+    
+    def raise_error_on_open_standard_windows(error_message)
+      raise Osaka::ApplicationWindowsMustBeClosed, error_message if ! control.standard_window_list.empty?
     end
   end
 end

@@ -47,6 +47,10 @@ module Osaka
       control.should_receive(:window_list)
     end
     
+    def expect_standard_window_list
+      control.should_receive(:standard_window_list)
+    end
+    
     def expect_current_window_name
       control.should_receive(:current_window_name)
     end

@@ -18,7 +18,6 @@ describe "Osaka::RemoteControl" do
     Osaka::ScriptRunner.disable_debug_prints
   end
 
-
   def expect_execute_and_warning_for(action)
     expect_execute_osascript.and_return("An Error")
     subject.should_receive(:puts).with(/#{action}/)
@@ -347,6 +346,24 @@ describe "Osaka::RemoteControl" do
     it "Should be able get an array with one window name when there is exactly one window" do
       expect_get_app!("windows").and_return("window one of application process process\n")
       subject.window_list.should == ["one"]    
+    end
+    
+    it "Should be able to get a list of standard windows which is empty" do
+      subject.should_receive(:window_list).and_return([])
+      subject.standard_window_list
+    end
+    
+    it "Should be able to get a list of all the standard windows when there are only standard windows " do
+      subject.should_receive(:window_list).and_return(["window 1"])
+      expect_get!("subrole", at.window("window 1")).and_return("AXStandardWindow")
+      subject.standard_window_list.should == ["window 1"]
+    end
+    
+    it "Should be able to get a list of all the standard windows excluding the floating ones" do
+      subject.should_receive(:window_list).and_return(["window", "float"])
+      expect_get!("subrole", at.window("window")).and_return("AXStandardWindow")
+      expect_get!("subrole", at.window("float")).and_return("AXFloatingWindow")
+      subject.standard_window_list.should == ["window"]      
     end
     
     it "Should be able to get the attributes of a window and parse the result" do

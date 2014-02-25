@@ -208,6 +208,14 @@ module Osaka
       windows.collect { |window|
         window[7...window =~ / of application process/].strip
       }
+    end
+    
+    def standard_window_list
+      window_list.collect { |window|
+        if get!("subrole", at.window(window)) == "AXStandardWindow"
+          window
+        end
+      }.compact
     end 
     
     def set_current_window(window_name)

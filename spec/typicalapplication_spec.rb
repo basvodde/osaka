@@ -297,5 +297,16 @@ describe "Osaka::TypicalApplication" do
     end
   end
   
+  it "Should be able to check whether any standard windows are open and do nothing if there aren't" do
+    expect_standard_window_list.and_return([])
+    subject.raise_error_on_open_standard_windows("error message")
+  end
+
+  it "Should be able to check whether any standard windows are open and raise an error if so" do
+    expect_standard_window_list.and_return(["Window"])
+    expect {
+      subject.raise_error_on_open_standard_windows("error message")
+    }.to raise_error(Osaka::ApplicationWindowsMustBeClosed, "error message")
+  end
   
 end

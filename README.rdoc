@@ -1,6 +1,6 @@
 
 Osaka - apple OSA script Kontrolling the Application (OSAKA :P)
-This is a Ruby 1.9 library for automating work via GUI on Mac (using OSA/Applescript)
+This is a Ruby library for automating work via GUI on Mac (using OSA/Applescript)
 
 = How to install
 

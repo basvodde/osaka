@@ -73,7 +73,7 @@ module Osaka
       control.activate
       latest_window_list = original_window_list = control.window_list
       yield
-      while (original_window_list == latest_window_list)
+      while ((latest_window_list - original_window_list).size == 0)
         latest_window_list = control.window_list
       end
       (latest_window_list - original_window_list)[0]

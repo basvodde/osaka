@@ -83,8 +83,17 @@ module Osaka
     end
   
     def self.create_document(filename, &block)
-      numbers = Osaka::Pages.new
-      numbers.create_document(filename, &block)
+      pages = Osaka::Pages.new
+      pages.create_document(filename, &block)
+    end
+  
+    def new_document
+      super
+      if control.current_window_name == "Template Chooser"
+        control.set_current_window(do_and_wait_for_new_window {
+          control.click(at.button("Choose").window("Template Chooser"))
+        })
+      end
     end
   
     def set_mail_merge_document(filename)

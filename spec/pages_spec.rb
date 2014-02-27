@@ -7,14 +7,36 @@ describe "Osaka::Pages" do
 
   subject { Osaka::Pages.new }
   
-  let (:control) { subject.control = mock("Remote Control", :name => "ApplicationName")}
+  let (:control) { subject.control = double("Remote Control", :name => "ApplicationName")}
   
   context "Basic document operations" do
     
     it "Should be able to type in the file" do
       expect_keystroke("Hello")
       subject.type("Hello")
-    end  
+    end
+    
+    it "Should be able to create a new document using template choser if there is one" do
+      subject.should_receive(:do_and_wait_for_new_window).and_yield.and_return("Template Chooser")    
+      expect_keystroke("n", :command)
+      expect_set_current_window("Template Chooser")
+      expect_focus      
+      expect_current_window_name.and_return("Template Chooser")   
+      subject.should_receive(:do_and_wait_for_new_window).and_yield.and_return("New Document")
+      expect_click(at.button("Choose").window("Template Chooser"))
+      expect_set_current_window("New Document")
+      subject.new_document
+    end
+
+    it "Should be able to create a new document also when there is no template chooser" do
+      subject.should_receive(:do_and_wait_for_new_window).and_yield.and_return("New Document")    
+      expect_keystroke("n", :command)
+      expect_set_current_window("New Document")
+      expect_focus
+      expect_current_window_name.and_return("New Document")   
+      subject.new_document
+    end
+      
   end
   
   it "Should be able to use a class method for creating documents quickly" do

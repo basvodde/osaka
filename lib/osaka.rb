@@ -1,6 +1,10 @@
 
+# Non UI servies
 require 'osaka/commandrunner'
 require 'osaka/scriptrunner'
+require 'osaka/launchservices'
+
+# Basic UI automation
 require 'osaka/location'
 require 'osaka/remotecontrol'
 require 'osaka/typicalapplication'

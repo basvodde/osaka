@@ -3,6 +3,7 @@
 require 'osaka/commandrunner'
 require 'osaka/scriptrunner'
 require 'osaka/launchservices'
+require 'osaka/defaultssystem'
 
 # Basic UI automation
 require 'osaka/location'

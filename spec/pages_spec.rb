@@ -40,7 +40,7 @@ describe "Osaka::Pages" do
   end
   
   it "Should be able to use a class method for creating documents quickly" do
-      Osaka::Pages.should_receive(:new).any_number_of_times.and_return(double("App"))
+      Osaka::Pages.should_receive(:new).at_least(1).times.and_return(double("App"))
       subject.should_receive(:create_document)
 
       Osaka::Pages.create_document("filename") { |doc|
@@ -61,14 +61,14 @@ describe "Osaka::Pages" do
   end
     
   it "Should be able to select the Mail Merge" do
-    expect_current_window_name.any_number_of_times.and_return("Pages.pages")
+    expect_current_window_name.at_least(1).times.and_return("Pages.pages")
     expect_click_menu_bar(at.menu_item(20), "Edit")
     expect_wait_until_exists(at.button("Merge").sheet(1))
     subject.mail_merge
   end
 
   it "Should click the merge button of the mail merge dialog" do
-    expect_current_window_name.any_number_of_times.and_return("Pages.pages")
+    expect_current_window_name.at_least(1).times.and_return("Pages.pages")
 
     expect_click_menu_bar(at.menu_item(20), "Edit")
     expect_wait_until_exists(at.button("Merge").sheet(1))

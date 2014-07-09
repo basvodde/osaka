@@ -5,7 +5,7 @@ describe "Osaka::TypicalFinderDialog" do
   
   include(*Osaka::OsakaExpectations)
   subject { Osaka::TypicalFinderDialog.new("Application", at.window(1))}
-  let(:control) { subject.control = mock("RemoteControl", :base_location => at.window(1)) }
+  let(:control) { subject.control = double("RemoteControl", :base_location => at.window(1)) }
   
   
   it "Should be able to set the path" do

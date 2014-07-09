@@ -6,13 +6,13 @@ describe "Osaka::TypicalPrintDialog" do
   include(*Osaka::OsakaExpectations)
   subject { Osaka::TypicalPrintDialog.new("App", at.window("Print")) }
     
-  let(:control) { subject.control = mock("RemoteControl", :name => "App") }
+  let(:control) { subject.control = double("RemoteControl", :name => "App") }
 
   it "Should be able to save the PDF in a print dialog" do
     
     control.stub(:base_location).and_return(at.window("Print"))
     
-    save_dialog_mock = mock("Generic Save Dialog")
+    save_dialog_mock = double("Generic Save Dialog")
     
     expect_click!(at.menu_button("PDF")) 
     expect_wait_until_exists!(at.menu(1).menu_button("PDF"))

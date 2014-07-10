@@ -5,7 +5,7 @@ describe "Osaka::TypicalSaveDialog" do
 
   include(*Osaka::OsakaExpectations)
   subject { Osaka::TypicalSaveDialog.new("Application", at.sheet(1))}
-  let(:control) { subject.control = mock("RemoteControl", :base_location => at.sheet(1)) }
+  let(:control) { subject.control = double("RemoteControl", :base_location => at.sheet(1)) }
   
   it "Should set the filename in the test field" do
     subject.should_receive(:set_filename).with("filename")

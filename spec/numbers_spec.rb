@@ -6,7 +6,7 @@ describe "Osaka::Numbers" do
   include(*Osaka::OsakaExpectations)
 
   subject { Osaka::Numbers.new }  
-  let(:control) { subject.control = mock("RemoteControl").as_null_object}
+  let(:control) { subject.control = double("RemoteControl").as_null_object}
   
   it "Should be able to get the column count" do
     expect_tell('tell document 1; tell sheet 1; tell table 1; get column count; end tell; end tell; end tell').and_return("10")
@@ -47,7 +47,7 @@ describe "Osaka::Numbers" do
   end
   
   it "Should be able to use a class method for creating documents quickly" do
-      Osaka::Numbers.should_receive(:new).any_number_of_times.and_return(mock("App"))
+      Osaka::Numbers.should_receive(:new).at_least(1).times.and_return(double("App"))
       subject.should_receive(:create_document)
 
       Osaka::Numbers.create_document("filename") { |doc|

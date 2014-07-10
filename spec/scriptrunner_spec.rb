@@ -34,7 +34,7 @@ describe "Osaka::ScriptRunner" do
   
   it "Should be able to generate a script of the run for later debugging purposes" do
     Osaka::CommandRunner.should_receive(:run).and_return("Blah blah blah")
-    file = mock("Mocked output file")
+    file = double("Mocked output file")
     File.should_receive(:open).with("output_script", File::WRONLY|File::APPEND|File::CREAT, 0755).and_yield(file)
     file.should_receive(:puts).with("osascript -e \"random number\"")
     Osaka::ScriptRunner.enable_debug_prints(:script, "output_script")

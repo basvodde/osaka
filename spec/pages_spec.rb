@@ -40,7 +40,7 @@ describe "Osaka::Pages" do
   end
   
   it "Should be able to use a class method for creating documents quickly" do
-      Osaka::Pages.should_receive(:new).any_number_of_times.and_return(mock("App"))
+      Osaka::Pages.should_receive(:new).at_least(1).times.and_return(double("App"))
       subject.should_receive(:create_document)
 
       Osaka::Pages.create_document("filename") { |doc|
@@ -49,8 +49,8 @@ describe "Osaka::Pages" do
     
   it "Should be able to do mail merge to a PDF flow" do
     
-    mail_merge_dialog = mock("Pages Mail Merge Dialog")
-    print_dialog = mock("Generic Print Dialog")
+    mail_merge_dialog = double("Pages Mail Merge Dialog")
+    print_dialog = double("Generic Print Dialog")
     
     subject.should_receive(:mail_merge).and_return(mail_merge_dialog)
     mail_merge_dialog.should_receive(:merge).and_return(print_dialog)
@@ -61,14 +61,14 @@ describe "Osaka::Pages" do
   end
     
   it "Should be able to select the Mail Merge" do
-    expect_current_window_name.any_number_of_times.and_return("Pages.pages")
+    expect_current_window_name.at_least(1).times.and_return("Pages.pages")
     expect_click_menu_bar(at.menu_item(20), "Edit")
     expect_wait_until_exists(at.button("Merge").sheet(1))
     subject.mail_merge
   end
 
   it "Should click the merge button of the mail merge dialog" do
-    expect_current_window_name.any_number_of_times.and_return("Pages.pages")
+    expect_current_window_name.at_least(1).times.and_return("Pages.pages")
 
     expect_click_menu_bar(at.menu_item(20), "Edit")
     expect_wait_until_exists(at.button("Merge").sheet(1))
@@ -83,7 +83,7 @@ describe "Osaka::Pages" do
     expect_exists?(at.menu_item("Show Inspector").menu(1).menu_bar_item("View").menu_bar(1)).and_return(true)
     expect_click_menu_bar(at.menu_item("Show Inspector"), "View")
     
-    inspector_mock = mock("Inspector")
+    inspector_mock = double("Inspector")
     Osaka::PagesInspector.should_receive(:new).with(control.name, at.window("Link")).and_return(inspector_mock)    
     subject.inspector.should equal(inspector_mock)
   end
@@ -98,7 +98,7 @@ describe "Osaka::Pages" do
   end
   
   it "Should be able to change the mail merge document source" do
-    inspector_mock = mock("Inspector")
+    inspector_mock = double("Inspector")
     subject.should_receive(:inspector).and_return(inspector_mock)
     inspector_mock.should_receive(:change_mail_merge_source)
     
@@ -114,7 +114,7 @@ describe "Osaka::Pages" do
   end
   
   it "Should be able to stop when an error happens due to mail merge. This is especially important since otherwise Pages goes nuts and crashes :)" do
-    subject.should_receive(:inspector).and_return(mock("Inspector").as_null_object)    
+    subject.should_receive(:inspector).and_return(double("Inspector").as_null_object)    
     expect_wait_until_exists(at.sheet(1))
     subject.should_receive(:do_and_wait_for_new_window)
     subject.should_receive(:select_file_from_open_dialog)
@@ -136,7 +136,7 @@ describe "Osaka::Pages Inspector" do
   include(*Osaka::OsakaExpectations)
 
   subject {Osaka::PagesInspector.new("Pages", "Link")}
-  let(:control) {subject.control = mock("RemoteControl")}
+  let(:control) {subject.control = double("RemoteControl")}
   
   it "Can convert symbolic names to locations" do
     # Nice... checking a map. Perhaps delete ?
@@ -175,7 +175,7 @@ describe "Osaka::Pages Mail Merge dialog" do
   include(*Osaka::OsakaExpectations)
 
   subject { Osaka::PagesMailMergeDialog.new("", nil) }
-  let(:control) {subject.control = mock("RemoteControl").as_null_object}
+  let(:control) {subject.control = double("RemoteControl").as_null_object}
   
   it "Should be able to set the mail merge dialog to merge to new document" do
     expect_click(at.pop_up_button(2).sheet(1))

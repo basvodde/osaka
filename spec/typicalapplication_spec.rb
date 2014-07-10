@@ -7,7 +7,7 @@ describe "Osaka::TypicalApplication" do
   
   subject { Osaka::TypicalApplication.new("ApplicationName") }
   
-  let(:control) { subject.control = mock("RemoteControl", :name => "ApplicationName", :base_location => "base", :mac_version => :mountain_lion) }
+  let(:control) { subject.control = double("RemoteControl", :name => "ApplicationName", :base_location => "base", :mac_version => :mountain_lion) }
 
   before (:each) do
     Osaka::ScriptRunner.enable_debug_prints
@@ -123,8 +123,8 @@ describe "Osaka::TypicalApplication" do
   
   context "Save and duplicate documents" do
     
-    let(:save_dialog) { mock("Typical Save Dialog") }
-    let(:new_instance_control) { mock("RemoteControl") }
+    let(:save_dialog) { double("Typical Save Dialog") }
+    let(:new_instance_control) { double("RemoteControl") }
     
     it "Should be able to save" do
       expect_keystroke("s", :command)
@@ -167,7 +167,7 @@ describe "Osaka::TypicalApplication" do
     end
     
     it "Should be able to pick a file from an open dialog" do
-      dialog_mock = mock("Open Dialog")
+      dialog_mock = double("Open Dialog")
       subject.should_receive(:create_dialog).with(Osaka::TypicalOpenDialog, at.window("dialog")).and_return(dialog_mock)
       dialog_mock.should_receive(:set_folder).with("/tmp")
       dialog_mock.should_receive(:select_file).with("filename")

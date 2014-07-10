@@ -5,7 +5,7 @@ describe "Osaka::TypicalOpenDialog" do
   
   include(*Osaka::OsakaExpectations)
   subject { Osaka::TypicalOpenDialog.new("Application", at.window(1))}
-  let(:control) { subject.control = mock("RemoteControl", :base_location => at.window(1)) }
+  let(:control) { subject.control = double("RemoteControl", :base_location => at.window(1)) }
   
   
   it "Should be do nothing when the amount of files in the directory is 0" do

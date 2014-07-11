@@ -61,15 +61,12 @@ describe "Osaka::Pages" do
   end
     
   it "Should be able to select the Mail Merge" do
-    expect_current_window_name.at_least(1).times.and_return("Pages.pages")
     expect_click_menu_bar(at.menu_item(20), "Edit")
     expect_wait_until_exists(at.button("Merge").sheet(1))
     subject.mail_merge
   end
 
   it "Should click the merge button of the mail merge dialog" do
-    expect_current_window_name.at_least(1).times.and_return("Pages.pages")
-
     expect_click_menu_bar(at.menu_item(20), "Edit")
     expect_wait_until_exists(at.button("Merge").sheet(1))
 

@@ -29,12 +29,12 @@ describe "Integration test using the Calculator", :integration => true do
     subject.key("10")
     subject.key("*")
     subject.key("10")
-    subject.key("=")
+    subject.key("+")
     subject.result.should == "100"    
   end
   
   it "Should do whole formulas using key" do
-    subject.key("100+10*3+99=")
+    subject.key("100+10*3+99+")
     subject.result.should == "229"        
   end
   

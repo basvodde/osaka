@@ -3,6 +3,8 @@ require "osaka"
 
 describe "Common flows in keynote" do
   
+  let(:mock_keynote) { double("First keynote")}
+
   def should_get_started
     mock_keynote.should_receive(:activate)
     mock_keynote.should_receive(:close_template_chooser_if_any)
@@ -30,8 +32,6 @@ describe "Common flows in keynote" do
     mock_keynote.should_receive(:close)
     mock_keynote.should_receive(:quit)
   end
-
-  let(:mock_keynote) { double("First keynote")}
 
   it "Should exit if keynote windows are already open" do
     Osaka::Keynote.should_receive(:new).and_return(mock_keynote)
@@ -88,7 +88,10 @@ describe "Common flows in keynote" do
     mock_keynote.should_receive(:open).with("file2.key")
     mock_keynote.should_receive(:close)
     mock_keynote.should_receive(:quit)
-    CommonFlows.keynote_open_then_close(["file1.key", "file2.key"])
+    CommonFlows.keynote_open_yield_close(["file1.key", "file2.key"]) { |k| k.instance_of? Osaka::Keynote }
+  end
+  
+  it "Should be able to search and replace strings in keynote files" do
   end
   
 end

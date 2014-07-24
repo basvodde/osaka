@@ -26,7 +26,7 @@ module CommonFlows
     keynote.quit
   end
   
-  def self.keynote_open_then_close(files)
+  def self.keynote_open_yield_close(files)
     keynote = Osaka::Keynote.new
     keynote.activate
     keynote.close_template_chooser_if_any
@@ -35,6 +35,7 @@ module CommonFlows
     files.each { |file|
       keynote = Osaka::Keynote.new
       keynote.open(file)
+      yield keynote
       keynote.close
     }
     keynote.quit

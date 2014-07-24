@@ -25,5 +25,18 @@ module Osaka
         control.click(at.menu_item("Light Table").menu(1).menu_bar_item("View").menu_bar(1))
       end
     end
+
+    def open (filename)
+      abolutePathFileName = File.absolute_path(filename)
+      new_window = do_and_wait_for_new_window {
+        # jwg - weird that keynote open via osascript is flakey for Mavericks
+        # was: control.tell("open \"#{abolutePathFileName}\"")
+        # But now uses the command line
+        CommandRunner::run("open #{abolutePathFileName}", ScriptRunner::debug_prints?)
+      }
+      control.wait_until_exists(at.window(File.basename(filename)))
+      control.set_current_window(new_window)
+    end
+
   end
 end

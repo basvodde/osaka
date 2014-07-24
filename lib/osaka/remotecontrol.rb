@@ -150,6 +150,10 @@ module Osaka
       click!(menu_item + at.menu(1) + menu_bar_location)      
     end
         
+    def click_menu_bar_by_name(menu_item_name, menu_name)
+      click_menu_bar(at.menu_item(menu_item_name), menu_name) 
+    end
+        
     def set!(element, location, value)
       encoded_value = (value.class == String) ? "\"#{value}\"" : value.to_s
       check_output( system_event!("set #{element}#{construct_prefixed_location(location)} to #{encoded_value}"), "set")
@@ -241,6 +245,8 @@ module Osaka
           :lion
         when /^10.8.*/
           :mountain_lion
+        when /^10.9.*/
+          :mavericks
         else
           :other
         end

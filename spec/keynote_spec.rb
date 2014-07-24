@@ -40,4 +40,13 @@ describe "Osaka::Keynote" do
     subject.select_all_slides
   end
   
+  it "Should use the bash command open to make up for problem in keynote 6.2" do
+    File.stub(:absolute_path).with("file.key").and_return("/path/file.key")
+    subject.stub(:do_and_wait_for_new_window).and_yield.and_return("new_window")
+    Osaka::CommandRunner.stub(:run).with("open /path/file.key", false).and_return("something that is printed during debug")
+    subject.control.stub(:wait_until_exists)
+    subject.control.stub(:set_current_window).with("new_window")
+    subject.open("file.key")
+  end
+  
 end

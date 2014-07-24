@@ -36,8 +36,6 @@ module Osaka
       abolutePathFileName = File.absolute_path(filename)
       new_window = do_and_wait_for_new_window {
         control.tell("open \"#{abolutePathFileName}\"")
-        # jwg - wierd that open via osascript is flakey for keynote Mavericks
-        # so use the command line in teh keynote class
       }
       control.set_current_window(new_window)
     end

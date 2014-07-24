@@ -29,9 +29,9 @@ module Osaka
     def open (filename)
       abolutePathFileName = File.absolute_path(filename)
       new_window = do_and_wait_for_new_window {
-        # jwg - wierd that keynote open via osascript is flakey for Mavericks
-        # control.tell("open \"#{abolutePathFileName}\"")
-        # so use the command line
+        # jwg - weird that keynote open via osascript is flakey for Mavericks
+        # was: control.tell("open \"#{abolutePathFileName}\"")
+        # But now uses the command line
         CommandRunner::run("open #{abolutePathFileName}", ScriptRunner::debug_prints?)
       }
       control.wait_until_exists(at.window(File.basename(filename)))

@@ -92,7 +92,7 @@ describe "Osaka::TypicalApplication" do
   
     it "Should be able to check if its running" do
       expect_running?.and_return(true)
-      subject.running?.should be_true
+      subject.running?.should equal true
     end
   
     it "Won't quit when the application isn't running" do
@@ -177,8 +177,12 @@ describe "Osaka::TypicalApplication" do
     
     
     it "Should be able to duplicate and close the original document" do
-      subject.stub_chain(:duplicate, :control).and_return(new_instance_control)
+      duplicate = double("DuplicateDocument")
+      subject.control.should_receive(:current_window_name).and_return("window name")
+      subject.should_receive(:duplicate).and_return(duplicate)
+      subject.control.should_receive(:click_menu_bar_by_name).with("window name", "Window")
       subject.should_receive(:close)
+      duplicate.should_receive(:control).and_return(new_instance_control)
       subject.duplicate_and_close_original
       subject.control.should equal(new_instance_control)
     end
@@ -308,5 +312,12 @@ describe "Osaka::TypicalApplication" do
       subject.raise_error_on_open_standard_windows("error message")
     }.to raise_error(Osaka::ApplicationWindowsMustBeClosed, "error message")
   end
+
+  it "Should do nothing is there template chooser is not open" do
+    subject.stub(:focus)
+    subject.should_receive(:template_chooser?).and_return(false)
+    subject.close_template_chooser_if_any
+  end
+    
   
 end

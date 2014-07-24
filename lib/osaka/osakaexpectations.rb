@@ -5,7 +5,7 @@ module Osaka
     def simulate_mac_version(version)
       control.should_receive(:mac_version).and_return(version)
     end
-        
+      
     def expect_execute_osascript(command = nil)
       return Osaka::ScriptRunner.should_receive(:execute).with(command) unless command.nil?
       Osaka::ScriptRunner.should_receive(:execute)

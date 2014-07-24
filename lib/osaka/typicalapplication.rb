@@ -36,6 +36,8 @@ module Osaka
       abolutePathFileName = File.absolute_path(filename)
       new_window = do_and_wait_for_new_window {
         control.tell("open \"#{abolutePathFileName}\"")
+        # jwg - wierd that open via osascript is flakey for keynote Mavericks
+        # so use the command line in teh keynote class
       }
       control.set_current_window(new_window)
     end
@@ -114,8 +116,10 @@ module Osaka
     end
     
     def duplicate_and_close_original
-      new_instance = duplicate        
-      close        
+      original_window_name = control.current_window_name
+      new_instance = duplicate   
+      control.click_menu_bar_by_name(original_window_name, "Window")     
+      close
       @control = new_instance.control
     end
     
@@ -198,6 +202,24 @@ module Osaka
       dialog = create_dialog(TypicalOpenDialog, dialog_location)
       dialog.set_folder(File.dirname(filename))
       dialog.select_file(File.basename(filename))
+    end
+
+    # jwg add tests
+    def template_chooser?
+      focus
+      current_window_name = control.current_window_name
+      current_window_name == "Choose a Theme" ||
+      current_window_name == "Choose a Template" ||
+      current_window_name == "Template Chooser" ? true : false
+    end
+    
+    def close_template_chooser_if_any
+      focus
+      if template_chooser?
+        window = at.window(control.current_window_name)
+        close
+        control.wait_until_not_exists!(window)
+      end
     end
     
     def raise_error_on_open_standard_windows(error_message)

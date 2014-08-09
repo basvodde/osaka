@@ -287,12 +287,12 @@ describe "Osaka::TypicalApplication" do
   
   context "Simple Application helpers to create objects" do
     it "Should be able to create dialogs with a helper" do
-      Osaka::TypicalSaveDialog.should_receive(:new).with(control.name, at.sheet(1) + control.base_location)
+      expect(Osaka::TypicalSaveDialog).to receive(:new).with(control.name, at.sheet(1) + control.base_location)
       subject.create_dialog(Osaka::TypicalSaveDialog, at.sheet(1))
     end
     
     it "Should be able to create top level dialogs also with the helper" do
-      Osaka::TypicalSaveDialog.should_receive(:new).with(control.name, at.window("toplevel"))
+      expect(Osaka::TypicalSaveDialog).to receive(:new).with(control.name, at.window("toplevel"))
       subject.create_dialog(Osaka::TypicalSaveDialog, at.window("toplevel"))
     end
   end

@@ -36,7 +36,7 @@ describe "Osaka::ScriptRunner" do
     expect(Osaka::CommandRunner).to receive(:run).and_return("Blah blah blah")
     file = double("Mocked output file")
     expect(File).to receive(:open).with("output_script", File::WRONLY|File::APPEND|File::CREAT, 0755).and_yield(file)
-    file.should_receive(:puts).with("osascript -e \"random number\"")
+    expect(file).to receive(:puts).with("osascript -e \"random number\"")
     Osaka::ScriptRunner.enable_debug_prints(:script, "output_script")
     subject.execute("random number")
     Osaka::ScriptRunner::disable_debug_prints

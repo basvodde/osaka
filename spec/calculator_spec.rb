@@ -12,7 +12,7 @@ describe "Mac GUI Calculator" do
         
     expect_activate
     expect_current_window_name.and_return("")
-    subject.should_receive(:wait_for_new_window).with([])
+    expect(subject).to receive(:wait_for_new_window).with([])
     expect_window_list.and_return(["Calculator"])
     expect_set_current_window("Calculator")
     subject.activate
@@ -37,7 +37,7 @@ describe "Mac GUI Calculator" do
   it "Should be able to get the value from the screen" do
     expect_wait_until_exists!(at.static_text(1).group(1))
     expect_get!("value", at.static_text(1).group(1)).and_return("0")
-    subject.result.should == "0"
+    expect(subject.result).to eq "0"
   end
   
 end

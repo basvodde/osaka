@@ -20,7 +20,7 @@ describe "Location path for an applescript command" do
   
   
   it "Should be able to create locations using at" do
-    at.button(1).to_s.should == "button 1"
+    expect(at.button(1).to_s).to eq "button 1"
   end
   
   it "Should be able to create empty prefixed locations" do
@@ -33,11 +33,11 @@ describe "Location path for an applescript command" do
   end
   
   it "Should be able to create groups" do
-    at.group(1).to_s.should == "group 1"
+    expect(at.group(1).to_s).to eq "group 1"
   end
   
   it "Should be able to combine buttons with groups" do
-    at.button("1").group(2).to_s.should == 'button "1" of group 2'
+    expect(at.button("1").group(2).to_s).to eq 'button "1" of group 2'
   end
   
   it "Should be able to combine groups with windows" do
@@ -45,7 +45,7 @@ describe "Location path for an applescript command" do
   end
   
   it "Can compare different locations" do
-    at.button(1).should == at.button(1)
+    expect(at.button(1)).to eq at.button(1)
   end
   
   it "Should be able to convert to a prefixed location" do

@@ -6,7 +6,7 @@ describe "Osaka::ScriptRunner" do
 
   it "Should be able to run single-line text as osascript" do
     expect(Osaka::CommandRunner).to receive(:run).with('osascript -e "random number"').and_return("")
-    subject.execute("random number").should == ""
+    expect(subject.execute("random number")).to eq ""
   end
   
   it "Should escape quotes when passing text" do

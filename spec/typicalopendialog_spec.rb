@@ -40,7 +40,7 @@ describe "Osaka::TypicalOpenDialog" do
   it "Should be able to get the name of a file from a row" do
     expect(subject).to receive(:field_location_from_row).and_return(at.window("Location"))
     expect_get!("value", at.window("Location")).and_return("filename")
-    subject.filename_at(1).should == "filename"
+    expect(subject.filename_at(1)).to eq "filename"
   end
   
   it "Should be able to select the filename (when that is possible)" do
@@ -71,12 +71,12 @@ describe "Osaka::TypicalOpenDialog" do
     
   it "Should be able to convert a row into a location when it is a text field" do
     expect_exists?(subject.text_field_location_from_row(1)).and_return(true)
-    subject.field_location_from_row(1).should == subject.text_field_location_from_row(1)
+    expect(subject.field_location_from_row(1)).to eq subject.text_field_location_from_row(1)
   end
   
   it "Should be able to convert a row into a location when it is a static field." do
     expect_exists?(subject.text_field_location_from_row(1)).and_return(false)
-    subject.field_location_from_row(1).should == subject.static_field_location_from_row(1)    
+    expect(subject.field_location_from_row(1)).to eq subject.static_field_location_from_row(1)    
   end
   
   it "Should be able to get the location of the list" do

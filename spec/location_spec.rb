@@ -29,7 +29,7 @@ describe "Location path for an applescript command" do
   
   it "Should be able to check whether the location already has a window" do
     Osaka::Location.new("").has_window?.should == false
-    at.window("one").has_window?.should == true
+    expect(at.window("one").has_window?).to eq true
   end
   
   it "Should be able to create groups" do
@@ -41,7 +41,7 @@ describe "Location path for an applescript command" do
   end
   
   it "Should be able to combine groups with windows" do
-    at.button(1).group(2).window("Name").to_s.should == 'button 1 of group 2 of window "Name"'
+    expect(at.button(1).group(2).window("Name").to_s).to eq 'button 1 of group 2 of window "Name"'
   end
   
   it "Can compare different locations" do

@@ -185,7 +185,7 @@ describe "Osaka::TypicalApplication" do
     
     it "Should be able to check whether Duplicate is supported" do
       expect_exists?(at.menu_item("Duplicate").menu(1).menu_bar_item("File").menu_bar(1)).and_return(true)
-      subject.duplicate_available?.should == true
+      expect(subject.duplicate_available?).to eq true
     end
   
     it "Should throw an exception when duplicate is not available"do
@@ -219,7 +219,7 @@ describe "Osaka::TypicalApplication" do
     
     it "Should be able to check whether the save will pop up a dialog or not" do
       expect_exists?(at.menu_item("Save…").menu(1).menu_bar_item("File").menu_bar(1)).and_return(true)
-      subject.save_pops_up_dialog?.should == true
+      expect(subject.save_pops_up_dialog?).to eq true
     end
     
   end

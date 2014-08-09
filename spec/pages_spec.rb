@@ -137,16 +137,16 @@ describe "Osaka::Pages Inspector" do
   
   it "Can convert symbolic names to locations" do
     # Nice... checking a map. Perhaps delete ?
-    subject.get_location_from_symbol(:document).should == at.radio_button(1).radio_group(1)
-    subject.get_location_from_symbol(:layout).should == at.radio_button(2).radio_group(1)
-    subject.get_location_from_symbol(:wrap).should == at.radio_button(3).radio_group(1)
-    subject.get_location_from_symbol(:text).should == at.radio_button(4).radio_group(1)
-    subject.get_location_from_symbol(:graphic).should == at.radio_button(5).radio_group(1)
-    subject.get_location_from_symbol(:metrics).should == at.radio_button(6).radio_group(1)
-    subject.get_location_from_symbol(:table).should == at.radio_button(7).radio_group(1)
-    subject.get_location_from_symbol(:chart).should == at.radio_button(8).radio_group(1)
-    subject.get_location_from_symbol(:link).should == at.radio_button(9).radio_group(1)
-    subject.get_location_from_symbol(:quicktime).should == at.radio_button(10).radio_group(1)
+    expect(subject.get_location_from_symbol(:document)).to eq at.radio_button(1).radio_group(1)
+    expect(subject.get_location_from_symbol(:layout)).to eq at.radio_button(2).radio_group(1)
+    expect(subject.get_location_from_symbol(:wrap)).to eq at.radio_button(3).radio_group(1)
+    expect(subject.get_location_from_symbol(:text)).to eq at.radio_button(4).radio_group(1)
+    expect(subject.get_location_from_symbol(:graphic)).to eq at.radio_button(5).radio_group(1)
+    expect(subject.get_location_from_symbol(:metrics)).to eq at.radio_button(6).radio_group(1)
+    expect(subject.get_location_from_symbol(:table)).to eq at.radio_button(7).radio_group(1)
+    expect(subject.get_location_from_symbol(:chart)).to eq at.radio_button(8).radio_group(1)
+    expect(subject.get_location_from_symbol(:link)).to eq at.radio_button(9).radio_group(1)
+    expect(subject.get_location_from_symbol(:quicktime)).to eq at.radio_button(10).radio_group(1)
   end
   
   

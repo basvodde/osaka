@@ -168,7 +168,7 @@ describe "Osaka::RemoteControl" do
     end
     
     it "Should be able to loop over some script until something happens" do
-      Timeout.should_receive(:timeout).with(10).and_yield
+      expect(Timeout).to receive(:timeout).with(10).and_yield
       expect_execute_osascript.and_return("false", "false", "true")
       expect_activate.twice
       
@@ -179,12 +179,12 @@ describe "Osaka::RemoteControl" do
     end
     
     it "Should print a proper error message when it times out while waiting for something" do
-      Timeout.should_receive(:timeout).with(10).and_raise(Timeout::Error.new)
+      expect(Timeout).to receive(:timeout).with(10).and_raise(Timeout::Error.new)
       expect { subject.until_exists!(at.window(1)) }.to raise_error(Osaka::TimeoutError, "Timed out while waiting for: window 1")
     end
 
     it "Should print a proper error message when it times out while waiting for more than one thing" do
-      Timeout.should_receive(:timeout).with(10).and_raise(Timeout::Error.new)
+      expect(Timeout).to receive(:timeout).with(10).and_raise(Timeout::Error.new)
       expect { subject.until_exists!(at.window(1), at.button(2)) }.to raise_error(Osaka::TimeoutError, "Timed out while waiting for: window 1, button 2")
     end
   end

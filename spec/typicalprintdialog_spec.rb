@@ -21,7 +21,7 @@ describe "Osaka::TypicalPrintDialog" do
     expect_wait_until_exists!(at.window("Save"), at.sheet(1).window("Print")).and_return(at.window("Save"))
 
     expect(subject).to receive(:create_save_dialog).with("App", at.window("Save")).and_return(save_dialog_mock)
-    save_dialog_mock.should_receive(:save).with("filename")
+    expect(save_dialog_mock).to receive(:save).with("filename")
     
     expect_until_not_exists!(at.window("Print"))
     expect_exists?(at.checkbox(1)).and_return(true)

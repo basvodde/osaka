@@ -7,8 +7,8 @@ module Osaka
     end
         
     def expect_execute_osascript(command = nil)
-      return Osaka::ScriptRunner.should_receive(:execute).with(command) unless command.nil?
-      Osaka::ScriptRunner.should_receive(:execute)
+      return expect(Osaka::ScriptRunner).to receive(:execute).with(command) unless command.nil?
+      expect(Osaka::ScriptRunner).to receive(:execute)
     end
     
     def expect_clone

@@ -81,7 +81,7 @@ describe "Osaka::Pages" do
     expect_click_menu_bar(at.menu_item("Show Inspector"), "View")
     
     inspector_mock = double("Inspector")
-    Osaka::PagesInspector.should_receive(:new).with(control.name, at.window("Link")).and_return(inspector_mock)    
+    expect(Osaka::PagesInspector).to receive(:new).with(control.name, at.window("Link")).and_return(inspector_mock)    
     subject.inspector.should equal(inspector_mock)
   end
   

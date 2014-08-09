@@ -27,7 +27,7 @@ describe "Osaka::Keynote" do
   
   it "Should not click the dialog when it is not there" do
     expect(subject.control).to receive(:exists?).and_return(false)
-    subject.control.should_not_receive(:click)
+    expect(subject.control).to receive(:click).exactly(0).times
     expect(subject).to receive(:select_all)
     subject.select_all_slides
   end

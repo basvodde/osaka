@@ -56,17 +56,17 @@ describe "Osaka::TypicalOpenDialog" do
 
   it "Should be able to get the amount of files in the current file list" do
     expect_get!("rows", subject.file_list_location).and_return("row 1 of outline 1 of scroll area 2 of splitter group 1 of group 1 of window Open of application process Pages")
-    subject.amount_of_files_in_list.should == 1
+    expect(subject.amount_of_files_in_list).to eq 1
   end
   
   it "Should be able to get the amount of files in the current file list with 2 files." do
     expect_get!("rows", subject.file_list_location).and_return("row 1 of outline 1 of scroll area 2 of splitter group 1 of group 1 of window Open of application process Pages, row 2 of outline 1 of scroll area 2 of splitter group 1 of group 1 of window Open of application process Pages")
-    subject.amount_of_files_in_list.should == 2    
+    expect(subject.amount_of_files_in_list).to eq 2    
   end
   
   it "Should be able to get the amount of files in the current file list when there are no files..." do
     expect_get!("rows", subject.file_list_location).and_return("")
-    subject.amount_of_files_in_list.should == 0
+    expect(subject.amount_of_files_in_list).to eq 0
   end  
     
   it "Should be able to convert a row into a location when it is a text field" do
@@ -80,6 +80,6 @@ describe "Osaka::TypicalOpenDialog" do
   end
   
   it "Should be able to get the location of the list" do
-    subject.file_list_location.should == at.outline(1).scroll_area(2).splitter_group(1).group(1)
+    expect(subject.file_list_location).to eq at.outline(1).scroll_area(2).splitter_group(1).group(1)
   end
 end

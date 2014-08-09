@@ -8,7 +8,7 @@ describe "Mail Merge to PDF common flow" do
 
   it "Should do a good mail merge with Pages and Keynote flow" do
     
-    Osaka::Numbers.should_receive(:create_document).with("/template/numbers").and_yield(mock_numbers)
+    expect(Osaka::Numbers).to receive(:create_document).with("/template/numbers").and_yield(mock_numbers)
     
     Osaka::Pages.should_receive(:new).and_return(mock_pages)
     
@@ -25,7 +25,7 @@ describe "Mail Merge to PDF common flow" do
   it "Should yield for filling in the numbers fields" do
     mock_numbers.as_null_object
     mock_pages.as_null_object
-    Osaka::Numbers.should_receive(:create_document).and_yield(mock_numbers)
+    expect(Osaka::Numbers).to receive(:create_document).and_yield(mock_numbers)
     Osaka::Pages.should_receive(:new).and_return(mock_pages)
 
     retrieved_numbers = nil

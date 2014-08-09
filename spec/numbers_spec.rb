@@ -47,7 +47,7 @@ describe "Osaka::Numbers" do
   end
   
   it "Should be able to use a class method for creating documents quickly" do
-      Osaka::Numbers.should_receive(:new).at_least(1).times.and_return(double("App"))
+      expect(Osaka::Numbers).to receive(:new).at_least(1).times.and_return(double("App"))
       expect(subject).to receive(:create_document)
 
       Osaka::Numbers.create_document("filename") { |doc|

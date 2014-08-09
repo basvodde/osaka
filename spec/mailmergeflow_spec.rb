@@ -10,7 +10,7 @@ describe "Mail Merge to PDF common flow" do
     
     expect(Osaka::Numbers).to receive(:create_document).with("/template/numbers").and_yield(mock_numbers)
     
-    Osaka::Pages.should_receive(:new).and_return(mock_pages)
+    expect(Osaka::Pages).to receive(:new).and_return(mock_pages)
     
     expect(mock_pages).to receive(:open).with("/template/pages")
     expect(mock_pages).to receive(:set_mail_merge_document).with("/template/numbers")
@@ -26,7 +26,7 @@ describe "Mail Merge to PDF common flow" do
     mock_numbers.as_null_object
     mock_pages.as_null_object
     expect(Osaka::Numbers).to receive(:create_document).and_yield(mock_numbers)
-    Osaka::Pages.should_receive(:new).and_return(mock_pages)
+    expect(Osaka::Pages).to receive(:new).and_return(mock_pages)
 
     retrieved_numbers = nil
     CommonFlows.number_and_pages_mail_merge("1", "2", "3") { |numbers|

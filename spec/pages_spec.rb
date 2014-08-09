@@ -55,7 +55,7 @@ describe "Osaka::Pages" do
     expect(subject).to receive(:mail_merge).and_return(mail_merge_dialog)
     expect(mail_merge_dialog).to receive(:merge).and_return(print_dialog)
     expect(mail_merge_dialog).to receive(:set_merge_to_printer)
-    print_dialog.should_receive(:save_as_pdf).with("filename")
+    expect(print_dialog).to receive(:save_as_pdf).with("filename")
     
     subject.mail_merge_to_pdf("filename")
   end

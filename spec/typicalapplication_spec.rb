@@ -92,7 +92,7 @@ describe "Osaka::TypicalApplication" do
   
     it "Should be able to check if its running" do
       expect_running?.and_return(true)
-      subject.running?.should be_true
+      subject.running?.should be true
     end
   
     it "Won't quit when the application isn't running" do

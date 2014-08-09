@@ -213,7 +213,7 @@ describe "Osaka::TypicalApplication" do
       subject.stub_chain(:clone, :control).and_return(new_instance_control)
       expect(subject).to receive(:sleep).with(0.4) # Avoiding Mountain Lion crash
       expect_keystroke!(:return)
-      new_instance_control.should_receive(:set_current_window).with("New name duplicate window")
+      expect(new_instance_control).to receive(:set_current_window).with("New name duplicate window")
       subject.duplicate.control.should equal(new_instance_control)
     end
     

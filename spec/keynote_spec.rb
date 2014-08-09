@@ -19,14 +19,14 @@ describe "Osaka::Keynote" do
   end
   
   it "Should click light table view when the dialog is there" do
-    subject.control.should_receive(:exists?).and_return(true)
-    subject.control.should_receive(:click)
+    expect(subject.control).to receive(:exists?).and_return(true)
+    expect(subject.control).to receive(:click)
     expect(subject).to receive(:select_all)
     subject.select_all_slides
   end
   
   it "Should not click the dialog when it is not there" do
-    subject.control.should_receive(:exists?).and_return(false)
+    expect(subject.control).to receive(:exists?).and_return(false)
     subject.control.should_not_receive(:click)
     expect(subject).to receive(:select_all)
     subject.select_all_slides

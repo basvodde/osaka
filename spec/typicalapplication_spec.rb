@@ -169,8 +169,8 @@ describe "Osaka::TypicalApplication" do
     it "Should be able to pick a file from an open dialog" do
       dialog_mock = double("Open Dialog")
       expect(subject).to receive(:create_dialog).with(Osaka::TypicalOpenDialog, at.window("dialog")).and_return(dialog_mock)
-      dialog_mock.should_receive(:set_folder).with("/tmp")
-      dialog_mock.should_receive(:select_file).with("filename")
+      expect(dialog_mock).to receive(:set_folder).with("/tmp")
+      expect(dialog_mock).to receive(:select_file).with("filename")
       
       subject.select_file_from_open_dialog("/tmp/filename", at.window("dialog"))
     end

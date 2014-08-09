@@ -34,7 +34,7 @@ describe "Osaka::TypicalSaveDialog" do
   end
   
   it "Should be able to set the filename" do
-    control.should_receive(:set).with('value', at.text_field(1), "filename")
+    expect(control).to receive(:set).with('value', at.text_field(1), "filename")
     subject.set_filename("filename")
   end
   

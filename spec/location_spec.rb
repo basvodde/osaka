@@ -5,17 +5,17 @@ describe "Location path for an applescript command" do
   
   it "Should be able to create a valid location when appending two locations" do
     location = Osaka::Location.new("scrollbar") + Osaka::Location.new("window 1")
-    location.to_s.should == "scrollbar of window 1"
+    expect(location.to_s).to eq "scrollbar of window 1"
   end
   
   it "Should be able to add empty locations" do
     location = Osaka::Location.new("location") + ""
-    location.to_s.should == "location"
+    expect(location.to_s).to eq "location"
   end
   
   it "Should be able to get the top-level element out" do
     location = at.sheet(1).sheet(2).window("three")
-    location.top_level_element.should == at.window("three")
+    expect(location.top_level_element).to eq at.window("three")
   end
   
   

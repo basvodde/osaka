@@ -37,23 +37,23 @@ describe "Osaka::RemoteControl" do
     
     it "Can get the OS version (lion)" do
       expect_execute_osascript("system version of (system info)").and_return("10.7.4\n")
-      subject.mac_version.should == :lion
-      subject.mac_version_string.should == "10.7.4"
+      expect(subject.mac_version).to eq :lion
+      expect(subject.mac_version_string).to eq "10.7.4"
     end
 
     it "Can get the OS version (mountain lion)" do
       expect_execute_osascript("system version of (system info)").and_return("10.8\n")
-      subject.mac_version.should == :mountain_lion
+      expect(subject.mac_version).to eq :mountain_lion
     end
 
     it "Can get the OS version (snow leopard)" do
       expect_execute_osascript("system version of (system info)").and_return("10.6\n")
-      subject.mac_version.should == :snow_leopard
+      expect(subject.mac_version).to eq :snow_leopard
     end
 
     it "Can get the OS version (snow leopard)" do
       expect_execute_osascript("system version of (system info)").and_return("1\n")
-      subject.mac_version.should == :other
+      expect(subject.mac_version).to eq :other
     end
   end  
 
@@ -62,7 +62,7 @@ describe "Osaka::RemoteControl" do
     it "Should be able to clone controls" do
       subject.set_current_window "Window"
       new_control = subject.clone
-      new_control.should == subject
+      expect(new_control).to eq subject
       new_control.should_not equal(subject)
     end
     
@@ -75,7 +75,7 @@ describe "Osaka::RemoteControl" do
     end
   
     it "Should be able to compare objects using names" do
-      subject.should == Osaka::RemoteControl.new(name)
+      expect(subject).to eq Osaka::RemoteControl.new(name)
       subject.should_not == Osaka::RemoteControl.new("otherName")
     end
   
@@ -86,7 +86,7 @@ describe "Osaka::RemoteControl" do
       subject.set_current_window("Window")
       unequal_object.set_current_window "Another Window"
     
-      subject.should == equal_object
+      expect(subject).to eq equal_object
       subject.should_not == unequal_object
     end
   end
@@ -340,12 +340,12 @@ describe "Osaka::RemoteControl" do
 
     it "Should be able to get an empty array when requesting for the window list and there are none" do
       expect_get_app!("windows").and_return("\n")
-      subject.window_list.should == []
+      expect(subject.window_list).to eq []
     end
 
     it "Should be able get an array with one window name when there is exactly one window" do
       expect_get_app!("windows").and_return("window one of application process process\n")
-      subject.window_list.should == ["one"]    
+      expect(subject.window_list).to eq ["one"]    
     end
     
     it "Should be able to get a list of standard windows which is empty" do
@@ -356,14 +356,14 @@ describe "Osaka::RemoteControl" do
     it "Should be able to get a list of all the standard windows when there are only standard windows " do
       expect(subject).to receive(:window_list).and_return(["window 1"])
       expect_get!("subrole", at.window("window 1")).and_return("AXStandardWindow")
-      subject.standard_window_list.should == ["window 1"]
+      expect(subject.standard_window_list).to eq ["window 1"]
     end
     
     it "Should be able to get a list of all the standard windows excluding the floating ones" do
       expect(subject).to receive(:window_list).and_return(["window", "float"])
       expect_get!("subrole", at.window("window")).and_return("AXStandardWindow")
       expect_get!("subrole", at.window("float")).and_return("AXFloatingWindow")
-      subject.standard_window_list.should == ["window"]      
+      expect(subject.standard_window_list).to eq ["window"]      
     end
     
     it "Should be able to get the attributes of a window and parse the result" do
@@ -382,12 +382,12 @@ describe "Osaka::RemoteControl" do
 
     it "Should be possible to pass a base location in the creation" do
       subject = Osaka::RemoteControl.new("Application", at.window("Window"))
-      subject.base_location.should == at.window("Window")
+      expect(subject.base_location).to eq at.window("Window")
     end
 
     it "Should be able to get an array of multiple window names" do
       expect_get_app!("windows").and_return("window one of application process process, window two of application process process\n")
-      subject.window_list.should == ["one", "two"]    
+      expect(subject.window_list).to eq ["one", "two"]    
     end
     
     it "Should be able to focus the currently active window" do
@@ -400,12 +400,12 @@ describe "Osaka::RemoteControl" do
       expect_window_list.and_return(["1"])
       expect_focus!
       subject.focus
-      subject.current_window_name.should == "1"
+      expect(subject.current_window_name).to eq "1"
     end
     
     it "Should be able to extract the current window name also when the base location has more than just a window " do
       subject.base_location = at.sheet(1).window("Window")
-      subject.current_window_name.should == "Window"      
+      expect(subject.current_window_name).to eq "Window"      
     end
 
     it "Shouldn't initialize current window when it is already set" do
@@ -414,7 +414,7 @@ describe "Osaka::RemoteControl" do
       expect_focus!
       
       subject.focus
-      subject.base_location.should == at.window("1")
+      expect(subject.base_location).to eq at.window("1")
     end
     
     it "Should re-initialize the current window when it doesn't exist anymore" do
@@ -424,7 +424,7 @@ describe "Osaka::RemoteControl" do
       expect_focus!
             
       subject.focus
-      subject.current_window_name.should == "2"    
+      expect(subject.current_window_name).to eq "2"    
     end
 
     it "Should focus the current window when it doesn't have focus" do

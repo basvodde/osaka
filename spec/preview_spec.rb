@@ -10,7 +10,7 @@ describe "Preview application for reading PDFs" do
 
   it "Can get the text context of a PDF document" do
     expect_get!("value", at.static_text(1).scroll_area(1).splitter_group(1)).and_return("Blah")
-    subject.pdf_content.should == "Blah"
+    expect(subject.pdf_content).to eq "Blah"
   end
   
   it "Can open a PDF file via the menu instead of the AppleScript 'open' as that one is buggy" do

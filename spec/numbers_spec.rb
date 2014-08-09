@@ -10,7 +10,7 @@ describe "Osaka::Numbers" do
   
   it "Should be able to get the column count" do
     expect_tell('tell document 1; tell sheet 1; tell table 1; get column count; end tell; end tell; end tell').and_return("10")
-    subject.column_count.should == 10
+    expect(subject.column_count).to eq 10
   end
   
   it "Should be able to set the column count to a certain value" do

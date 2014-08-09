@@ -22,7 +22,7 @@ describe "Integration test using the Calculator", :integration => true do
     subject.click("+")
     subject.click("1")
     subject.click("=")
-    subject.result.should == "2"
+    expect(subject.result).to eq "2"
   end
   
   it "Should be able to do calculations using keyboard" do
@@ -30,12 +30,12 @@ describe "Integration test using the Calculator", :integration => true do
     subject.key("*")
     subject.key("10")
     subject.key("+")
-    subject.result.should == "100"    
+    expect(subject.result).to eq "100"    
   end
   
   it "Should do whole formulas using key" do
     subject.key("100+10*3+99+")
-    subject.result.should == "229"        
+    expect(subject.result).to eq "229"        
   end
   
 end

@@ -18,7 +18,7 @@ describe "Integration test using TextEdit", :integration => true do
   it "can type in the window" do
     subject.new_document
     subject.type("Hello World")
-    subject.text.should == "Hello World"
+    expect(subject.text).to eq "Hello World"
     subject.close(:dont_save)
   end
   
@@ -32,8 +32,8 @@ describe "Integration test using TextEdit", :integration => true do
     editor1.type("Typing in window 1")
     editor2.type("Typing in window 2")
         
-    editor1.text.should == "Typing in window 1"
-    editor2.text.should == "Typing in window 2"
+    expect(editor1.text).to eq "Typing in window 1"
+    expect(editor2.text).to eq "Typing in window 2"
     
     editor1.close(:dont_save)
     editor2.close(:dont_save)

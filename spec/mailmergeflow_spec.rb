@@ -32,7 +32,7 @@ describe "Mail Merge to PDF common flow" do
     CommonFlows.number_and_pages_mail_merge("1", "2", "3") { |numbers|
       retrieved_numbers = numbers
     }    
-    retrieved_numbers.should == mock_numbers
+    expect(retrieved_numbers).to eq mock_numbers
   end
   
 end

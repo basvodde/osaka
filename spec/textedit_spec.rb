@@ -16,7 +16,7 @@ describe "TextEdit" do
   
   it "Should be able to get the text from the document" do
     expect_get!("value", 'text area 1 of scroll area 1').and_return("Hello")
-    subject.text.should == "Hello"
+    expect(subject.text).to eq "Hello"
   end
 
 end

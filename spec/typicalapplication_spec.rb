@@ -161,7 +161,7 @@ describe "Osaka::TypicalApplication" do
     it "Should be able to wait for a save dialog and save the file" do
       expect_wait_until_exists(at.sheet(1))
       expect(subject).to receive(:create_dialog).with(Osaka::TypicalSaveDialog, at.sheet(1)).and_return(save_dialog)
-      save_dialog.should_receive(:save).with("/tmp/filename")
+      expect(save_dialog).to receive(:save).with("/tmp/filename")
       expect_set_current_window("filename")
       subject.wait_for_save_dialog_and_save_file("/tmp/filename")
     end

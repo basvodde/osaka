@@ -15,14 +15,14 @@ END_OF_DUMP
   end
   
   it "Can retrieve the settings from a domain (A domain is usually an application)" do
-    Osaka::CommandRunner.should_receive(:run).with("defaults read widget-com.apple.widget.worldclock").and_return(@worldclock_widget)
+    expect(Osaka::CommandRunner).to receive(:run).with("defaults read widget-com.apple.widget.worldclock").and_return(@worldclock_widget)
     settings = DefaultsSystem.new("widget-com.apple.widget.worldclock")
-    settings["city"].should == "44"
+    expect(settings["city"]).to eq "44"
   end
   
   it "Can set settings on a domain" do
-    Osaka::CommandRunner.should_receive(:run).with("defaults read com.osaka").and_return(@worldclock_widget)
-    Osaka::CommandRunner.should_receive(:run).with("defaults write com.osaka key value").and_return(@worldclock_widget)    
+    expect(Osaka::CommandRunner).to receive(:run).with("defaults read com.osaka").and_return(@worldclock_widget)
+    expect(Osaka::CommandRunner).to receive(:run).with("defaults write com.osaka key value").and_return(@worldclock_widget)    
     settings = DefaultsSystem.new("com.osaka")
     settings["key"] = "value"
   end

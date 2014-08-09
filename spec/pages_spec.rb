@@ -97,7 +97,7 @@ describe "Osaka::Pages" do
   it "Should be able to change the mail merge document source" do
     inspector_mock = double("Inspector")
     expect(subject).to receive(:inspector).and_return(inspector_mock)
-    inspector_mock.should_receive(:change_mail_merge_source)
+    expect(inspector_mock).to receive(:change_mail_merge_source)
     
     expect_wait_until_exists(at.sheet(1))
     expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("dialog")

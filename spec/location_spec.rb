@@ -24,11 +24,11 @@ describe "Location path for an applescript command" do
   end
   
   it "Should be able to create empty prefixed locations" do
-    Osaka::Location.new("").as_prefixed_location.should == ""
+    expect(Osaka::Location.new("").as_prefixed_location).to eq ""
   end
   
   it "Should be able to check whether the location already has a window" do
-    Osaka::Location.new("").has_window?.should == false
+    expect(Osaka::Location.new("").has_window?).to eq false
     expect(at.window("one").has_window?).to eq true
   end
   

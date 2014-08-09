@@ -31,7 +31,7 @@ describe "Integration of mail merge flow with Pages and Numbers", :integration =
     }
         
     CommonFlows::number_and_pages_mail_merge(@numbers_filename, @pages_template_filename, @pdf_output_file)
-    File.exists?(@pdf_output_file).should == true
+    expect(File.exists?(@pdf_output_file)).to eq true
     
     preview = Osaka::Preview.new
     preview.open(@pdf_output_file)

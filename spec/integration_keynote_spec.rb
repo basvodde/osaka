@@ -13,7 +13,7 @@ describe "Integration tests for Keynote and Common Flows", :integration => true 
     Dir.mktmpdir { |dir|
       results_file = File.join(dir, "results.key")
       CommonFlows.keynote_combine_files(results_file, keynote_file)
-      File.exists?(results_file).should == true
+      expect(File.exists?(results_file)).to eq true
     }
   end
   
@@ -22,7 +22,7 @@ describe "Integration tests for Keynote and Common Flows", :integration => true 
     Dir.mktmpdir { |dir|
       results_file = File.join(dir, "results.key")
       CommonFlows.keynote_combine_files_from_directory_sorted(results_file, @assets_directory)
-      File.exists?(results_file).should == true
+      expect(File.exists?(results_file)).to eq true
     }  
   end
   

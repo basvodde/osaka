@@ -24,7 +24,7 @@ describe "Osaka::TypicalApplication" do
     subject.do_and_wait_for_new_window {
       code_block_called = true
     }.should == "new window"
-    code_block_called.should == true
+    expect(code_block_called).to eq true
   end
   
   context "Cloning and copying" do
@@ -38,7 +38,7 @@ describe "Osaka::TypicalApplication" do
       subject.control.set_current_window "Original"
       new_instance = subject.clone
       new_instance.control.set_current_window "Clone"
-      subject.control.current_window_name.should == "Original"
+      expect(subject.control.current_window_name).to eq "Original"
     end
   
   end
@@ -281,7 +281,7 @@ describe "Osaka::TypicalApplication" do
     it "Should be able to retrieve an application info object and parse it" do
       expect_tell('get info for (path to application "ApplicationName")').and_return('name:ApplicationName.app, creation date:date "Sunday, December 21, 2008 PM 06:14:11"}')
       app_info = subject.get_info
-      app_info.name.should == "ApplicationName.app"
+      expect(app_info.name).to eq "ApplicationName.app"
     end
   end
   

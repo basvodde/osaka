@@ -16,8 +16,8 @@ describe "Osaka::ScriptRunner" do
   
   it "Should be able to run on debug printing" do
     Osaka::CommandRunner.should_receive(:run).and_return("Blah blah blah")
-    subject.should_receive(:puts).with('Executing: osascript -e "random number"')
-    subject.should_receive(:puts).with('Output was: Blah blah blah')
+    expect(subject).to receive(:puts).with('Executing: osascript -e "random number"')
+    expect(subject).to receive(:puts).with('Output was: Blah blah blah')
     Osaka::ScriptRunner::enable_debug_prints
     subject.execute("random number")
     Osaka::ScriptRunner::disable_debug_prints
@@ -25,8 +25,8 @@ describe "Osaka::ScriptRunner" do
 
   it "Should be able to run on debug printing with HTML tags" do
     Osaka::CommandRunner.should_receive(:run).and_return("Blah blah blah")
-    subject.should_receive(:puts).with('random number<br>')
-    subject.should_receive(:puts).with('Output: <b>Blah blah blah</b><br>')
+    expect(subject).to receive(:puts).with('random number<br>')
+    expect(subject).to receive(:puts).with('Output: <b>Blah blah blah</b><br>')
     Osaka::ScriptRunner::enable_debug_prints(:short_html)
     subject.execute("random number")
     Osaka::ScriptRunner::disable_debug_prints
@@ -44,8 +44,8 @@ describe "Osaka::ScriptRunner" do
   
   it "Should explain how to turn on the access for assistive devices when it is disabled... and exit" do
     Osaka::CommandRunner.should_receive(:run).and_raise(Osaka::SystemCommandFailed.new ("execution error: System Events got an error: Access for assistive devices is disabled. (-25211)"))
-    subject.should_receive(:puts).with(/system preferences/)
-    subject.should_receive(:exit)
+    expect(subject).to receive(:puts).with(/system preferences/)
+    expect(subject).to receive(:exit)
     subject.execute("anything")
   end
     

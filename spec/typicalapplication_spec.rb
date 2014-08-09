@@ -55,13 +55,13 @@ describe "Osaka::TypicalApplication" do
 
     it "Should only get the basename of the filename when it sets the window title." do
       filename = "/root/dirname/filename.key"
-      subject.should_receive(:do_and_wait_for_new_window).and_return("filename")
+      expect(subject).to receive(:do_and_wait_for_new_window).and_return("filename")
       expect_set_current_window("filename")
       subject.open(filename)        
     end
     
     it "Should be able to create a new document" do
-      subject.should_receive(:do_and_wait_for_new_window).and_yield.and_return("new_window")    
+      expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("new_window")    
       expect_keystroke("n", :command)
       expect_set_current_window("new_window")
       expect_focus
@@ -70,10 +70,10 @@ describe "Osaka::TypicalApplication" do
     
     it "Should be able to easily create a document, put something, save it, and close it again" do
 
-      subject.should_receive(:new_document)
-      subject.should_receive(:method_call_from_code_block)
-      subject.should_receive(:save_as).with("filename")
-      subject.should_receive(:close)
+      expect(subject).to receive(:new_document)
+      expect(subject).to receive(:method_call_from_code_block)
+      expect(subject).to receive(:save_as).with("filename")
+      expect(subject).to receive(:close)
 
       subject.create_document("filename") { |doc|
         doc.method_call_from_code_block
@@ -115,7 +115,7 @@ describe "Osaka::TypicalApplication" do
 
     it "Should be able to close and don't save" do
       expect_keystroke("w", :command)
-      subject.should_receive(:wait_for_window_and_dialogs_to_close).with(:dont_save)
+      expect(subject).to receive(:wait_for_window_and_dialogs_to_close).with(:dont_save)
       subject.close(:dont_save)
     end
     
@@ -132,35 +132,35 @@ describe "Osaka::TypicalApplication" do
     end
 
     it "Should be able to save as a file without duplicate being available" do
-      subject.should_receive(:save_pops_up_dialog?).and_return(false)
-      subject.should_receive(:duplicate_available?).and_return(false)
+      expect(subject).to receive(:save_pops_up_dialog?).and_return(false)
+      expect(subject).to receive(:duplicate_available?).and_return(false)
       
       expect_keystroke("s", [:command, :shift])
-      subject.should_receive(:wait_for_save_dialog_and_save_file).with("filename")
+      expect(subject).to receive(:wait_for_save_dialog_and_save_file).with("filename")
       
       subject.save_as("filename")
     end
 
     it "Should be able to save as a file using the duplicate..." do
-      subject.should_receive(:save_pops_up_dialog?).and_return(false)
-      subject.should_receive(:duplicate_available?).and_return(true)
+      expect(subject).to receive(:save_pops_up_dialog?).and_return(false)
+      expect(subject).to receive(:duplicate_available?).and_return(true)
 
-      subject.should_receive(:duplicate_and_close_original)
-      subject.should_receive(:save)
-      subject.should_receive(:wait_for_save_dialog_and_save_file).with("filename")      
+      expect(subject).to receive(:duplicate_and_close_original)
+      expect(subject).to receive(:save)
+      expect(subject).to receive(:wait_for_save_dialog_and_save_file).with("filename")      
       subject.save_as("filename")
     end
     
     it "Should be able to use normal Save when that pops up a dialog instead of save_as" do
-      subject.should_receive(:save_pops_up_dialog?).and_return(true)
-      subject.should_receive(:save)
-      subject.should_receive(:wait_for_save_dialog_and_save_file).with("filename")      
+      expect(subject).to receive(:save_pops_up_dialog?).and_return(true)
+      expect(subject).to receive(:save)
+      expect(subject).to receive(:wait_for_save_dialog_and_save_file).with("filename")      
       subject.save_as("filename")
     end
     
     it "Should be able to wait for a save dialog and save the file" do
       expect_wait_until_exists(at.sheet(1))
-      subject.should_receive(:create_dialog).with(Osaka::TypicalSaveDialog, at.sheet(1)).and_return(save_dialog)
+      expect(subject).to receive(:create_dialog).with(Osaka::TypicalSaveDialog, at.sheet(1)).and_return(save_dialog)
       save_dialog.should_receive(:save).with("/tmp/filename")
       expect_set_current_window("filename")
       subject.wait_for_save_dialog_and_save_file("/tmp/filename")
@@ -168,7 +168,7 @@ describe "Osaka::TypicalApplication" do
     
     it "Should be able to pick a file from an open dialog" do
       dialog_mock = double("Open Dialog")
-      subject.should_receive(:create_dialog).with(Osaka::TypicalOpenDialog, at.window("dialog")).and_return(dialog_mock)
+      expect(subject).to receive(:create_dialog).with(Osaka::TypicalOpenDialog, at.window("dialog")).and_return(dialog_mock)
       dialog_mock.should_receive(:set_folder).with("/tmp")
       dialog_mock.should_receive(:select_file).with("filename")
       
@@ -178,7 +178,7 @@ describe "Osaka::TypicalApplication" do
     
     it "Should be able to duplicate and close the original document" do
       subject.stub_chain(:duplicate, :control).and_return(new_instance_control)
-      subject.should_receive(:close)
+      expect(subject).to receive(:close)
       subject.duplicate_and_close_original
       subject.control.should equal(new_instance_control)
     end
@@ -189,29 +189,29 @@ describe "Osaka::TypicalApplication" do
     end
   
     it "Should throw an exception when duplicate is not available"do
-      subject.should_receive(:duplicate_available?).and_return(false)
+      expect(subject).to receive(:duplicate_available?).and_return(false)
       expect {subject.duplicate}.to raise_error(Osaka::VersioningError, "MacOS Versioning Error: Duplicate is not available on this Mac version")
     end
 
     it "Should return a new keynote instance variable after duplication (Lion!)" do
       simulate_mac_version(:lion)
-      subject.should_receive(:duplicate_available?).and_return(true)
+      expect(subject).to receive(:duplicate_available?).and_return(true)
       
       expect_click_menu_bar(at.menu_item("Duplicate"), "File")
-      subject.should_receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window")
+      expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window")
 
       subject.stub_chain(:clone, :control).and_return(new_instance_control)
       subject.duplicate.control.should equal(new_instance_control)
     end
   
     it "Should return a new keynote instance variable after duplication" do
-      subject.should_receive(:duplicate_available?).and_return(true)
+      expect(subject).to receive(:duplicate_available?).and_return(true)
 
       expect_click_menu_bar(at.menu_item("Duplicate"), "File")
-      subject.should_receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window", "New name duplicate window")
+      expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window", "New name duplicate window")
 
       subject.stub_chain(:clone, :control).and_return(new_instance_control)
-      subject.should_receive(:sleep).with(0.4) # Avoiding Mountain Lion crash
+      expect(subject).to receive(:sleep).with(0.4) # Avoiding Mountain Lion crash
       expect_keystroke!(:return)
       new_instance_control.should_receive(:set_current_window).with("New name duplicate window")
       subject.duplicate.control.should equal(new_instance_control)

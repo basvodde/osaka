@@ -20,11 +20,11 @@ describe "Osaka::RemoteControl" do
 
   def expect_execute_and_warning_for(action)
     expect_execute_osascript.and_return("An Error")
-    subject.should_receive(:puts).with(/#{action}/)
+    expect(subject).to receive(:puts).with(/#{action}/)
   end
   
   it "Should be able to print warning messages" do
-    subject.should_receive(:puts).with("Osaka WARNING while doing ThisAction: Message")
+    expect(subject).to receive(:puts).with("Osaka WARNING while doing ThisAction: Message")
     subject.print_warning("ThisAction", "Message")
   end
   
@@ -349,18 +349,18 @@ describe "Osaka::RemoteControl" do
     end
     
     it "Should be able to get a list of standard windows which is empty" do
-      subject.should_receive(:window_list).and_return([])
+      expect(subject).to receive(:window_list).and_return([])
       subject.standard_window_list
     end
     
     it "Should be able to get a list of all the standard windows when there are only standard windows " do
-      subject.should_receive(:window_list).and_return(["window 1"])
+      expect(subject).to receive(:window_list).and_return(["window 1"])
       expect_get!("subrole", at.window("window 1")).and_return("AXStandardWindow")
       subject.standard_window_list.should == ["window 1"]
     end
     
     it "Should be able to get a list of all the standard windows excluding the floating ones" do
-      subject.should_receive(:window_list).and_return(["window", "float"])
+      expect(subject).to receive(:window_list).and_return(["window", "float"])
       expect_get!("subrole", at.window("window")).and_return("AXStandardWindow")
       expect_get!("subrole", at.window("float")).and_return("AXFloatingWindow")
       subject.standard_window_list.should == ["window"]      

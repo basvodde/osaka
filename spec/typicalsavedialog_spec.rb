@@ -8,22 +8,22 @@ describe "Osaka::TypicalSaveDialog" do
   let(:control) { subject.control = double("RemoteControl", :base_location => at.sheet(1)) }
   
   it "Should set the filename in the test field" do
-    subject.should_receive(:set_filename).with("filename")
-    subject.should_receive(:click_save)
+    expect(subject).to receive(:set_filename).with("filename")
+    expect(subject).to receive(:click_save)
     subject.save("filename")
   end
   
   it "Should pick only the base filename when a path is given" do
-    subject.should_receive(:set_filename).with("filename")
-    subject.should_receive(:set_folder)
-    subject.should_receive(:click_save)
+    expect(subject).to receive(:set_filename).with("filename")
+    expect(subject).to receive(:set_folder)
+    expect(subject).to receive(:click_save)
     subject.save("/path/filename")
   end
   
   it "Should set the path when a full path is given" do
     control.as_null_object
-    subject.should_receive(:set_filename)
-    subject.should_receive(:set_folder).with("/path/second")
+    expect(subject).to receive(:set_filename)
+    expect(subject).to receive(:set_folder).with("/path/second")
     subject.save("/path/second/name")
   end
   

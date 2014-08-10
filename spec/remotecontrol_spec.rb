@@ -63,20 +63,20 @@ describe "Osaka::RemoteControl" do
       subject.set_current_window "Window"
       new_control = subject.clone
       expect(new_control).to eq subject
-      new_control.should_not equal(subject)
+      expect(new_control).not_to be subject 
     end
     
     it "Should be having different current window instances when cloning" do
       subject.set_current_window "Window"
       new_control = subject.clone
       new_control.set_current_window "Not the same"
-      subject.current_window_name.should_not == new_control.current_window_name
+      expect(subject.current_window_name).not_to be new_control.current_window_name
       
     end
   
     it "Should be able to compare objects using names" do
       expect(subject).to eq Osaka::RemoteControl.new(name)
-      subject.should_not == Osaka::RemoteControl.new("otherName")
+      expect(subject).not_to eq Osaka::RemoteControl.new("otherName")
     end
   
     it "Should be able to compare objects using window" do

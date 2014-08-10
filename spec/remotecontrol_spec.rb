@@ -32,7 +32,7 @@ describe "Osaka::RemoteControl" do
 
     it "Should be possible to check whether an application is still running" do
       expect_execute_osascript("tell application \"System Events\"; (name of processes) contains \"#{name}\"; end tell").and_return("false")
-      subject.running?.should be false
+      expect(subject.running?).to be false
     end
     
     it "Can get the OS version (lion)" do
@@ -121,12 +121,12 @@ describe "Osaka::RemoteControl" do
     
     it "Should be able to check whether a location exists" do
       expect_execute_osascript(/exists button 1/).and_return("true\n")
-      subject.exists?(at.button(1)).should be true
+      expect(subject.exists?(at.button(1))).to be true
     end
 
     it "Should be able to check whether a location does not exists" do
       expect_execute_osascript(/not exists window 1/).and_return("true\n")
-      subject.not_exists?(at.window(1)).should be true
+      expect(subject.not_exists?(at.window(1))).to be true
     end
   end
   
@@ -294,7 +294,7 @@ describe "Osaka::RemoteControl" do
   end
   
   context "Control should be able to set and get different application values" do
-
+  
     it "Should be able to set a value to an element" do
       expect_system_event!(/set value of window 1 to "newvalue"/).and_return("")
       subject.set!("value", at.window(1), "newvalue")

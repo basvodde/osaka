@@ -20,7 +20,7 @@ describe "Osakas Ruby expectations" do
     subject.wait_until_exists!(at.window(1)) {
       code_block_been_called = true
     }
-    code_block_been_called.should be_true
+    code_block_been_called.should be true
   end
 
 end

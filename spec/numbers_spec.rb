@@ -10,7 +10,7 @@ describe "Osaka::Numbers" do
   
   it "Should be able to get the column count" do
     expect_tell('tell document 1; tell sheet 1; tell table 1; get column count; end tell; end tell; end tell').and_return("10")
-    subject.column_count.should == 10
+    expect(subject.column_count).to eq 10
   end
   
   it "Should be able to set the column count to a certain value" do
@@ -19,14 +19,14 @@ describe "Osaka::Numbers" do
   end
   
   it "Should be able to fill in data in cells" do 
-    subject.should_receive(:column_count).and_return(10)
+    expect(subject).to receive(:column_count).and_return(10)
     expect_tell('tell document 1; tell sheet 1; tell table 1; set value of cell 1 of row 2 to "30"; end tell; end tell; end tell')
     subject.fill_cell(1, 2, "30")
   end
   
   it "Will change the column count when the cell is outside of the range of the current column count" do
-    subject.should_receive(:column_count).and_return(5)
-    subject.should_receive(:set_column_count).with(6)
+    expect(subject).to receive(:column_count).and_return(5)
+    expect(subject).to receive(:set_column_count).with(6)
     expect_tell('tell document 1; tell sheet 1; tell table 1; set value of cell 6 of row 2 to "30"; end tell; end tell; end tell')
     subject.fill_cell(6, 2, "30")
     
@@ -34,9 +34,9 @@ describe "Osaka::Numbers" do
   
   it "Should be able to select blank from the template choser" do
     expect_set_current_window("Template Choser")
-    subject.should_receive(:do_and_wait_for_new_window).and_return("Template Choser")
+    expect(subject).to receive(:do_and_wait_for_new_window).and_return("Template Choser")
     expect_set_current_window("Untitled")
-    subject.should_receive(:do_and_wait_for_new_window).and_yield.and_return("Untitled")
+    expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("Untitled")
     expect_keystroke(:return)
     subject.new_document 
   end
@@ -47,8 +47,8 @@ describe "Osaka::Numbers" do
   end
   
   it "Should be able to use a class method for creating documents quickly" do
-      Osaka::Numbers.should_receive(:new).at_least(1).times.and_return(double("App"))
-      subject.should_receive(:create_document)
+      expect(Osaka::Numbers).to receive(:new).at_least(1).times.and_return(double("App"))
+      expect(subject).to receive(:create_document)
 
       Osaka::Numbers.create_document("filename") { |doc|
       }    

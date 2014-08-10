@@ -24,7 +24,7 @@ describe "Osaka::TypicalApplication" do
     subject.do_and_wait_for_new_window {
       code_block_called = true
     }.should == "new window"
-    code_block_called.should == true
+    expect(code_block_called).to eq true
   end
   
   context "Cloning and copying" do
@@ -38,7 +38,7 @@ describe "Osaka::TypicalApplication" do
       subject.control.set_current_window "Original"
       new_instance = subject.clone
       new_instance.control.set_current_window "Clone"
-      subject.control.current_window_name.should == "Original"
+      expect(subject.control.current_window_name).to eq "Original"
     end
   
   end
@@ -55,13 +55,13 @@ describe "Osaka::TypicalApplication" do
 
     it "Should only get the basename of the filename when it sets the window title." do
       filename = "/root/dirname/filename.key"
-      subject.should_receive(:do_and_wait_for_new_window).and_return("filename")
+      expect(subject).to receive(:do_and_wait_for_new_window).and_return("filename")
       expect_set_current_window("filename")
       subject.open(filename)        
     end
     
     it "Should be able to create a new document" do
-      subject.should_receive(:do_and_wait_for_new_window).and_yield.and_return("new_window")    
+      expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("new_window")    
       expect_keystroke("n", :command)
       expect_set_current_window("new_window")
       expect_focus
@@ -70,10 +70,10 @@ describe "Osaka::TypicalApplication" do
     
     it "Should be able to easily create a document, put something, save it, and close it again" do
 
-      subject.should_receive(:new_document)
-      subject.should_receive(:method_call_from_code_block)
-      subject.should_receive(:save_as).with("filename")
-      subject.should_receive(:close)
+      expect(subject).to receive(:new_document)
+      expect(subject).to receive(:method_call_from_code_block)
+      expect(subject).to receive(:save_as).with("filename")
+      expect(subject).to receive(:close)
 
       subject.create_document("filename") { |doc|
         doc.method_call_from_code_block
@@ -92,7 +92,7 @@ describe "Osaka::TypicalApplication" do
   
     it "Should be able to check if its running" do
       expect_running?.and_return(true)
-      subject.running?.should be_true
+      subject.running?.should be true
     end
   
     it "Won't quit when the application isn't running" do
@@ -115,7 +115,7 @@ describe "Osaka::TypicalApplication" do
 
     it "Should be able to close and don't save" do
       expect_keystroke("w", :command)
-      subject.should_receive(:wait_for_window_and_dialogs_to_close).with(:dont_save)
+      expect(subject).to receive(:wait_for_window_and_dialogs_to_close).with(:dont_save)
       subject.close(:dont_save)
     end
     
@@ -132,45 +132,45 @@ describe "Osaka::TypicalApplication" do
     end
 
     it "Should be able to save as a file without duplicate being available" do
-      subject.should_receive(:save_pops_up_dialog?).and_return(false)
-      subject.should_receive(:duplicate_available?).and_return(false)
+      expect(subject).to receive(:save_pops_up_dialog?).and_return(false)
+      expect(subject).to receive(:duplicate_available?).and_return(false)
       
       expect_keystroke("s", [:command, :shift])
-      subject.should_receive(:wait_for_save_dialog_and_save_file).with("filename")
+      expect(subject).to receive(:wait_for_save_dialog_and_save_file).with("filename")
       
       subject.save_as("filename")
     end
 
     it "Should be able to save as a file using the duplicate..." do
-      subject.should_receive(:save_pops_up_dialog?).and_return(false)
-      subject.should_receive(:duplicate_available?).and_return(true)
+      expect(subject).to receive(:save_pops_up_dialog?).and_return(false)
+      expect(subject).to receive(:duplicate_available?).and_return(true)
 
-      subject.should_receive(:duplicate_and_close_original)
-      subject.should_receive(:save)
-      subject.should_receive(:wait_for_save_dialog_and_save_file).with("filename")      
+      expect(subject).to receive(:duplicate_and_close_original)
+      expect(subject).to receive(:save)
+      expect(subject).to receive(:wait_for_save_dialog_and_save_file).with("filename")      
       subject.save_as("filename")
     end
     
     it "Should be able to use normal Save when that pops up a dialog instead of save_as" do
-      subject.should_receive(:save_pops_up_dialog?).and_return(true)
-      subject.should_receive(:save)
-      subject.should_receive(:wait_for_save_dialog_and_save_file).with("filename")      
+      expect(subject).to receive(:save_pops_up_dialog?).and_return(true)
+      expect(subject).to receive(:save)
+      expect(subject).to receive(:wait_for_save_dialog_and_save_file).with("filename")      
       subject.save_as("filename")
     end
     
     it "Should be able to wait for a save dialog and save the file" do
       expect_wait_until_exists(at.sheet(1))
-      subject.should_receive(:create_dialog).with(Osaka::TypicalSaveDialog, at.sheet(1)).and_return(save_dialog)
-      save_dialog.should_receive(:save).with("/tmp/filename")
+      expect(subject).to receive(:create_dialog).with(Osaka::TypicalSaveDialog, at.sheet(1)).and_return(save_dialog)
+      expect(save_dialog).to receive(:save).with("/tmp/filename")
       expect_set_current_window("filename")
       subject.wait_for_save_dialog_and_save_file("/tmp/filename")
     end
     
     it "Should be able to pick a file from an open dialog" do
       dialog_mock = double("Open Dialog")
-      subject.should_receive(:create_dialog).with(Osaka::TypicalOpenDialog, at.window("dialog")).and_return(dialog_mock)
-      dialog_mock.should_receive(:set_folder).with("/tmp")
-      dialog_mock.should_receive(:select_file).with("filename")
+      expect(subject).to receive(:create_dialog).with(Osaka::TypicalOpenDialog, at.window("dialog")).and_return(dialog_mock)
+      expect(dialog_mock).to receive(:set_folder).with("/tmp")
+      expect(dialog_mock).to receive(:select_file).with("filename")
       
       subject.select_file_from_open_dialog("/tmp/filename", at.window("dialog"))
     end
@@ -178,48 +178,48 @@ describe "Osaka::TypicalApplication" do
     
     it "Should be able to duplicate and close the original document" do
       subject.stub_chain(:duplicate, :control).and_return(new_instance_control)
-      subject.should_receive(:close)
+      expect(subject).to receive(:close)
       subject.duplicate_and_close_original
       subject.control.should equal(new_instance_control)
     end
     
     it "Should be able to check whether Duplicate is supported" do
       expect_exists?(at.menu_item("Duplicate").menu(1).menu_bar_item("File").menu_bar(1)).and_return(true)
-      subject.duplicate_available?.should == true
+      expect(subject.duplicate_available?).to eq true
     end
   
     it "Should throw an exception when duplicate is not available"do
-      subject.should_receive(:duplicate_available?).and_return(false)
+      expect(subject).to receive(:duplicate_available?).and_return(false)
       expect {subject.duplicate}.to raise_error(Osaka::VersioningError, "MacOS Versioning Error: Duplicate is not available on this Mac version")
     end
 
     it "Should return a new keynote instance variable after duplication (Lion!)" do
       simulate_mac_version(:lion)
-      subject.should_receive(:duplicate_available?).and_return(true)
+      expect(subject).to receive(:duplicate_available?).and_return(true)
       
       expect_click_menu_bar(at.menu_item("Duplicate"), "File")
-      subject.should_receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window")
+      expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window")
 
       subject.stub_chain(:clone, :control).and_return(new_instance_control)
       subject.duplicate.control.should equal(new_instance_control)
     end
   
     it "Should return a new keynote instance variable after duplication" do
-      subject.should_receive(:duplicate_available?).and_return(true)
+      expect(subject).to receive(:duplicate_available?).and_return(true)
 
       expect_click_menu_bar(at.menu_item("Duplicate"), "File")
-      subject.should_receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window", "New name duplicate window")
+      expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window", "New name duplicate window")
 
       subject.stub_chain(:clone, :control).and_return(new_instance_control)
-      subject.should_receive(:sleep).with(0.4) # Avoiding Mountain Lion crash
+      expect(subject).to receive(:sleep).with(0.4) # Avoiding Mountain Lion crash
       expect_keystroke!(:return)
-      new_instance_control.should_receive(:set_current_window).with("New name duplicate window")
+      expect(new_instance_control).to receive(:set_current_window).with("New name duplicate window")
       subject.duplicate.control.should equal(new_instance_control)
     end
     
     it "Should be able to check whether the save will pop up a dialog or not" do
       expect_exists?(at.menu_item("Save…").menu(1).menu_bar_item("File").menu_bar(1)).and_return(true)
-      subject.save_pops_up_dialog?.should == true
+      expect(subject.save_pops_up_dialog?).to eq true
     end
     
   end
@@ -281,18 +281,18 @@ describe "Osaka::TypicalApplication" do
     it "Should be able to retrieve an application info object and parse it" do
       expect_tell('get info for (path to application "ApplicationName")').and_return('name:ApplicationName.app, creation date:date "Sunday, December 21, 2008 PM 06:14:11"}')
       app_info = subject.get_info
-      app_info.name.should == "ApplicationName.app"
+      expect(app_info.name).to eq "ApplicationName.app"
     end
   end
   
   context "Simple Application helpers to create objects" do
     it "Should be able to create dialogs with a helper" do
-      Osaka::TypicalSaveDialog.should_receive(:new).with(control.name, at.sheet(1) + control.base_location)
+      expect(Osaka::TypicalSaveDialog).to receive(:new).with(control.name, at.sheet(1) + control.base_location)
       subject.create_dialog(Osaka::TypicalSaveDialog, at.sheet(1))
     end
     
     it "Should be able to create top level dialogs also with the helper" do
-      Osaka::TypicalSaveDialog.should_receive(:new).with(control.name, at.window("toplevel"))
+      expect(Osaka::TypicalSaveDialog).to receive(:new).with(control.name, at.window("toplevel"))
       subject.create_dialog(Osaka::TypicalSaveDialog, at.window("toplevel"))
     end
   end

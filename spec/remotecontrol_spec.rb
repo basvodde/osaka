@@ -87,7 +87,7 @@ describe "Osaka::RemoteControl" do
       unequal_object.set_current_window "Another Window"
     
       expect(subject).to eq equal_object
-      subject.should_not == unequal_object
+      expect(subject).not_to eq unequal_object
     end
   end
   

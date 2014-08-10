@@ -21,9 +21,9 @@ describe "Osaka::TypicalApplication" do
     expect_window_list.and_return(["original window"], ["original window"], ["original window"], ["new window", "original window"])
     expect_activate
     code_block_called = false
-    subject.do_and_wait_for_new_window {
+    expect(subject.do_and_wait_for_new_window {
       code_block_called = true
-    }.should == "new window"
+    }).to eq "new window"
     expect(code_block_called).to eq true
   end
   
@@ -48,7 +48,7 @@ describe "Osaka::TypicalApplication" do
     it "Should pass the right open string to the application osascript" do
       filename = "filename.key"
       expect_tell("open \"#{File.absolute_path(filename)}\"")
-      subject.stub(:do_and_wait_for_new_window).and_yield.and_return(filename)
+      expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return(filename)
       expect_set_current_window(filename)
       subject.open(filename)    
     end

@@ -180,7 +180,7 @@ describe "Osaka::TypicalApplication" do
       subject.stub_chain(:duplicate, :control).and_return(new_instance_control)
       expect(subject).to receive(:close)
       subject.duplicate_and_close_original
-      subject.control.should equal(new_instance_control)
+      expect(subject.control).to eq(new_instance_control)
     end
     
     it "Should be able to check whether Duplicate is supported" do
@@ -201,7 +201,7 @@ describe "Osaka::TypicalApplication" do
       expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window")
 
       subject.stub_chain(:clone, :control).and_return(new_instance_control)
-      subject.duplicate.control.should equal(new_instance_control)
+      expect(subject.duplicate.control).to eq(new_instance_control)
     end
   
     it "Should return a new keynote instance variable after duplication" do
@@ -214,7 +214,7 @@ describe "Osaka::TypicalApplication" do
       expect(subject).to receive(:sleep).with(0.4) # Avoiding Mountain Lion crash
       expect_keystroke!(:return)
       expect(new_instance_control).to receive(:set_current_window).with("New name duplicate window")
-      subject.duplicate.control.should equal(new_instance_control)
+      expect(subject.duplicate.control).to eq(new_instance_control)
     end
     
     it "Should be able to check whether the save will pop up a dialog or not" do

@@ -53,7 +53,7 @@ describe "Location path for an applescript command" do
   end
   
   it "Cannot create a location with two times window" do
-    lambda {at.window(1).window(1)}.should raise_error(Osaka::InvalidLocation, "Invalid location: window 1 of window 1")
+    expect(lambda {at.window(1).window(1)}).to raise_error(Osaka::InvalidLocation, "Invalid location: window 1 of window 1")
   end
 
 end

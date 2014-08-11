@@ -82,7 +82,7 @@ describe "Osaka::Pages" do
     
     inspector_mock = double("Inspector")
     expect(Osaka::PagesInspector).to receive(:new).with(control.name, at.window("Link")).and_return(inspector_mock)    
-    subject.inspector.should equal(inspector_mock)
+    expect(subject.inspector).to eq(inspector_mock)
   end
   
   it "Should be able to get the inspector object also when it is already visible" do

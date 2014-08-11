@@ -35,7 +35,7 @@ describe "Integration of mail merge flow with Pages and Numbers", :integration =
     
     preview = Osaka::Preview.new
     preview.open(@pdf_output_file)
-    preview.pdf_content.should include("Hello World")
+    expect(preview.pdf_content).to include("Hello World")
     preview.close
     preview.quit
   end

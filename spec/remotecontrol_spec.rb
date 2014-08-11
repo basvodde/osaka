@@ -32,7 +32,7 @@ describe "Osaka::RemoteControl" do
 
     it "Should be possible to check whether an application is still running" do
       expect_execute_osascript("tell application \"System Events\"; (name of processes) contains \"#{name}\"; end tell").and_return("false")
-      subject.running?.should be false
+      expect(subject.running?).to be false
     end
     
     it "Can get the OS version (lion)" do
@@ -63,20 +63,20 @@ describe "Osaka::RemoteControl" do
       subject.set_current_window "Window"
       new_control = subject.clone
       expect(new_control).to eq subject
-      new_control.should_not equal(subject)
+      expect(new_control).not_to be subject 
     end
     
     it "Should be having different current window instances when cloning" do
       subject.set_current_window "Window"
       new_control = subject.clone
       new_control.set_current_window "Not the same"
-      subject.current_window_name.should_not == new_control.current_window_name
+      expect(subject.current_window_name).not_to be new_control.current_window_name
       
     end
   
     it "Should be able to compare objects using names" do
       expect(subject).to eq Osaka::RemoteControl.new(name)
-      subject.should_not == Osaka::RemoteControl.new("otherName")
+      expect(subject).not_to eq Osaka::RemoteControl.new("otherName")
     end
   
     it "Should be able to compare objects using window" do
@@ -87,7 +87,7 @@ describe "Osaka::RemoteControl" do
       unequal_object.set_current_window "Another Window"
     
       expect(subject).to eq equal_object
-      subject.should_not == unequal_object
+      expect(subject).not_to eq unequal_object
     end
   end
   
@@ -121,12 +121,12 @@ describe "Osaka::RemoteControl" do
     
     it "Should be able to check whether a location exists" do
       expect_execute_osascript(/exists button 1/).and_return("true\n")
-      subject.exists?(at.button(1)).should be true
+      expect(subject.exists?(at.button(1))).to be true
     end
 
     it "Should be able to check whether a location does not exists" do
       expect_execute_osascript(/not exists window 1/).and_return("true\n")
-      subject.not_exists?(at.window(1)).should be true
+      expect(subject.not_exists?(at.window(1))).to be true
     end
   end
   
@@ -294,7 +294,7 @@ describe "Osaka::RemoteControl" do
   end
   
   context "Control should be able to set and get different application values" do
-
+  
     it "Should be able to set a value to an element" do
       expect_system_event!(/set value of window 1 to "newvalue"/).and_return("")
       subject.set!("value", at.window(1), "newvalue")

@@ -51,7 +51,7 @@ END_OF_DUMP
   it "Can return a dump of the current database" do
    expect(Osaka::CommandRunner).to receive(:run).with("/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -dump").and_return(@dumped_registry)
    current_dump = Osaka::LaunchServices.dump
-   current_dump.should start_with("Checking data integrity......done.\nStatus: Database is seeded.\nStatus: Preferences are loaded.\n--------------------------------------------------------------------------------")
-   current_dump.should include("name:          TextMate")
+   expect(current_dump).to start_with("Checking data integrity......done.\nStatus: Database is seeded.\nStatus: Preferences are loaded.\n--------------------------------------------------------------------------------")
+   expect(current_dump).to include("name:          TextMate")
   end
 end

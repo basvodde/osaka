@@ -21,9 +21,9 @@ describe "Osaka::TypicalApplication" do
     expect_window_list.and_return(["original window"], ["original window"], ["original window"], ["new window", "original window"])
     expect_activate
     code_block_called = false
-    subject.do_and_wait_for_new_window {
+    expect(subject.do_and_wait_for_new_window {
       code_block_called = true
-    }.should == "new window"
+    }).to eq "new window"
     expect(code_block_called).to eq true
   end
   
@@ -48,7 +48,7 @@ describe "Osaka::TypicalApplication" do
     it "Should pass the right open string to the application osascript" do
       filename = "filename.key"
       expect_tell("open \"#{File.absolute_path(filename)}\"")
-      subject.stub(:do_and_wait_for_new_window).and_yield.and_return(filename)
+      expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return(filename)
       expect_set_current_window(filename)
       subject.open(filename)    
     end
@@ -92,7 +92,7 @@ describe "Osaka::TypicalApplication" do
   
     it "Should be able to check if its running" do
       expect_running?.and_return(true)
-      subject.running?.should be true
+      expect(subject.running?).to be true
     end
   
     it "Won't quit when the application isn't running" do
@@ -177,10 +177,10 @@ describe "Osaka::TypicalApplication" do
     
     
     it "Should be able to duplicate and close the original document" do
-      subject.stub_chain(:duplicate, :control).and_return(new_instance_control)
+      allow(subject).to receive_message_chain(:duplicate, :control).and_return(new_instance_control)
       expect(subject).to receive(:close)
       subject.duplicate_and_close_original
-      subject.control.should equal(new_instance_control)
+      expect(subject.control).to eq(new_instance_control)
     end
     
     it "Should be able to check whether Duplicate is supported" do
@@ -200,8 +200,8 @@ describe "Osaka::TypicalApplication" do
       expect_click_menu_bar(at.menu_item("Duplicate"), "File")
       expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window")
 
-      subject.stub_chain(:clone, :control).and_return(new_instance_control)
-      subject.duplicate.control.should equal(new_instance_control)
+      allow(subject).to receive_message_chain(:clone, :control).and_return(new_instance_control)
+      expect(subject.duplicate.control).to eq(new_instance_control)
     end
   
     it "Should return a new keynote instance variable after duplication" do
@@ -210,11 +210,11 @@ describe "Osaka::TypicalApplication" do
       expect_click_menu_bar(at.menu_item("Duplicate"), "File")
       expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window", "New name duplicate window")
 
-      subject.stub_chain(:clone, :control).and_return(new_instance_control)
+      allow(subject).to receive_message_chain(:clone, :control).and_return(new_instance_control)
       expect(subject).to receive(:sleep).with(0.4) # Avoiding Mountain Lion crash
       expect_keystroke!(:return)
       expect(new_instance_control).to receive(:set_current_window).with("New name duplicate window")
-      subject.duplicate.control.should equal(new_instance_control)
+      expect(subject.duplicate.control).to eq(new_instance_control)
     end
     
     it "Should be able to check whether the save will pop up a dialog or not" do

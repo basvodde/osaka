@@ -9,7 +9,7 @@ describe "Osaka::Keynote" do
   let(:control) {subject.control = double("RemoteControl")}
   
   it "Should create the correct keynote print dialog" do
-    subject.create_print_dialog("window").should be_instance_of Osaka::KeynotePrintDialog
+    expect(subject.create_print_dialog("window")).to be_instance_of Osaka::KeynotePrintDialog
   end
   
   it "Should be possible to select all the slides by switching to light table view" do

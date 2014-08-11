@@ -51,7 +51,7 @@ describe "Osaka::ScriptRunner" do
     
   it "Should not print any debugging information by default " do
     expect(Osaka::CommandRunner).to receive(:run).and_return("")
-    subject.should_not_receive(:puts)
+    expect(subject).not_to receive :puts
     subject.execute("random number")
   end
   

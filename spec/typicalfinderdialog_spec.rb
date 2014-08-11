@@ -18,7 +18,7 @@ describe "Osaka::TypicalFinderDialog" do
   end
 
   it "Won't change the path when the path is the current one" do
-    control.should_not_receive(:keystroke)
+    expect(control).not_to receive :keystroke
     subject.set_folder(".")
   end
   

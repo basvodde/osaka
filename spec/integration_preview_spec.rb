@@ -9,7 +9,7 @@ describe "Integration tests for Preview" do
   it "Should be able to open a file and check if there is a certain text" do
     preview = Osaka::Preview.new
     preview.open(File.join(@assets_directory, "document.pdf"))
-    preview.pdf_content.should include("Jamaica")
+    expect(preview.pdf_content).to include("Jamaica")
     preview.close
     preview.quit    
   end

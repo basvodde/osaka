@@ -10,7 +10,7 @@ describe "Osaka::TypicalPrintDialog" do
 
   it "Should be able to save the PDF in a print dialog" do
     
-    control.stub(:base_location).and_return(at.window("Print"))
+    expect(control).to receive(:base_location).twice.and_return(at.window("Print"))
     
     save_dialog_mock = double("Generic Save Dialog")
     

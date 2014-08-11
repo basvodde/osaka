@@ -115,7 +115,7 @@ module Osaka
     
     def duplicate_and_close_original
       new_instance = duplicate        
-      close        
+      close  
       @control = new_instance.control
     end
     

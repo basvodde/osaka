@@ -177,7 +177,7 @@ describe "Osaka::TypicalApplication" do
     
     
     it "Should be able to duplicate and close the original document" do
-      subject.stub_chain(:duplicate, :control).and_return(new_instance_control)
+      allow(subject).to receive_message_chain(:duplicate, :control).and_return(new_instance_control)
       expect(subject).to receive(:close)
       subject.duplicate_and_close_original
       expect(subject.control).to eq(new_instance_control)
@@ -200,7 +200,7 @@ describe "Osaka::TypicalApplication" do
       expect_click_menu_bar(at.menu_item("Duplicate"), "File")
       expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window")
 
-      subject.stub_chain(:clone, :control).and_return(new_instance_control)
+      allow(subject).to receive_message_chain(:clone, :control).and_return(new_instance_control)
       expect(subject.duplicate.control).to eq(new_instance_control)
     end
   
@@ -210,7 +210,7 @@ describe "Osaka::TypicalApplication" do
       expect_click_menu_bar(at.menu_item("Duplicate"), "File")
       expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window", "New name duplicate window")
 
-      subject.stub_chain(:clone, :control).and_return(new_instance_control)
+      allow(subject).to receive_message_chain(:clone, :control).and_return(new_instance_control)
       expect(subject).to receive(:sleep).with(0.4) # Avoiding Mountain Lion crash
       expect_keystroke!(:return)
       expect(new_instance_control).to receive(:set_current_window).with("New name duplicate window")

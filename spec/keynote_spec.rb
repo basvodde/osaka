@@ -39,5 +39,14 @@ describe "Osaka::Keynote" do
     expect(subject).to receive(:select_all)
     subject.select_all_slides
   end
-  
+
+  it "Should use the command line open to make up for problem in keynote 6.2" do
+    expect(File).to receive(:absolute_path).with("file.key").and_return("/path/file.key")
+    expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("new_window")
+    expect(subject.control).to receive(:run_command).with("open /path/file.key").and_return("something that is printed during debug")
+    expect(subject.control).to receive(:wait_until_exists)
+    expect(subject.control).to receive(:set_current_window).with("new_window")
+    subject.open("file.key")
+  end
+
 end

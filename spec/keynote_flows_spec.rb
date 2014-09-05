@@ -3,8 +3,36 @@ require "osaka"
 
 describe "Common flows in keynote" do
   
-  def should_shutdown
+  let(:mock_keynote) { double("First keynote")}
+
+  def should_get_new_keynote_then_return_mock mock = mock_keynote
+    expect(Osaka::Keynote).to receive(:new).and_return(mock)
+  end
+
+  def should_get_started
+    expect(mock_keynote).to receive(:activate)
+    expect(mock_keynote).to receive(:close_template_chooser_if_any)
+    expect(mock_keynote).to receive(:raise_error_on_open_standard_windows)
+  end
+
+  def should_create_output_file_from_input(input_file, result_file)
+    expect(mock_keynote).to receive(:open).with(input_file)
+    expect(mock_keynote).to receive(:select_all_slides)
+    expect(mock_keynote).to receive(:save_as).with(result_file)
+  end
+
+  def  should_append_file(file) 
+    another_keynote = double("keynote with " + file)
+    should_get_new_keynote_then_return_mock another_keynote
+    expect(another_keynote).to receive(:open).with(file)
+    expect(another_keynote).to receive(:select_all_slides)
+    expect(another_keynote).to receive(:copy)
+    expect(mock_keynote).to receive(:paste)
+    expect(another_keynote).to receive(:close)
     expect(mock_keynote).to receive(:save)
+  end
+
+  def should_shutdown
     expect(mock_keynote).to receive(:close)
     expect(mock_keynote).to receive(:quit)
   end
@@ -12,9 +40,8 @@ describe "Common flows in keynote" do
   let(:mock_keynote) { double("First keynote")}
 
   it "Should exit if keynote windows are already open" do
-    expect(Osaka::Keynote).to receive(:new).and_return(mock_keynote)
-    expect(mock_keynote).to receive(:activate)
-    expect(mock_keynote).to receive(:raise_error_on_open_standard_windows)
+    should_get_new_keynote_then_return_mock
+    should_get_started
       .with("All Keynote windows must be closed before running this flow")
       .and_raise(Osaka::ApplicationWindowsMustBeClosed, "All Keynote windows must be closed before running this flow")
     
@@ -24,38 +51,19 @@ describe "Common flows in keynote" do
   end
   
   it "Should be able to combine just one single file" do
-    expect(Osaka::Keynote).to receive(:new).and_return(mock_keynote)
-    expect(mock_keynote).to receive(:activate)
-    expect(mock_keynote).to receive(:raise_error_on_open_standard_windows)
-    expect(mock_keynote).to receive(:light_table_view)
-    expect(mock_keynote).to receive(:open).with("one_file.key")
-    expect(mock_keynote).to receive(:save_as).with("result.key")
+    should_get_new_keynote_then_return_mock
+    should_get_started
+    should_create_output_file_from_input("one_file.key", "result.key")
     should_shutdown
     CommonFlows.keynote_combine_files("result.key", "one_file.key")
   end
   
   it "Should be able to combine multiple files in one result" do
-    mock2_keynote = double("Second keynote")
-    mock3_keynote = double("Third keynote")
-    expect(Osaka::Keynote).to receive(:new).and_return(mock_keynote, mock2_keynote, mock3_keynote)  
-    expect(mock_keynote).to receive(:activate)
-    expect(mock_keynote).to receive(:raise_error_on_open_standard_windows)
-    expect(mock_keynote).to receive(:open).with("one_file.key")
-    expect(mock_keynote).to receive(:light_table_view)
-    expect(mock_keynote).to receive(:save_as).with("result.key")
-    expect(mock_keynote).to receive(:select_all_slides).exactly(2).times
-    expect(mock_keynote).to receive(:paste).exactly(2).times
-    
-    expect(mock2_keynote).to receive(:open).with("two_file.key")
-    expect(mock2_keynote).to receive(:select_all_slides)
-    expect(mock2_keynote).to receive(:copy)
-    expect(mock2_keynote).to receive(:close)
-    
-    expect(mock3_keynote).to receive(:open).with("three_file.key")
-    expect(mock3_keynote).to receive(:select_all_slides)
-    expect(mock3_keynote).to receive(:copy)
-    expect(mock3_keynote).to receive(:close)
-    
+    should_get_new_keynote_then_return_mock
+    should_get_started
+    should_create_output_file_from_input("one_file.key", "result.key")
+    should_append_file("two_file.key")    
+    should_append_file("three_file.key")    
     should_shutdown
     CommonFlows.keynote_combine_files("result.key", ["one_file.key", "two_file.key", "three_file.key"])    
   end

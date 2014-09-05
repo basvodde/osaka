@@ -175,7 +175,6 @@ describe "Osaka::TypicalApplication" do
       subject.select_file_from_open_dialog("/tmp/filename", at.window("dialog"))
     end
     
-    
     it "Should be able to duplicate and close the original document" do
       allow(subject).to receive_message_chain(:duplicate, :control).and_return(new_instance_control)
       expect(subject).to receive(:close)
@@ -308,5 +307,31 @@ describe "Osaka::TypicalApplication" do
       subject.raise_error_on_open_standard_windows("error message")
     }.to raise_error(Osaka::ApplicationWindowsMustBeClosed, "error message")
   end
+
+  it "Should not close the template chooser if not present" do
+    expect(subject).to receive(:template_chooser_window?).and_return(false)
+    subject.close_template_chooser_if_any
+  end
   
+  it "Should close the template chooser if present" do
+    template_window = "the window"
+    expect(subject).to receive(:template_chooser_window?).and_return true
+    expect(control).to receive(:current_window_name).and_return template_window
+    expect(subject).to receive(:close)
+    expect(control).to receive(:wait_until_not_exists!).with(at.window(template_window))
+    subject.close_template_chooser_if_any
+  end
+
+  def valid_template_chooser_window name
+    expect(subject).to receive(:focus)
+    expect(control).to receive(:current_window_name).and_return name
+    expect(subject.template_chooser_window?).to be true
+  end
+
+  it "Should recognize various template chooser names" do
+    valid_template_chooser_window "Choose a Theme"
+    valid_template_chooser_window "Choose a Template"
+    valid_template_chooser_window "Template Chooser"
+  end
+
 end

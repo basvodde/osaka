@@ -200,6 +200,22 @@ module Osaka
       dialog.select_file(File.basename(filename))
     end
     
+    def template_chooser_window?
+      focus
+      current_window_name = control.current_window_name
+      current_window_name == "Choose a Theme" ||
+      current_window_name == "Choose a Template" ||
+      current_window_name == "Template Chooser" ? true : false
+    end
+    
+    def close_template_chooser_if_any
+      if template_chooser_window?
+        window = at.window(control.current_window_name)
+        close
+        control.wait_until_not_exists!(window)
+      end
+    end
+    
     def raise_error_on_open_standard_windows(error_message)
       raise Osaka::ApplicationWindowsMustBeClosed, error_message if ! control.standard_window_list.empty?
     end

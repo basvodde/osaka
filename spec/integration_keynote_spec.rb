@@ -30,6 +30,8 @@ describe "Integration tests for Keynote and Common Flows", :integration => true 
     
     keynote_file = File.join(@assets_directory, "01_first_slides.key")
     keynote = Osaka::Keynote.new
+    keynote.activate
+    keynote.close_template_chooser_if_any
     keynote.open(keynote_file)
 
     expect {

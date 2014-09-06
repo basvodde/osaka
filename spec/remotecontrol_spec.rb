@@ -115,6 +115,13 @@ describe "Osaka::RemoteControl" do
       expect_system_event!("quit")
       subject.system_event("quit")
     end
+
+    it "Should be able to able to run shell commands" do
+      command_output = "something that is the command output"
+      expect(Osaka::CommandRunner).to receive(:run).with("open xxx.key").and_return(command_output)
+      expect(subject.run_command("open xxx.key")).to eq command_output
+    end
+
   end
   
   context "Check whether things exist or not" do

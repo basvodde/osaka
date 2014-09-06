@@ -252,9 +252,8 @@ module Osaka
       @mac_version_string
     end
     
-    
-    def convert_mac_version_string_to_symbol(version_string)
-      
+    def run_command command
+      Osaka::CommandRunner.run command
     end
     
   end

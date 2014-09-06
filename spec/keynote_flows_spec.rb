@@ -85,5 +85,29 @@ describe "Common flows in keynote" do
     expect(CommonFlows).to receive(:keynote_combine_files).with("results.key", files_in_dir_to_be_used)
     CommonFlows.keynote_combine_files_from_directory_sorted("results.key", "dirname", /^\d+.*\.key$/)    
   end
+
+  it "Should be able to open and close keynote files" do
+    expect(Osaka::Keynote).to receive(:new).exactly(3).times.and_return(mock_keynote)
+    should_get_started
+    expect(mock_keynote).to receive(:open).with("file1.key")
+    expect(mock_keynote).to receive(:close)
+    expect(mock_keynote).to receive(:open).with("file2.key")
+    expect(mock_keynote).to receive(:close)
+    expect(mock_keynote).to receive(:quit)
+    CommonFlows.keynote_yield_for_each_file(["file1.key", "file2.key"]) { |k| k.instance_of? Osaka::Keynote }
+  end
+
+  it "Should be able to combine a list of files fron a specified directory" do
+    expect(File).to receive(:exist?).exactly(2).times.and_return(false)
+    expect(STDOUT).to receive(:puts).exactly(1).times.with("These files do not exist: \ndir/file1.key\ndir/file2.key")
+    CommonFlows.keynote_combine_files_from_list("results_file", "dir", ["file1.key", "file2.key"])
+  end
+
+  it "Should be complain when files in list do not exist" do
+    expect(File).to receive(:exist?).exactly(2).times.and_return(true)
+    expect(CommonFlows).to receive(:keynote_combine_files).with("results_file", ["dir/file1.key", "dir/file2.key"])
+    CommonFlows.keynote_combine_files_from_list("results_file", "dir", ["file1.key", "file2.key"])
+  end
+
   
 end

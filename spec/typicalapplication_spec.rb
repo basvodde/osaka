@@ -104,7 +104,7 @@ describe "Osaka::TypicalApplication" do
       expect_running?.and_return(true, true, false)
       expect_quit
       expect_exists?(at.sheet(1)).and_return(true)
-      expect_click!(at.button("Don’t Save").sheet(1))
+      expect_click!(at.button("Delete").sheet(1))
       subject.quit(:dont_save)  
     end
     

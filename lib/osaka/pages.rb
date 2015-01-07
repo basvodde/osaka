@@ -1,9 +1,9 @@
 
 module Osaka
-  
+
   class PagesError < RuntimeError
   end
-  
+
   class PagesMailMergeDialog
     attr_accessor :control, :location
 
@@ -11,30 +11,30 @@ module Osaka
       @location = location
       @control = control
     end
-  
+
     def merge
       control.click!(at.button("Merge").sheet(1))
       print_dialog_location = at.window("Print")
       control.wait_until_exists!(at.menu_button("PDF") + print_dialog_location)
       TypicalPrintDialog.new(control.name, print_dialog_location)
     end
-        
+
     def set_merge_to_new_document
       set_merge_to_document_printer(1)
     end
-    
+
     def set_merge_to_printer
       set_merge_to_document_printer(2)
     end
-    
+
   private
     def set_merge_to_document_printer(value)
       control.click(at.pop_up_button(2).sheet(1))
       control.wait_until_exists!(at.menu_item(value).menu(1).pop_up_button(2).sheet(1))
       control.click!(at.menu_item(value).menu(1).pop_up_button(2).sheet(1))
-    end    
+    end
   end
-  
+
   class PagesInspector
     attr_accessor :control
     attr_accessor :location_symbol_map
@@ -52,41 +52,41 @@ module Osaka
       @location_symbol_map[:chart] = 8
       @location_symbol_map[:link] = 9
       @location_symbol_map[:quicktime] = 10
-    end    
-    
+    end
+
     def get_location_from_symbol(inspector_name)
       at.radio_button(@location_symbol_map[inspector_name]).radio_group(1)
     end
-    
+
     def select_inspector(inspector)
       control.click(get_location_from_symbol(inspector))
       control.wait_until_exists(at.window(inspector.to_s))
       control.set_current_window(inspector.to_s)
     end
-    
+
     def change_mail_merge_source
       select_inspector(:link)
       control.click(at.radio_button(3).tab_group(1).group(1)).wait_until_exists(at.button("Choose...").tab_group(1).group(1))
-      control.click(at.button("Choose...").tab_group(1).group(1))        
+      control.click(at.button("Choose...").tab_group(1).group(1))
     end
-    
+
   end
 
   class Pages < TypicalApplication
-  
+
     def initialize
       super "Pages"
     end
-    
+
     def type(text)
       control.keystroke(text)
     end
-  
+
     def self.create_document(filename, &block)
       pages = Osaka::Pages.new
       pages.create_document(filename, &block)
     end
-  
+
     def new_document
       super
       if control.current_window_name == "Template Chooser"
@@ -95,7 +95,7 @@ module Osaka
         })
       end
     end
-  
+
     def set_mail_merge_document(filename)
       inspector.change_mail_merge_source
       control.wait_until_exists(at.sheet(1))
@@ -106,19 +106,19 @@ module Osaka
       if (control.exists?(at.sheet(1).sheet(1)))
         raise(PagesError, "Setting Mail Merge numbers file failed")
       end
-      control.click(at.button("OK").sheet(1))      
+      control.click(at.button("OK").sheet(1))
     end
-        
+
     def mail_merge_field(field_name)
       control.click_menu_bar(at.menu_item(field_name).menu(1).menu_item("Merge Field"), "Insert")
     end
-    
+
     def mail_merge
       control.click_menu_bar(at.menu_item(20), "Edit")
       control.wait_until_exists(at.button("Merge").sheet(1))
       PagesMailMergeDialog.new(at.sheet(1), control)
     end
-    
+
     def mail_merge_to_pdf(filename)
       mail_merge_dialog = mail_merge
       mail_merge_dialog.set_merge_to_printer
@@ -137,6 +137,6 @@ module Osaka
       }
       PagesInspector.new(control.name, at.window(window_name))
     end
-  
+
   end
 end

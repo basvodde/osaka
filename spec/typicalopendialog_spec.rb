@@ -4,9 +4,10 @@ require 'osaka'
 describe "Osaka::TypicalOpenDialog" do
 
   include(*Osaka::OsakaExpectations)
+
   subject { Osaka::TypicalOpenDialog.new("Application", at.window(1))}
-  let(:control) { subject.control = double("RemoteControl", :base_location => at.window(1)) }
-  
+  let(:control) { subject.control ||= double("RemoteControl", :base_location => at.window(1), :mac_version => :mountain_lion) }
+
   it "Should be do nothing when the amount of files in the directory is 0" do
     expect(subject).to receive(:amount_of_files_in_list).and_return(0)
     subject.select_file("filename")
@@ -17,7 +18,7 @@ describe "Osaka::TypicalOpenDialog" do
     expect(subject).to receive(:filename_at).with(1).and_return("filename")
     expect(subject).to receive(:select_file_by_row).with(1)
     expect(subject).to receive(:click_open)
-    
+
     subject.select_file("filename")
   end
 
@@ -26,7 +27,7 @@ describe "Osaka::TypicalOpenDialog" do
     expect(subject).to receive(:filename_at).and_return("filename", "filename2", "filename3")
     expect(subject).to receive(:select_file_by_row).with(3)
     expect(subject).to receive(:click_open)
-    
+
     subject.select_file("filename3")
   end
 
@@ -58,7 +59,8 @@ describe "Osaka::TypicalOpenDialog" do
     expect(subject.amount_of_files_in_list).to eq 1
   end
 
-  it "Should be able to get the amount of files in the current file list" do
+  it "Should be able to get the amount of files in the current file list in Yosemite" do
+    simulate_mac_version(:yosemite)
     simulate_mac_version(:yosemite)
     expect_get!("rows", subject.file_list_location).and_return("row 1 of outline 1 of scroll area 1 of splitter group 1 of group 1 of window Open of application process Pages")
     subject.amount_of_files_in_list.should == 1
@@ -66,14 +68,14 @@ describe "Osaka::TypicalOpenDialog" do
 
   it "Should be able to get the amount of files in the current file list with 2 files." do
     expect_get!("rows", subject.file_list_location).and_return("row 1 of outline 1 of scroll area 2 of splitter group 1 of group 1 of window Open of application process Pages, row 2 of outline 1 of scroll area 2 of splitter group 1 of group 1 of window Open of application process Pages")
-    expect(subject.amount_of_files_in_list).to eq 2    
+    expect(subject.amount_of_files_in_list).to eq 2
   end
 
   it "Should be able to get the amount of files in the current file list when there are no files..." do
     expect_get!("rows", subject.file_list_location).and_return("")
     expect(subject.amount_of_files_in_list).to eq 0
-  end  
-    
+  end
+
   it "Should be able to convert a row into a location when it is a text field" do
     expect_exists?(subject.text_field_location_from_row(1)).and_return(true)
     expect(subject.field_location_from_row(1)).to eq subject.text_field_location_from_row(1)
@@ -81,7 +83,7 @@ describe "Osaka::TypicalOpenDialog" do
 
   it "Should be able to convert a row into a location when it is a static field." do
     expect_exists?(subject.text_field_location_from_row(1)).and_return(false)
-    expect(subject.field_location_from_row(1)).to eq subject.static_field_location_from_row(1)    
+    expect(subject.field_location_from_row(1)).to eq subject.static_field_location_from_row(1)
   end
 
   it "Should be able to get the location of the list" do

@@ -7,7 +7,8 @@ module Osaka
   class TypicalOpenDialog < TypicalFinderDialog
 
     def file_list_location
-      at.outline(1).scroll_area(2).splitter_group(1).group(1)
+      scroll_area = (control.mac_version == :yosemite) ? 1 : 2
+      at.outline(1).scroll_area(scroll_area).splitter_group(1).group(1)
     end
 
     def text_field_location_from_row(row)

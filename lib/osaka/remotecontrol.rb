@@ -241,6 +241,8 @@ module Osaka
           :lion
         when /^10.8.*/
           :mountain_lion
+        when /^10.10.*/
+          :yosemite
         else
           :other
         end

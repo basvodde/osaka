@@ -58,6 +58,12 @@ describe "Osaka::TypicalOpenDialog" do
     expect(subject.amount_of_files_in_list).to eq 1
   end
 
+  it "Should be able to get the amount of files in the current file list" do
+    simulate_mac_version(:yosemite)
+    expect_get!("rows", subject.file_list_location).and_return("row 1 of outline 1 of scroll area 1 of splitter group 1 of group 1 of window Open of application process Pages")
+    subject.amount_of_files_in_list.should == 1
+  end
+
   it "Should be able to get the amount of files in the current file list with 2 files." do
     expect_get!("rows", subject.file_list_location).and_return("row 1 of outline 1 of scroll area 2 of splitter group 1 of group 1 of window Open of application process Pages, row 2 of outline 1 of scroll area 2 of splitter group 1 of group 1 of window Open of application process Pages")
     expect(subject.amount_of_files_in_list).to eq 2    

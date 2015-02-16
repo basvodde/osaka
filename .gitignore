@@ -1,3 +1,4 @@
 osaka.tmproj
 osaka*.gem
 Gemfile.lock
+.DS_Store

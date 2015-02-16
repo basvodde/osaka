@@ -123,6 +123,28 @@ module Osaka
       control.keystroke("s", :command)
     end
     
+
+
+
+
+
+
+    def find_replace_all text, replacement
+      control.keystroke("f", :command)
+      location = at.window("Find & Replace")
+      control.wait_until_exists(location)
+      dialog = create_dialog(TypicalFindDialog, location)
+      dialog.find_replace_all text, replacement
+    end
+
+
+
+
+
+
+
+
+
     def save_pops_up_dialog?
       control.exists?(at.menu_item("Save…").menu(1).menu_bar_item("File").menu_bar(1))
     end

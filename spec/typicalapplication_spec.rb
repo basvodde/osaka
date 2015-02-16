@@ -334,4 +334,21 @@ describe "Osaka::TypicalApplication" do
     valid_template_chooser_window "Template Chooser"
   end
 
+  context "find and replace" do
+    let(:find_dialog) { double("TypicalFindDialog") }
+    let(:new_instance_control) { double("RemoteControl") }
+    let(:replace_all_button) { double("RemoteControl") }
+    
+    it "Should be able to replace all occurrences of a string" do
+      expect_keystroke("f", :command)
+      location = at.window("Find & Replace")
+      expect(control).to receive(:wait_until_exists).with(location).and_return(true)
+      expect(subject).to receive(:create_dialog).with(Osaka::TypicalFindDialog, location).and_return(find_dialog)
+      expect(find_dialog).to receive(:find_replace_all).with "some string", "some replacement"
+      subject.find_replace_all "some string", "some replacement"
+    end
+
+  end
+  
+
 end

@@ -49,4 +49,10 @@ describe "Osaka::Keynote" do
     subject.open("file.key")
   end
 
+  it "should be able to edit and exit the master slides" do
+    expect(subject).to receive(:click_view_menu).with "Edit Master Slides"
+    expect(subject).to receive(:click_view_menu).with "Exit Master Slides"
+    subject.edit_master_slides
+    subject.exit_master_slides
+  end
 end

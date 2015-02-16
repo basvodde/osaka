@@ -86,6 +86,10 @@ module Osaka
       create_location_with_added_name("dialog", name)
     end
     
+    def floating_window(name)
+      create_location_with_added_name("floating window", name)
+    end
+    
     def checkbox(name)
       create_location_with_added_name("checkbox", name)
     end

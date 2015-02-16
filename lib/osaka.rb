@@ -13,6 +13,7 @@ require 'osaka/typicalfinderdialog'
 require 'osaka/typicalopendialog'
 require 'osaka/typicalsavedialog'
 require 'osaka/typicalprintdialog'
+require 'osaka/typicalfinddialog'
 
 #Specific application
 require 'osaka/pages'

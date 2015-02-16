@@ -39,7 +39,7 @@ module CommonFlows
     keynote.activate
     keynote.close_template_chooser_if_any
     keynote.raise_error_on_open_standard_windows("All Keynote windows must be closed before running this flow")
-      files = [files].flatten
+    files = [files].flatten
     files.each { |file|
       keynote = Osaka::Keynote.new
       keynote.open(file)
@@ -64,6 +64,19 @@ module CommonFlows
       puts "These files do not exist: " + missing_files
     end
 
+  end
+
+  def self.start_keynote
+    keynote = Osaka::Keynote.new
+    keynote.activate
+    keynote.close_template_chooser_if_any
+    keynote.raise_error_on_open_standard_windows("All Keynote windows must be closed before running this flow")
+    keynote
+  end
+
+  def self.search_and_replace_presentation_text(keynote, find, replacement)
+    keynote.find_replace_all(find, replacement)
+    keynote.save
   end
 
 end

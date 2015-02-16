@@ -109,5 +109,11 @@ describe "Common flows in keynote" do
     CommonFlows.keynote_combine_files_from_list("results_file", "dir", ["file1.key", "file2.key"])
   end
 
+  it "Should be able to search and replace presentation text in a file" do
+    expect(mock_keynote).to receive(:find_replace_all).with("11111", "22222")
+    expect(mock_keynote).to receive(:save)
+    CommonFlows.search_and_replace_presentation_text(mock_keynote, "11111", "22222")
+  end
+
   
 end

@@ -1,4 +1,4 @@
-
+  
 require 'timeout'
 
 module Osaka

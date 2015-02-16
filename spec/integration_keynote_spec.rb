@@ -50,7 +50,7 @@ describe "Integration tests for Keynote and Common Flows", :integration => true 
     }
   end
 
-    it "Should be complain when files in list do not exist" do
+  it "Should be complain when files in list do not exist" do
 
     Dir.mktmpdir { |dir|
       results_file = File.join(dir, "results.key")
@@ -59,5 +59,28 @@ describe "Integration tests for Keynote and Common Flows", :integration => true 
       expect(File.exists?(results_file)).to be(false)
     }
   end
+
+  it "Should find and replace text" do
+    input_file = File.join(@assets_directory + "/keynote-6", "slides_with_master_text.key")
+    results_file = File.join(Dir.mktmpdir, "results.key")
+    keynote = CommonFlows.start_keynote
+    keynote.open input_file
+    keynote.save_as results_file
+    CommonFlows.search_and_replace_presentation_text(keynote, "__TITLE__", "This is it!")
+    keynote.close
+  end
+
+  it "Should find and replace text in master slides" do
+    input_file = File.join(@assets_directory + "/keynote-6", "slides_with_master_text.key")
+    results_file = File.join(Dir.mktmpdir, "results.key")
+    keynote = CommonFlows.start_keynote
+    keynote.open input_file
+    keynote.save_as results_file
+    keynote.edit_master_slides
+    CommonFlows.search_and_replace_presentation_text(keynote, "master-slide-text", "custom master slide text")
+    keynote.exit_master_slides
+    keynote.close
+  end
+
 
 end

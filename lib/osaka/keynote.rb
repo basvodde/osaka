@@ -32,11 +32,27 @@ module Osaka
       control.set_current_window(new_window)
     end
 
-
     def light_table_view
       if control.exists?(at.menu_item("Light Table").menu(1).menu_bar_item("View").menu_bar(1))
         control.click(at.menu_item("Light Table").menu(1).menu_bar_item("View").menu_bar(1))
       end
     end
+
+    def click_view_menu item
+      control.click view_menu_bar_item item 
+    end
+
+    def view_menu_bar_item(item)
+      at.menu_item(item).menu(1).menu_bar_item("View").menu_bar(1)
+    end
+
+    def edit_master_slides
+       click_view_menu "Edit Master Slides"
+    end
+
+    def exit_master_slides
+      click_view_menu "Exit Master Slides"
+    end
+
   end
 end

@@ -27,6 +27,16 @@ describe "Osaka::TypicalApplication" do
     expect(code_block_called).to eq true
   end
 
+  it "Should be able to do something and wait until a new STANDARD window pops up" do
+    expect_standard_window_list.and_return(["original window"], ["original window"], ["original window"], ["new window", "original window"])
+    expect_activate
+    code_block_called = false
+    expect(subject.do_and_wait_for_new_standard_window {
+      code_block_called = true
+    }).to eq "new window"
+    expect(code_block_called).to eq true
+  end
+
   context "Cloning and copying" do
 
     it "Should be able to clone TypicalApplications" do
@@ -48,20 +58,20 @@ describe "Osaka::TypicalApplication" do
     it "Should pass the right open string to the application osascript" do
       filename = "filename.key"
       expect_tell("open \"#{File.absolute_path(filename)}\"")
-      expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return(filename)
+      expect(subject).to receive(:do_and_wait_for_new_standard_window).and_yield.and_return(filename)
       expect_set_current_window(filename)
       subject.open(filename)
     end
 
     it "Should only get the basename of the filename when it sets the window title." do
       filename = "/root/dirname/filename.key"
-      expect(subject).to receive(:do_and_wait_for_new_window).and_return("filename")
+      expect(subject).to receive(:do_and_wait_for_new_standard_window).and_return("filename")
       expect_set_current_window("filename")
       subject.open(filename)
     end
 
     it "Should be able to create a new document" do
-      expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("new_window")
+      expect(subject).to receive(:do_and_wait_for_new_standard_window).and_yield.and_return("new_window")
       expect_keystroke("n", :command)
       expect_set_current_window("new_window")
       expect_focus
@@ -198,7 +208,7 @@ describe "Osaka::TypicalApplication" do
       expect(subject).to receive(:duplicate_available?).and_return(true)
 
       expect_click_menu_bar(at.menu_item("Duplicate"), "File")
-      expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window")
+      expect(subject).to receive(:do_and_wait_for_new_standard_window).and_yield.and_return("duplicate window")
 
       allow(subject).to receive_message_chain(:clone, :control).and_return(new_instance_control)
       expect(subject.duplicate.control).to eq(new_instance_control)
@@ -208,7 +218,7 @@ describe "Osaka::TypicalApplication" do
       expect(subject).to receive(:duplicate_available?).and_return(true)
 
       expect_click_menu_bar(at.menu_item("Duplicate"), "File")
-      expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("duplicate window", "New name duplicate window")
+      expect(subject).to receive(:do_and_wait_for_new_standard_window).and_yield.and_return("duplicate window", "New name duplicate window")
 
       allow(subject).to receive_message_chain(:clone, :control).and_return(new_instance_control)
       expect(subject).to receive(:sleep).with(0.4) # Avoiding Mountain Lion crash

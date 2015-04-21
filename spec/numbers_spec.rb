@@ -34,9 +34,9 @@ describe "Osaka::Numbers" do
 
   it "Should be able to select blank from the template choser" do
     expect_set_current_window("Template Choser")
-    expect(subject).to receive(:do_and_wait_for_new_window).and_return("Template Choser")
+    expect(subject).to receive(:do_and_wait_for_new_standard_window).and_return("Template Choser")
     expect_set_current_window("Untitled")
-    expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("Untitled")
+    expect(subject).to receive(:do_and_wait_for_new_standard_window).and_yield.and_return("Untitled")
     expect_keystroke(:return)
     subject.new_document
   end

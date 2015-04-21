@@ -19,7 +19,7 @@ module Osaka
 
     def new_document
       super
-      control.set_current_window(do_and_wait_for_new_window {
+      control.set_current_window(do_and_wait_for_new_standard_window {
         control.keystroke(:return)
       })
     end

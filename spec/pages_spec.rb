@@ -17,19 +17,19 @@ describe "Osaka::Pages" do
     end
 
     it "Should be able to create a new document using template choser if there is one" do
-      expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("Template Chooser")
+      expect(subject).to receive(:do_and_wait_for_new_standard_window).and_yield.and_return("Template Chooser")
       expect_keystroke("n", :command)
       expect_set_current_window("Template Chooser")
       expect_focus
       expect_window_list.and_return(["Template Chooser"])
-      expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("New Document")
+      expect(subject).to receive(:do_and_wait_for_new_standard_window).and_yield.and_return("New Document")
       expect_click(at.button("Choose").window("Template Chooser"))
       expect_set_current_window("New Document")
       subject.new_document
     end
 
     it "Should be able to create a new document also when there is no template chooser" do
-      expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("New Document")
+      expect(subject).to receive(:do_and_wait_for_new_standard_window).and_yield.and_return("New Document")
       expect_keystroke("n", :command)
       expect_set_current_window("New Document")
       expect_focus

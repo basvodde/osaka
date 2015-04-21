@@ -34,7 +34,7 @@ module Osaka
 
     def open (filename)
       abolutePathFileName = File.absolute_path(filename)
-      new_window = do_and_wait_for_new_window {
+      new_window = do_and_wait_for_new_standard_window {
         control.tell("open \"#{abolutePathFileName}\"")
       }
       control.set_current_window(new_window)
@@ -79,8 +79,18 @@ module Osaka
       (latest_window_list - original_window_list)[0]
     end
 
+    def do_and_wait_for_new_standard_window
+      control.activate
+      latest_window_list = original_window_list = control.standard_window_list
+      yield
+      while ((latest_window_list - original_window_list).size == 0)
+        latest_window_list = control.standard_window_list
+      end
+      (latest_window_list - original_window_list)[0]
+    end
+
     def new_document
-      control.set_current_window(do_and_wait_for_new_window {
+      control.set_current_window(do_and_wait_for_new_standard_window {
         control.keystroke("n", :command)
       })
       control.focus
@@ -101,11 +111,11 @@ module Osaka
       unless duplicate_available?
         raise(Osaka::VersioningError, "MacOS Versioning Error: Duplicate is not available on this Mac version")
       end
-      do_and_wait_for_new_window {
+      do_and_wait_for_new_standard_window {
         control.click_menu_bar(at.menu_item("Duplicate"), "File")
       }
       new_instance = clone
-      new_instance.control.set_current_window(do_and_wait_for_new_window {
+      new_instance.control.set_current_window(do_and_wait_for_new_standard_window {
         sleep(0.4) # This sleep is added because mountain lion keynote crashes without it!
         control.keystroke!(:return)
       }) unless control.mac_version == :lion

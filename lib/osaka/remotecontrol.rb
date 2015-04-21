@@ -11,6 +11,16 @@ module Osaka
     attr_reader :name
     attr_accessor :base_location
 
+    @@debug_info_enabled = false
+
+    def self.enable_debug_prints
+      @@debug_info_enabled = true
+    end
+
+    def debug_print(message)
+      puts message if @@debug_info_enabled
+    end
+
     def initialize(name, base_location = Location.new(""))
       @name = name
       @base_location = base_location
@@ -89,6 +99,7 @@ module Osaka
 
     def wait_until_exists!(*locations, &action)
       wait_until(locations, action) { |location|
+        debug_print "Waiting until exists: #{location.to_s} on remote #{current_window_name.to_s}"
         exists?(location)
       }
     end
@@ -219,6 +230,7 @@ module Osaka
     end
 
     def set_current_window(window_name)
+      debug_print "Changing remote base location to: #{window_name}"
       @base_location = at.window(window_name)
     end
 

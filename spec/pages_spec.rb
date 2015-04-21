@@ -17,11 +17,11 @@ describe "Osaka::Pages" do
     end
 
     it "Should be able to create a new document using template choser if there is one" do
-      expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("Template Chooser")    
+      expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("Template Chooser")
       expect_keystroke("n", :command)
       expect_set_current_window("Template Chooser")
-      expect_focus      
-      expect_current_window_name.and_return("Template Chooser")   
+      expect_focus
+      expect_current_window_name.and_return("Template Chooser")
       expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("New Document")
       expect_click(at.button("Choose").window("Template Chooser"))
       expect_set_current_window("New Document")
@@ -29,7 +29,7 @@ describe "Osaka::Pages" do
     end
 
     it "Should be able to create a new document also when there is no template chooser" do
-      expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("New Document")    
+      expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("New Document")
       expect_keystroke("n", :command)
       expect_set_current_window("New Document")
       expect_focus
@@ -48,15 +48,15 @@ describe "Osaka::Pages" do
   end
 
   it "Should be able to do mail merge to a PDF flow" do
-    
+
     mail_merge_dialog = double("Pages Mail Merge Dialog")
     print_dialog = double("Generic Print Dialog")
-    
+
     expect(subject).to receive(:mail_merge).and_return(mail_merge_dialog)
     expect(mail_merge_dialog).to receive(:merge).and_return(print_dialog)
     expect(mail_merge_dialog).to receive(:set_merge_to_printer)
     expect(print_dialog).to receive(:save_as_pdf).with("filename")
-    
+
     subject.mail_merge_to_pdf("filename")
   end
 
@@ -79,9 +79,9 @@ describe "Osaka::Pages" do
     expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("Link")
     expect_exists?(at.menu_item("Show Inspector").menu(1).menu_bar_item("View").menu_bar(1)).and_return(true)
     expect_click_menu_bar(at.menu_item("Show Inspector"), "View")
-    
+
     inspector_mock = double("Inspector")
-    expect(Osaka::PagesInspector).to receive(:new).with(control.name, at.window("Link")).and_return(inspector_mock)    
+    expect(Osaka::PagesInspector).to receive(:new).with(control.name, at.window("Link")).and_return(inspector_mock)
     expect(subject.inspector).to eq(inspector_mock)
   end
 
@@ -98,11 +98,11 @@ describe "Osaka::Pages" do
     inspector_mock = double("Inspector")
     expect(subject).to receive(:inspector).and_return(inspector_mock)
     expect(inspector_mock).to receive(:change_mail_merge_source)
-    
+
     expect_wait_until_exists(at.sheet(1))
     expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("dialog")
     expect_click(at.radio_button("Numbers Document:").radio_group(1).sheet(1))
-    
+
     expect(subject).to receive(:select_file_from_open_dialog).with("/tmp/filename", at.window("dialog"))
     expect_click(at.button("OK").sheet(1))
 
@@ -111,11 +111,11 @@ describe "Osaka::Pages" do
   end
 
   it "Should be able to stop when an error happens due to mail merge. This is especially important since otherwise Pages goes nuts and crashes :)" do
-    expect(subject).to receive(:inspector).and_return(double("Inspector").as_null_object)    
+    expect(subject).to receive(:inspector).and_return(double("Inspector").as_null_object)
     expect_wait_until_exists(at.sheet(1))
     expect(subject).to receive(:do_and_wait_for_new_window)
     expect(subject).to receive(:select_file_from_open_dialog)
-    
+
     expect_exists?(at.sheet(1).sheet(1)).and_return(true)
 
     expect {subject.set_mail_merge_document("/tmp/filename") }.to raise_error(Osaka::PagesError, "Setting Mail Merge numbers file failed")
@@ -134,7 +134,7 @@ describe "Osaka::Pages Inspector" do
 
   subject {Osaka::PagesInspector.new("Pages", "Link")}
   let(:control) {subject.control = double("RemoteControl")}
-  
+
   it "Can convert symbolic names to locations" do
     # Nice... checking a map. Perhaps delete ?
     expect(subject.get_location_from_symbol(:document)).to eq at.radio_button(1).radio_group(1)
@@ -173,7 +173,7 @@ describe "Osaka::Pages Mail Merge dialog" do
 
   subject { Osaka::PagesMailMergeDialog.new("", nil) }
   let(:control) {subject.control = double("RemoteControl").as_null_object}
-  
+
   it "Should be able to set the mail merge dialog to merge to new document" do
     expect_click(at.pop_up_button(2).sheet(1))
     expect_wait_until_exists!(at.menu_item(1).menu(1).pop_up_button(2).sheet(1))

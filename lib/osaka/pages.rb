@@ -89,7 +89,7 @@ module Osaka
 
     def new_document
       super
-      if control.current_window_name == "Template Chooser"
+      if control.window_list.include? "Template Chooser"
         control.set_current_window(do_and_wait_for_new_window {
           control.click(at.button("Choose").window("Template Chooser"))
         })

@@ -21,7 +21,7 @@ describe "Osaka::Pages" do
       expect_keystroke("n", :command)
       expect_set_current_window("Template Chooser")
       expect_focus
-      expect_current_window_name.and_return("Template Chooser")
+      expect_window_list.and_return(["Template Chooser"])
       expect(subject).to receive(:do_and_wait_for_new_window).and_yield.and_return("New Document")
       expect_click(at.button("Choose").window("Template Chooser"))
       expect_set_current_window("New Document")
@@ -33,7 +33,7 @@ describe "Osaka::Pages" do
       expect_keystroke("n", :command)
       expect_set_current_window("New Document")
       expect_focus
-      expect_current_window_name.and_return("New Document")
+      expect_window_list.and_return(["New Document"])
       subject.new_document
     end
 

@@ -1,16 +1,16 @@
 # encoding: utf-8
 
 module Osaka
-  
+
   class ScriptRunnerError < RuntimeError
   end
-  
+
   class TimeoutError < RuntimeError
   end
 
   class VersioningError < RuntimeError
   end
-  
+
   module ScriptRunner
 
     @@debug_info_enabled = false
@@ -40,36 +40,36 @@ module Osaka
           File.open(@@debug_info_script_filename, File::WRONLY|File::APPEND|File::CREAT, 0755) { |file|
             file.puts("osascript#{escaped_commands}")
           }
-        end        
+        end
         puts debug_output
       end
     end
-    
+
     def self.print_debug_info_for_additional_output(output)
       if (!output.empty? && debug_prints?)
         if (@@debug_info_format == :plain_text)
           debug_output = "Output was: #{output}"
         elsif (@@debug_info_format == :short_html)
           debug_output = "Output: <b>#{output}</b><br>"
-        end        
+        end
         puts debug_output
       end
     end
-  
+
     def self.execute(applescript)
       script_commands = applescript.gsub("\"", "\\\"").split(';')
-      escaped_commands = "" 
-      script_commands.each { |l| 
+      escaped_commands = ""
+      script_commands.each { |l|
         escaped_commands += " -e \"#{l.strip}\""
       }
 
       print_debug_info_for_escaped_commands(applescript, escaped_commands)
-      
+
       output = ""
       begin
         output = CommandRunner::run("osascript#{escaped_commands}")
       rescue Osaka::SystemCommandFailed => ex
-        if ex.message =~ /assistive devices/ 
+        if ex.message =~ /assistive devices/
           puts <<-eom
             Osaka execution failed with the error: #{ex.message}
             The reason for this is probably that you didn't enable the acess for assistive devices.
@@ -78,7 +78,7 @@ module Osaka
                system preferences -> Accessibility -> Enable access for assistive devices
             If you are under snow leopard, it is under:
                system preferences -> Universal Access -> Enable access for assistive devices
-               
+
             Osaka will not continue as it won't work without this enabled. Please enable it and re-run.
           eom
           exit
@@ -88,8 +88,8 @@ module Osaka
       end
       print_debug_info_for_additional_output(output)
       output
-    end  
-  
+    end
+
     def self.execute_file(scriptName, parameters = "")
       CommandRunner::run("osascript #{scriptName} #{parameters}".strip)
     end

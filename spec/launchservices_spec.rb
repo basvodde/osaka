@@ -56,8 +56,8 @@ END_OF_DUMP
   end
 
   it "Can retrieve a value based on the bundle name" do
-    Osaka::CommandRunner.should_receive(:run).and_return(@dumped_registry)
-    Osaka::LaunchServices.retrieve("TextMate")[:id].should== "54064"
+    expect(Osaka::CommandRunner).to receive(:run).and_return(@dumped_registry)
+    expect(Osaka::LaunchServices.retrieve("TextMate")[:id]).to eq "54064"
   end
 end
 

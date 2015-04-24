@@ -355,12 +355,15 @@ describe "Osaka::RemoteControl" do
 
     it "Should be able to get a list of all the standard windows when there are only standard windows " do
       expect(subject).to receive(:window_list).and_return(["window 1"])
+      expect_exists?(at.window("window 1")).and_return(true)
       expect_get!("subrole", at.window("window 1")).and_return("AXStandardWindow")
       expect(subject.standard_window_list).to eq ["window 1"]
     end
 
     it "Should be able to get a list of all the standard windows excluding the floating ones" do
       expect(subject).to receive(:window_list).and_return(["window", "float"])
+      expect_exists?(at.window("window")).and_return(true)
+      expect_exists?(at.window("float")).and_return(true)
       expect_get!("subrole", at.window("window")).and_return("AXStandardWindow")
       expect_get!("subrole", at.window("float")).and_return("AXFloatingWindow")
       expect(subject.standard_window_list).to eq ["window"]

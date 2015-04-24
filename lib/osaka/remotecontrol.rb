@@ -195,6 +195,7 @@ module Osaka
     end
 
     def get!(element, location = "")
+      debug_print "Getting attribute '#{element}' of: #{construct_prefixed_location(location)}"
       system_event!("get #{element}#{construct_prefixed_location(location)}").strip
     end
 
@@ -223,7 +224,7 @@ module Osaka
 
     def standard_window_list
       window_list.collect { |window|
-        if get!("subrole", at.window(window)) == "AXStandardWindow"
+        if exists?(at.window(window)) && get!("subrole", at.window(window)) == "AXStandardWindow"
           window
         end
       }.compact

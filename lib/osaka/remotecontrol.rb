@@ -245,9 +245,8 @@ module Osaka
       @base_location.to_s.empty? || window_list.index(current_window_name).nil?
     end
 
-    def mac_version
-      @mac_version_string ||= Osaka::ScriptRunner.execute("system version of (system info)").strip
-      @mac_version ||= case @mac_version_string
+    def mac_version_string_to_name(mac_version_string)
+      case mac_version_string
         when /^10.6.*/
           :snow_leopard
         when /^10.7.*/
@@ -256,15 +255,43 @@ module Osaka
           :mountain_lion
         when /^10.10.*/
           :yosemite
+        when /^10.11.*/
+          :el_capitain
         else
           :other
-        end
+      end
+    end
 
+    def mac_version_name_to_number(mac_version_name)
+      case mac_version_name
+        when :snow_leopard
+          10.6
+        when :lion
+          10.7
+        when :mountain_lion
+          10.8
+        when :yosemite
+          10.10
+        when :el_capitain
+          10.11
+        else
+          :other
+      end
+    end
+
+    def mac_version
+      mac_version_string_to_name(mac_version_string)
+    end
+
+    def mac_version_before(mac_version_name)
+      current_mac_version_string = Osaka::ScriptRunner.execute("system version of (system info)").strip
+      current_mac_version_number = mac_version_name_to_number(mac_version_string_to_name(current_mac_version_string))
+      before_mac_version_number = mac_version_name_to_number(mac_version_name)
+      current_mac_version_number < before_mac_version_number
     end
 
     def mac_version_string
-      mac_version
-      @mac_version_string
+      Osaka::ScriptRunner.execute("system version of (system info)").strip
     end
 
 

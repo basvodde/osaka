@@ -38,6 +38,10 @@ describe "Osaka::RemoteControl" do
     it "Can get the OS version (lion)" do
       expect_execute_osascript("system version of (system info)").and_return("10.7.4\n")
       expect(subject.mac_version).to eq :lion
+    end
+
+    it "Can get the OS version (lion) string" do
+      expect_execute_osascript("system version of (system info)").and_return("10.7.4\n")
       expect(subject.mac_version_string).to eq "10.7.4"
     end
 
@@ -51,9 +55,24 @@ describe "Osaka::RemoteControl" do
       expect(subject.mac_version).to eq :snow_leopard
     end
 
-    it "Can get the OS version (snow leopard)" do
+    it "Can get the OS version (el capitain)" do
+      expect_execute_osascript("system version of (system info)").and_return("10.11\n")
+      expect(subject.mac_version).to eq :el_capitain
+    end
+
+    it "Can get the OS version (other)" do
       expect_execute_osascript("system version of (system info)").and_return("1\n")
       expect(subject.mac_version).to eq :other
+    end
+
+    it "OSVersion in before a certain version" do
+      expect_execute_osascript("system version of (system info)").and_return("10.10\n")
+      expect(subject.mac_version_before(:el_capitain)).to eq true
+    end
+
+    it "OSVersion in before a certain version" do
+      expect_execute_osascript("system version of (system info)").and_return("10.11\n")
+      expect(subject.mac_version_before(:el_capitain)).to eq false
     end
   end
 

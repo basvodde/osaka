@@ -4,8 +4,18 @@ class MacVersion
 
   attr_reader :version
 
+  def self.get
+    @simulated_version || MacVersion.new
+  end
+
+  def self.simulate(version)
+    @simulated_version = MacVersion.new(version)
+    yield
+    @simulated_version = nil
+  end
+
   def initialize(version = nil)
-    @version = version_string_to_name(system_version)
+    @version = version || version_string_to_name(system_version)
   end
 
   def system_version

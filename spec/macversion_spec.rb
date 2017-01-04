@@ -53,4 +53,15 @@ describe "Mac Version for writing cross-version code" do
     expect(subject.version_before(:el_capitain)).to eq false
   end
 
+  it "can specify the MacVersion you want instead of retrieving it from the system" do
+    version = MacVersion.new(:snow_leopard)
+    expect(version.version).to eq(:snow_leopard)
+  end
+
+  it "can simulate a different Mac Version" do
+    MacVersion.simulate(:snow_leopard) do
+      expect(MacVersion.get.version).to eq(:snow_leopard)
+    end
+  end
+
 end

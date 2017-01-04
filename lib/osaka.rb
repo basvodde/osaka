@@ -1,6 +1,7 @@
 
 # Non UI servies
 require 'osaka/commandrunner'
+require 'osaka/macversion'
 require 'osaka/scriptrunner'
 require 'osaka/launchservices'
 require 'osaka/defaultssystem'

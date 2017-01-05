@@ -8,9 +8,14 @@ RSpec::Core::RakeTask.new(:spec) do |t|
   t.rspec_opts = ["--tag ~integration"]
 end
 
+desc "Run the spec tasks verbose"
+RSpec::Core::RakeTask.new(:spec_verbose) do |t|
+  t.rspec_opts = ["--tag ~integration --format documentation"]
+end
+
 desc "Run the integration tests"
 RSpec::Core::RakeTask.new(:integration) do |t|
   t.rspec_opts = ["--tag integration"]
 end
-  
+
 RSpec::Core::RakeTask.new(:all)

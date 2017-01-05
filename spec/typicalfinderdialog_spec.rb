@@ -2,12 +2,12 @@
 require 'osaka'
 
 describe "Osaka::TypicalFinderDialog" do
-  
+
   include(*Osaka::OsakaExpectations)
   subject { Osaka::TypicalFinderDialog.new("Application", at.window(1))}
   let(:control) { subject.control = double("RemoteControl", :base_location => at.window(1)) }
-  
-  
+
+
   it "Should be able to set the path" do
     expect_keystroke("g", [ :command, :shift ])
     expect_wait_until_exists(at.sheet(1))
@@ -21,5 +21,5 @@ describe "Osaka::TypicalFinderDialog" do
     expect(control).not_to receive :keystroke
     subject.set_folder(".")
   end
-  
+
 end

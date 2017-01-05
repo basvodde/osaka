@@ -10,11 +10,13 @@ describe "Osaka::TypicalApplication" do
   let(:control) { subject.control = double("RemoteControl", :name => "ApplicationName", :base_location => "base", :mac_version => :mountain_lion) }
 
   before (:each) do
+    MacVersion.simulated_version = MacVersion.new(:mountain_lion)
     Osaka::ScriptRunner.enable_debug_prints
   end
 
   after (:each) do
     Osaka::ScriptRunner.disable_debug_prints
+    MacVersion.simulated_version = nil
   end
 
   it "Should be able to do something and wait until a new window pops up" do

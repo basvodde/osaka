@@ -7,6 +7,13 @@ describe "Osaka::TypicalFinderDialog" do
   subject { Osaka::TypicalFinderDialog.new("Application", at.window(1))}
   let(:control) { subject.control = double("RemoteControl", :base_location => at.window(1)) }
 
+  before :each do
+    MacVersion.simulated_version = MacVersion.new(:mountain_lion)
+  end
+
+  after :each do
+    MacVersion.simulated_version = nil
+  end
 
   it "Should be able to set the path" do
     expect_keystroke("g", [ :command, :shift ])
@@ -16,6 +23,18 @@ describe "Osaka::TypicalFinderDialog" do
     expect_wait_until_not_exists(at.sheet(1))
     subject.set_folder("path")
   end
+
+  it "Should be able to set the path (sierra)" do
+    MacVersion.simulate(:sierra) do
+      expect_keystroke("g", [ :command, :shift ])
+      expect_wait_until_exists(at.sheet(1))
+      expect_set("value", at.combo_box(1).sheet(1), "path")
+      expect_click(at.button("Go").sheet(1))
+      expect_wait_until_not_exists(at.sheet(1))
+      subject.set_folder("path")
+    end
+  end
+
 
   it "Won't change the path when the path is the current one" do
     expect(control).not_to receive :keystroke

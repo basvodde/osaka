@@ -7,7 +7,7 @@ describe "Osaka::TypicalSaveDialog" do
   subject { Osaka::TypicalSaveDialog.new("Application", at.sheet(1))}
   let(:control) { subject.control = double("RemoteControl", :base_location => at.sheet(1)) }
 
-  it "Should set the filename in the test field" do
+  it "Should set the filename in the text field" do
     expect(subject).to receive(:set_filename).with("filename")
     expect(subject).to receive(:click_save)
     subject.save("filename")
@@ -37,6 +37,5 @@ describe "Osaka::TypicalSaveDialog" do
     expect(control).to receive(:set).with('value', at.text_field(1), "filename")
     subject.set_filename("filename")
   end
-
 
 end

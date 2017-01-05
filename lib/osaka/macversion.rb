@@ -4,6 +4,10 @@ class MacVersion
 
   attr_reader :version
 
+  def self.simulated_version=(version)
+    @simulated_version = version
+  end
+
   def self.get
     @simulated_version || MacVersion.new
   end
@@ -50,17 +54,17 @@ class MacVersion
   def version_name_to_number(mac_version_name)
     case mac_version_name
     when :snow_leopard
-      10.6
+      6
     when :lion
-      10.7
+      7
     when :mountain_lion
-      10.8
+      8
     when :yosemite
-      10.10
+      10
     when :el_capitain
-      10.11
+      11
     when :sierra
-      10.12
+      12
     else
       :other
     end

@@ -80,12 +80,14 @@ describe "Osaka::TypicalOpenDialog" do
   end
 
   it "Should be able to get the location of the list" do
-    simulate_mac_version(:mountain_lion)
-    expect(subject.file_list_location).to eq at.outline(1).scroll_area(2).splitter_group(1).group(1)
+    MacVersion.simulate(:mountain_lion) do
+      expect(subject.file_list_location).to eq at.outline(1).scroll_area(2).splitter_group(1).group(1)
+    end
   end
 
   it "Should be able to get the location of the list Yosemite" do
-    simulate_mac_version(:yosemite)
-    expect(subject.file_list_location).to eq at.outline(1).scroll_area(1).splitter_group(1).splitter_group(1).group(1)
+    MacVersion.simulate(:yosemite) do
+      expect(subject.file_list_location).to eq at.outline(1).scroll_area(1).splitter_group(1).splitter_group(1).group(1)
+    end
   end
 end

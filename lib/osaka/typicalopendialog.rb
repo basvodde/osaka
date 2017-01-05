@@ -7,7 +7,7 @@ module Osaka
   class TypicalOpenDialog < TypicalFinderDialog
 
     def file_list_location
-      if [:snow_leopard, :lion, :mountain_lion, :mavericks].include? control.mac_version
+      if MacVersion.get.version_before(:yosemite)
         at.outline(1).scroll_area(2).splitter_group(1).group(1)
       else
         at.outline(1).scroll_area(1).splitter_group(1).splitter_group(1).group(1)

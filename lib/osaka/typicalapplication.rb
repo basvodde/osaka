@@ -118,7 +118,7 @@ module Osaka
       new_instance.control.set_current_window(do_and_wait_for_new_standard_window {
         sleep(0.4) # This sleep is added because mountain lion keynote crashes without it!
         control.keystroke!(:return)
-      }) unless control.mac_version == :lion
+      }) unless MacVersion.get.version == :lion
 
       new_instance
     end
@@ -165,7 +165,7 @@ module Osaka
     end
 
     def activate
-      if (control.mac_version == :lion)
+      if (MacVersion.get.version == :lion)
         control.launch unless control.running?
       end
       control.activate

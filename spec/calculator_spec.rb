@@ -6,7 +6,15 @@ describe "Mac GUI Calculator" do
   include(*Osaka::OsakaExpectations)
 
   subject { Osaka::Calculator.new }
-  let(:control) { subject.control = double("RemoteControl", :mac_version => :mountain_lion)}
+  let(:control) { subject.control = double("RemoteControl")}
+
+  before :each do
+    MacVersion.simulated_version = MacVersion.new(:mountain_lion)
+  end
+
+  after :each do
+    MacVersion.simulated_version = nil
+  end
 
   it "Should be setting the window when starting the Calculator" do
 

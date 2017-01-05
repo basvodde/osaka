@@ -204,14 +204,15 @@ describe "Osaka::TypicalApplication" do
     end
 
     it "Should return a new keynote instance variable after duplication (Lion!)" do
-      simulate_mac_version(:lion)
-      expect(subject).to receive(:duplicate_available?).and_return(true)
+      MacVersion.simulate(:lion) do
+        expect(subject).to receive(:duplicate_available?).and_return(true)
 
-      expect_click_menu_bar(at.menu_item("Duplicate"), "File")
-      expect(subject).to receive(:do_and_wait_for_new_standard_window).and_yield.and_return("duplicate window")
+        expect_click_menu_bar(at.menu_item("Duplicate"), "File")
+        expect(subject).to receive(:do_and_wait_for_new_standard_window).and_yield.and_return("duplicate window")
 
-      allow(subject).to receive_message_chain(:clone, :control).and_return(new_instance_control)
-      expect(subject.duplicate.control).to eq(new_instance_control)
+        allow(subject).to receive_message_chain(:clone, :control).and_return(new_instance_control)
+        expect(subject.duplicate.control).to eq(new_instance_control)
+      end
     end
 
     it "Should return a new keynote instance variable after duplication" do
@@ -240,11 +241,12 @@ describe "Osaka::TypicalApplication" do
   end
 
   it "Should be able to activate and launch. This is done because activate alone in Lion lead to strange behavior" do
-    simulate_mac_version(:lion)
-    expect_running?.and_return(false)
-    expect_launch
-    expect_activate
-    subject.activate
+    MacVersion.simulate(:lion) do
+      expect_running?.and_return(false)
+      expect_launch
+      expect_activate
+      subject.activate
+    end
   end
 
   it "Should be able to focus" do

@@ -2,10 +2,6 @@
 module Osaka
   module OsakaExpectations
 
-    def simulate_mac_version(version)
-      expect(control).to receive(:mac_version).and_return(version)
-    end
-
     def expect_execute_osascript(command = nil)
       return expect(Osaka::ScriptRunner).to receive(:execute).with(command) unless command.nil?
       expect(Osaka::ScriptRunner).to receive(:execute)
@@ -131,10 +127,6 @@ module Osaka
 
     def expect_until_not_exists!(element)
       expect(control).to receive(:until_not_exists!).with(element).and_yield
-    end
-
-    def expect_mac_version_before(version_name)
-      expect(control).to receive(:mac_version_before).with(version_name)
     end
   end
 end

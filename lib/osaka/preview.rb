@@ -11,7 +11,7 @@ module Osaka
     end
 
     def pdf_content
-      if control.mac_version_before(:el_capitain)
+      if MacVersion.get.version_before(:el_capitain)
         control.get!("value", at.static_text(1).scroll_area(1).splitter_group(1))
       else
         control.get!("value", at.static_text(1).group(1).scroll_area(1).splitter_group(1))

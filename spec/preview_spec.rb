@@ -6,18 +6,26 @@ describe "Preview application for reading PDFs" do
   include(*Osaka::OsakaExpectations)
 
   subject { Osaka::Preview.new }
-  let(:control) { subject.control = double("RemoteControl", :mac_version => :mountain_lion)}
+  let(:control) { subject.control = double("RemoteControl")}
+
+  before :each do
+    MacVersion.simulated_version = MacVersion.new(:mountain_lion)
+  end
+
+  after :each do
+    MacVersion.simulated_version = nil
+  end
 
   it "Can get the text context of a PDF document (pre el capitain)" do
-    expect_mac_version_before(:el_capitain).and_return(true)
     expect_get!("value", at.static_text(1).scroll_area(1).splitter_group(1)).and_return("Blah")
     expect(subject.pdf_content).to eq "Blah"
   end
 
   it "Can get the text context of a PDF document (post el capitain)" do
-    expect_mac_version_before(:el_capitain).and_return(false)
-    expect_get!("value", at.static_text(1).group(1).scroll_area(1).splitter_group(1)).and_return("Blah")
-    expect(subject.pdf_content).to eq "Blah"
+    MacVersion.simulate(:el_capitain) do
+      expect_get!("value", at.static_text(1).group(1).scroll_area(1).splitter_group(1)).and_return("Blah")
+      expect(subject.pdf_content).to eq "Blah"
+    end
   end
 
   it "Can open a PDF file via the menu instead of the AppleScript 'open' as that one is buggy" do

@@ -7,7 +7,7 @@ module Osaka
     def initialize(application_name, own_location)
       @control = Osaka::RemoteControl.new(application_name, own_location)
     end
-  
+
     def set_folder(pathname)
       return if pathname == "."
       control.keystroke("g", [ :command, :shift ]).wait_until_exists(at.sheet(1))
@@ -16,5 +16,5 @@ module Osaka
       control.click(at.button("Go").sheet(1)).wait_until_not_exists(at.sheet(1))
     end
   end
-  
+
 end

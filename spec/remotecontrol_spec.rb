@@ -297,7 +297,34 @@ describe "Osaka::RemoteControl" do
       expect_click!(at.menu_item("Hey").menu(1).menu_bar_item("File").menu_bar(1))
       subject.click_menu_bar(at.menu_item("Hey"), "File")    
     end
-    
+
+    it "Should click a cleared checkbox when true is specified" do
+      element = "some_element"
+      expect(control).to receive(:get!).with("value", element).and_return(0)
+      expect(control).to receive(:click).with(element)
+      control.set_checkbox(element, true)
+    end
+
+    it "Should click a set checkbox when false is specified" do
+      element = "some_element"
+      expect(control).to receive(:get!).with("value", element).and_return(1)
+      expect(control).to receive(:click).with(element)
+      control.set_checkbox(element, false)
+    end
+
+    it "Should not click a set checkbox when true is specified" do
+      element = "some_element"
+      expect(control).to receive(:get!).with("value", element).and_return(1)
+      control.set_checkbox(element, true)
+    end
+
+    it "Should not click a cleared checkbox when false is specified" do
+      element = "some_element"
+      expect(control).to receive(:get!).with("value", element).and_return(1)
+      control.set_checkbox(element, true)
+    end
+
+
   end
   
   context "Control should be able to set and get different application values" do

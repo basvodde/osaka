@@ -11,7 +11,7 @@ describe "Osaka::TypicalFinderDialog" do
   it "Should be able to set the path" do
     expect_keystroke("g", [ :command, :shift ])
     expect_wait_until_exists(at.sheet(1))
-    expect_set("value", at.text_field(1).sheet(1), "path")
+    expect_set("value", at.combo_box(1).sheet(1), "path")
     expect_click(at.button("Go").sheet(1))
     expect_wait_until_not_exists(at.sheet(1))
     subject.set_folder("path")

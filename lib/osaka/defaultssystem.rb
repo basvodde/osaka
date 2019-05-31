@@ -9,7 +9,7 @@ class DefaultsSystem
     parse_settings_file(Osaka::CommandRunner.run("defaults read #{domain}"))
   end
   
-  def parse_settings_file (settings_from_defaults)    
+  def parse_settings_file(settings_from_defaults)
     scanner = StringScanner.new (settings_from_defaults)
     scanner.scan(/{\n/)
     while scanner.scan(/\s+(.*) = (.*);\n/) do

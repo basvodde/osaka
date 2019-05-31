@@ -10,8 +10,8 @@ module Osaka
     def find_replace_all string, replacement
       string_to_find string
       string_replacement replacement
-      click_replace_all
       wait_for_replace_all_button?
+      click_replace_all
       close
     end
 
@@ -24,7 +24,7 @@ module Osaka
     end
 
     def  wait_for_replace_all_button?
-      @control.wait_until_exists(at.button(4))
+      @control.wait_until_exists(at.button("Replace All"))
     end
     
     def click_replace_all
@@ -32,7 +32,7 @@ module Osaka
     end
     
     def close
-      @control.click(at.button(1))
+      @control.keystroke('w', :command)
     end
 
   end      

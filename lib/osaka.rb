@@ -14,6 +14,7 @@ require 'osaka/typicalopendialog'
 require 'osaka/typicalsavedialog'
 require 'osaka/typicalprintdialog'
 require 'osaka/typicalfinddialog'
+require 'osaka/keynoteprintdialog.rb'
 
 #Specific application
 require 'osaka/pages'

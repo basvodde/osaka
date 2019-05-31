@@ -21,6 +21,7 @@ module CommonFlows
       keynote.paste
       combine_keynote.close
       keynote.save
+      puts "Finished " + file
     }
     
     keynote.close

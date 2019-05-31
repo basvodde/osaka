@@ -32,7 +32,7 @@ module Osaka
       ApplicationInfo.new(script_info)
     end
   
-    def open (filename)
+    def open(filename)
       abolutePathFileName = File.absolute_path(filename)
       new_window = do_and_wait_for_new_window {
         control.tell("open \"#{abolutePathFileName}\"")
@@ -122,12 +122,6 @@ module Osaka
     def save
       control.keystroke("s", :command)
     end
-    
-
-
-
-
-
 
     def find_replace_all text, replacement
       control.keystroke("f", :command)
@@ -136,14 +130,6 @@ module Osaka
       dialog = create_dialog(TypicalFindDialog, location)
       dialog.find_replace_all text, replacement
     end
-
-
-
-
-
-
-
-
 
     def save_pops_up_dialog?
       control.exists?(at.menu_item("Save…").menu(1).menu_bar_item("File").menu_bar(1))
@@ -207,9 +193,9 @@ module Osaka
       control.keystroke("a", :command)
     end
     
-    def print_dialog
+    def print_dialog dialog_class = TypicalPrintDialog
       control.keystroke("p", :command).wait_until_exists(at.sheet(1))
-      create_dialog(TypicalPrintDialog, at.sheet(1))
+      create_dialog(dialog_class, at.sheet(1))
     end
     
     def create_dialog(dialog_class, location)
@@ -243,3 +229,4 @@ module Osaka
     end
   end
 end
+

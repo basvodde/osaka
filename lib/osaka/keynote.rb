@@ -1,10 +1,6 @@
 
 module Osaka
   
-  class KeynotePrintDialog < TypicalPrintDialog
-  
-  end
-
   class Keynote < TypicalApplication  
   
     def initialize
@@ -12,7 +8,7 @@ module Osaka
     end
 
     def create_print_dialog(location)
-      KeynotePrintDialog.new(control.name, at.window("Print"))
+      Osaka::KeynotePrintDialog.new(control.name, at.window("Print"))
     end
     
     def select_all_slides
@@ -51,8 +47,27 @@ module Osaka
     end
 
     def exit_master_slides
+       click_view_menu "Exit Master Slides"
+    end
+
+    def exit_master_slides
       click_view_menu "Exit Master Slides"
     end
+
+    def open_print_dialog
+      control.keystroke("p", :command)
+      location = at.sheet(1)
+      control.wait_until_exists(location)
+      create_dialog(KeynotePrintDialog, location)
+    end      
+
+    def print_pdf output_pdf, slides_per_page
+      dialog = open_print_dialog
+      dialog.use_page_margins
+      dialog.slides_per_page slides_per_page
+      # dialog.save_as_pdf output_pdf
+    end
+
 
   end
 end

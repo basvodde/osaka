@@ -7,7 +7,8 @@ describe "Osaka::Keynote" do
 
   subject { Osaka::Keynote.new }
   let(:control) {subject.control = double("RemoteControl")}
-  
+  let(:print_dialog) { double("KeynotePrintDialog") }
+
   it "Should create the correct keynote print dialog" do
     expect(subject.create_print_dialog("window")).to be_instance_of Osaka::KeynotePrintDialog
   end
@@ -55,4 +56,6 @@ describe "Osaka::Keynote" do
     subject.edit_master_slides
     subject.exit_master_slides
   end
+
+
 end

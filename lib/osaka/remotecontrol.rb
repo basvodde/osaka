@@ -149,7 +149,15 @@ module Osaka
       menu_bar_location = at.menu_bar_item(menu_name).menu_bar(1)
       click!(menu_item + at.menu(1) + menu_bar_location)      
     end
-        
+
+    def set_checkbox(element, value)
+      its_value = get!("value", element).to_i
+      value = value ? 1 : 0
+      return if  its_value == value
+      click(element)
+      sleep 1
+    end
+
     def set!(element, location, value)
       encoded_value = (value.class == String) ? "\"#{value}\"" : value.to_s
       check_output( system_event!("set #{element}#{construct_prefixed_location(location)} to #{encoded_value}"), "set")

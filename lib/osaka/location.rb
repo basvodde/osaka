@@ -74,6 +74,10 @@ module Osaka
       create_location_with_added_name("menu bar", name)
     end
     
+    def combo_box(name)
+        create_location_with_added_name("combo box", name)
+    end
+
     def has_menu_bar?
       has_element?("menu bar")
     end

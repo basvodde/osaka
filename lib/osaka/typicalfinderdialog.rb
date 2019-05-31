@@ -11,7 +11,8 @@ module Osaka
     def set_folder(pathname)
       return if pathname == "."
       control.keystroke("g", [ :command, :shift ]).wait_until_exists(at.sheet(1))
-      control.set("value", at.text_field(1).sheet(1), pathname)
+      # pre mojave      control.set("value", at.text_field(1).sheet(1), pathname)
+      control.set("value", at.combo_box(1).sheet(1), pathname)
       sleep(1) # Seems this must be here due to the sucking Apple UI. Not found something else to wait for!
       control.click(at.button("Go").sheet(1)).wait_until_not_exists(at.sheet(1))
     end

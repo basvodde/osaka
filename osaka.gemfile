@@ -1,9 +1,12 @@
 # encoding: utf-8
+puts "File", __FILE__ 
+puts File.expand_path('../lib/osaka/version', __FILE__)
 require File.expand_path('../lib/osaka/version', __FILE__)
+require 'Date'
 
 Gem::Specification.new do |gem|
   gem.name    = 'osaka'
-  gem.version = Osaka::VERSION
+  gem.version = '0.42.0' #Osaka::VERSION
   gem.date    = Date.today.to_s
 
   gem.summary = "Osaka is an Mac GUI automation library"
@@ -13,8 +16,12 @@ Gem::Specification.new do |gem|
   gem.email    = 'basv@odd-e.com'
   gem.homepage = 'https://github.com/basvodde/osaka'
 
-  gem.add_dependency('rake')
-  gem.add_development_dependency('rspec', [">= 2.0.0"])
+  gem.add_dependency('rake', ["~>12"])
+  gem.add_development_dependency('rspec', ["~> 2.0"])
+  gem.license       = 'MIT'
 
-  gem.files = `git ls-files -- {.,test,spec,lib}/*`.split("\n")
+
+  gem.files = `git ls-files -- {lib,lib/osaka,spec}/*.rb`.split("\n")
+  puts gem.files
+#  gem.files = `git ls-files -- {.,test,spec,lib}/*`.split("\n")
 end
